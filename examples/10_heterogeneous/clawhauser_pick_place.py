@@ -1,9 +1,10 @@
 # SPDX-License-Identifier: Apache-2.0
-"""Pick up the existing labelled Clawhauser volume by its loop and place it on a table.
+"""Pick up and transport the labelled Clawhauser volume, then release its ring.
 
 Run on a CUDA node with Newton 1.8 development and RoboSimStudio on PYTHONPATH.
 The two kinematic fingers use only collision contact; no particle attachment or
 direct object motion is added. Outputs are written under ``outputs/clawhauser``.
+Use ``--lower-before-release`` to descend before the same release sequence.
 """
 
 from __future__ import annotations
@@ -24,8 +25,8 @@ from robosimstudio_materials.heterogeneous import HeterogeneousSoftSpec, load_la
 ASSET = Path(__file__).resolve().parent / "assets" / "clawhauser"
 OUTPUT = Path(__file__).resolve().parents[2] / "outputs" / "clawhauser"
 CONTROL_HZ = 30
-SUBSTEPS = 20
-DURATION = 13.0
+SUBSTEPS = 80
+DURATION = 12.0
 TABLE_Z = 0.75
 # RSS positions are relative to the bench's work-surface frame, whose origin
 # is world x=0.6 m. These values place the toy at world x=0.47 and 0.65 m.
@@ -39,7 +40,7 @@ SOURCE_HASHES = {
 }
 
 
-def build_scene():
+def build_scene(*, lower_before_release: float = 0.0):
     for relative, expected in SOURCE_HASHES.items():
         actual = hashlib.sha256((ASSET / relative).read_bytes()).hexdigest()
         if actual != expected:
@@ -68,15 +69,15 @@ def build_scene():
 
     vbd = rss.backend(
         "vbd",
-        iterations=12,
+        iterations=48,
         particle_enable_self_contact=False,
-        particle_enable_tile_solve=False,
+        particle_enable_tile_solve=True,
         rigid_body_particle_contact_buffer_size=4096,
     )
     physics = rss.ArrangementSpec(
         control_hz=CONTROL_HZ,
         substeps=SUBSTEPS,
-        use_cuda_graph=False,
+        use_cuda_graph=True,
         backends=(("soft", vbd), ("rigid", vbd), ("*", vbd)),
         collision=rss.CollisionSpec(
             soft_contact_margin=0.002,
@@ -86,25 +87,9 @@ def build_scene():
             broad_phase="nxn",
         ),
     )
-    scene = rss.Scene(cell="bench_075", physics=physics, name="clawhauser_loop_pick_place")
-    scene.add(
-        rss.slab(
-            name="source_zone",
-            half=(0.06, 0.06, 0.00025),
-            at=(SOURCE_X, 0.0, 0.001),
-            collide=False,
-            color=(0.13, 0.28, 0.43),
-        )
-    )
-    scene.add(
-        rss.slab(
-            name="target_zone",
-            half=(0.06, 0.06, 0.00025),
-            at=(TARGET_X, -0.10, 0.001),
-            collide=False,
-            color=(0.10, 0.38, 0.28),
-        )
-    )
+    scene = rss.Scene(cell="bench_075", physics=physics, name="clawhauser_airborne_release")
+    # Omit decorative zone slabs: this RSS revision's collide=False still
+    # allows particle contacts. The bench is the only intended support.
     obj = scene.add(
         HeterogeneousSoftSpec(
             name="clawhauser",
@@ -121,11 +106,16 @@ def build_scene():
         ScriptedGripperSpec(
             center=grasp_center,
             half_gap=float(half_span + 0.012),
-            closed_half_gap=0.010,
+            # Pad half-thickness is 3 mm: allow approximately 1 mm of
+            # indentation rather than squeezing the whole loop to 14 mm.
+            closed_half_gap=float(half_span + 0.002),
+            settle_s=1.0,
+            airborne_release=True,
+            release_lower_z=lower_before_release,
             travel_x=TARGET_X - SOURCE_X,
             control_hz=CONTROL_HZ,
             substeps=SUBSTEPS,
-            duration=DURATION,
+            duration=DURATION + (2.0 if lower_before_release else 0.0),
         )
     )
     camera = rss.CameraSpec(
@@ -137,7 +127,7 @@ def build_scene():
         fov_y=50.0,
     )
     scene.add(camera)
-    sim = scene.build(device="cuda:0", warmup=False, use_cuda_graph=False)
+    sim = scene.build(device="cuda:0", warmup=True, use_cuda_graph=True)
     entity = obj.entity
     if type(sim.pipeline.program.solver).__name__ != "SolverVBD":
         raise RuntimeError(f"expected Newton VBD, got {type(sim.pipeline.program.solver).__name__}")
@@ -159,12 +149,19 @@ def build_scene():
     return sim, obj, grip, camera, grasp_ids, labels
 
 
-def run(out: Path, *, steps: int, render_every: int = 0):
+def run(out: Path, *, steps: int | None = None, render_every: int = 0, lower_before_release: float = 0.0):
     out.mkdir(parents=True, exist_ok=True)
-    sim, obj, grip, camera, ring_ids, labels = build_scene()
+    sim, obj, grip, camera, ring_ids, labels = build_scene(lower_before_release=lower_before_release)
+    duration = grip.entity.spec.duration
+    if steps is None:
+        steps = round(duration * CONTROL_HZ)
+    task = "pickup_transport_lowered_release" if lower_before_release else "pickup_transport_airborne_release"
     entity = obj.entity
     particle_ids = entity.particles
-    ring_ids = particle_ids[ring_ids]
+    patch_ids = particle_ids[ring_ids]
+    # Contacts may move around the loop after pickup; the original tip patch
+    # is only for initial alignment, not the definition of the whole ring.
+    ring_ids = particle_ids[np.unique(entity.source_tets[labels == 2])]
     body_ids = particle_ids[np.unique(entity.source_tets[labels == 1])]
     q0 = sim.pipeline.state_0.particle_q.numpy()[particle_ids]
     rest_det = np.linalg.det(q0[entity.source_tets[:, 1:]] - q0[entity.source_tets[:, :1]])
@@ -184,6 +181,8 @@ def run(out: Path, *, steps: int, render_every: int = 0):
         for frame in range(steps):
             sim.run(1).sync()
             q = sim.pipeline.state_0.particle_q.numpy()
+            if frame + 1 == round(grip.entity.spec.settle_s * CONTROL_HZ):
+                grip.entity.fit_grasp(q[patch_ids])
             body_q = sim.pipeline.state_0.body_q.numpy()
             owned = q[particle_ids]
             if not np.isfinite(owned).all():
@@ -199,14 +198,21 @@ def run(out: Path, *, steps: int, render_every: int = 0):
             row = {
                 "frame": frame + 1,
                 "time_s": (frame + 1) / CONTROL_HZ,
-                "ring_center_m": q[ring_ids].mean(axis=0).tolist(),
+                "ring_center_m": q[patch_ids].mean(axis=0).tolist(),
                 "body_center_m": q[body_ids].mean(axis=0).tolist(),
+                "center_of_mass_m": np.average(owned, weights=entity.source_mass, axis=0).tolist(),
+                "center_of_mass_velocity_m_s": np.average(
+                    sim.pipeline.state_0.particle_qd.numpy()[particle_ids], weights=entity.source_mass, axis=0
+                ).tolist(),
                 "body_translation_x_m": float(q[body_ids, 0].mean() - initial_body[0]),
                 "minimum_z_m": float(owned[:, 2].min()),
                 "minimum_tet_volume_ratio": float((det / rest_det).min()),
                 "inverted_tetrahedra": int(np.count_nonzero(det <= 0)),
                 "soft_contacts": count,
                 "finger_contacts": finger_contacts,
+                "finger_contacts_by_shape": [
+                    int(np.count_nonzero(contact_shapes == shape)) for shape in grip.entity.finger_shapes
+                ],
                 "finger_contacts_by_side": [
                     int(np.count_nonzero(np.isin(contact_shapes, shapes))) for shapes in grip.entity.shapes_by_side
                 ],
@@ -214,7 +220,7 @@ def run(out: Path, *, steps: int, render_every: int = 0):
                     int(np.count_nonzero(np.isin(contact_shapes, shapes) & ring_mask))
                     for shapes in grip.entity.shapes_by_side
                 ],
-                "grasp_patch_contacts": int(np.count_nonzero(finger_mask & ring_mask)),
+                "grasp_patch_contacts": int(np.count_nonzero(finger_mask & np.isin(contact_particles, patch_ids))),
                 "gripper_body_x_m": body_q[grip.entity.bodies, 0].tolist(),
                 "gripper_body_y_m": body_q[grip.entity.bodies, 1].tolist(),
                 "gripper_body_z_m": body_q[grip.entity.bodies, 2].tolist(),
@@ -234,6 +240,13 @@ def run(out: Path, *, steps: int, render_every: int = 0):
                     videos = None
             if frame % 15 == 0 or frame == steps - 1:
                 print(json.dumps(row), flush=True)
+            if frame + 1 == round(6.5 * CONTROL_HZ):
+                transit = [r for r in diagnostics if 4.5 <= r["time_s"] <= 6.5]
+                if any(r["inverted_tetrahedra"] for r in diagnostics) or not all(
+                    min(r["ring_contacts_by_side"]) > 0 for r in transit
+                ):
+                    print("Pickup check failed; stopping before airborne release.", flush=True)
+                    break
     finally:
         if videos is not None:
             try:
@@ -247,6 +260,9 @@ def run(out: Path, *, steps: int, render_every: int = 0):
     newton_commit = subprocess.check_output(["git", "-C", str(newton_root), "rev-parse", "HEAD"], text=True).strip()
     manifest = {
         "asset": "clawhauser",
+        "task": task,
+        "lower_before_release_m": lower_before_release,
+        "actuation": "kinematic, uncapped, contact only",
         "newton_version": newton.__version__,
         "newton_source_commit": newton_commit,
         "solver": type(sim.pipeline.program.solver).__name__,
@@ -262,65 +278,137 @@ def run(out: Path, *, steps: int, render_every: int = 0):
     }
     (out / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
     if diagnostics:
-        final = diagnostics[-1]
-        transit = [row for row in diagnostics if 3.5 <= row["time_s"] <= 5.5]
-        settled = [row for row in diagnostics if row["time_s"] >= 12.1]
+        transit = [row for row in diagnostics if 4.5 <= row["time_s"] <= 6.5]
         lifted = float(max((row["body_center_m"][2] - initial_body[2] for row in transit), default=0.0))
         clearance = float(max((row["minimum_z_m"] - TABLE_Z for row in transit), default=0.0))
-        peak_finger_contacts = max(row["finger_contacts"] for row in diagnostics)
-        target_error_x = float(abs(final["body_center_m"][0] - (initial_body[0] + TARGET_X - SOURCE_X)))
-        body_drift = (
-            float(np.linalg.norm(np.asarray(final["body_center_m"]) - settled[0]["body_center_m"])) if settled else None
-        )
-        finger_distance = min(
-            float(
-                np.linalg.norm(
-                    np.asarray(final["ring_center_m"])
-                    - np.asarray(
-                        [final["gripper_body_x_m"][i], final["gripper_body_y_m"][i], final["gripper_body_z_m"][i]]
-                    )
-                )
-            )
-            for i in range(2)
-        )
         bilateral_ring_grasp = bool(transit and all(min(row["ring_contacts_by_side"]) > 0 for row in transit))
-        released = bool(settled and max(row["finger_contacts"] for row in settled) == 0)
-        table_supported = bool(
-            TABLE_Z - 0.002 <= final["minimum_z_m"] <= TABLE_Z + 0.004
-            and final["soft_contacts"] > final["finger_contacts"]
+        opening_s = grip.entity.spec.settle_s + 6.0 + (2.0 if lower_before_release else 0.0)
+        after_open = [row for row in diagnostics if row["time_s"] >= opening_s]
+        impact = next(
+            (
+                row["time_s"]
+                for row in diagnostics
+                if row["time_s"] >= 6.5
+                if row["soft_contacts"] > row["finger_contacts"] and row["minimum_z_m"] <= TABLE_Z + 0.004
+            ),
+            None,
         )
+        # Only a genuinely contact-free airborne interval tests gravity. A
+        # later floor impact is reported separately from finger separation.
+        flight_runs, flight = [], []
+        for row in after_open:
+            if impact is not None and row["time_s"] >= impact:
+                break
+            if row["soft_contacts"] == 0 and row["minimum_z_m"] > TABLE_Z + 0.004:
+                flight.append(row)
+            elif flight:
+                flight_runs.append(flight)
+                flight = []
+        if flight:
+            flight_runs.append(flight)
+        flight = max(flight_runs, key=len, default=[])
+        gravity = sim.model.gravity.numpy()[0].astype(float)
+        acceleration = None
+        gravity_error = None
+        fall = 0.0
+        if len(flight) >= 3:
+            velocities = np.asarray([row["center_of_mass_velocity_m_s"] for row in flight])
+            acceleration = np.diff(velocities, axis=0).mean(axis=0) * CONTROL_HZ
+            gravity_error = float(np.linalg.norm(acceleration - gravity) / np.linalg.norm(gravity))
+            fall = float(flight[0]["center_of_mass_m"][2] - flight[-1]["center_of_mass_m"][2])
+        tail = [row for row in diagnostics if row["time_s"] >= duration - 0.5]
+        released = bool(tail and all(row["finger_contacts"] == 0 for row in tail))
+        before_impact = [row for row in diagnostics if impact is None or row["time_s"] < impact]
+        pre_impact_inverted = max((row["inverted_tetrahedra"] for row in before_impact), default=0)
         max_inverted = max(row["inverted_tetrahedra"] for row in diagnostics)
-        settled_inverted = max((row["inverted_tetrahedra"] for row in settled), default=None)
-        max_inverted_fraction = max_inverted / len(labels)
-        success = (
-            steps >= round(DURATION * CONTROL_HZ)
+        airborne_success = bool(
+            len(diagnostics) == steps
+            and steps >= round(duration * CONTROL_HZ)
             and lifted > 0.08
             and clearance > 0.05
             and bilateral_ring_grasp
-            and target_error_x < 0.04
+            and released
+            and len(flight) >= 3
+            and fall > 0.01
+            and gravity_error is not None
+            and gravity_error < 0.20
+            and pre_impact_inverted == 0
+        )
+        # A near-table release can correctly have no airborne interval. Keep
+        # its motion result separate from both free-fall and mesh integrity.
+        table_supported = bool(
+            tail
+            and all(
+                TABLE_Z - 0.002 <= row["minimum_z_m"] <= TABLE_Z + 0.004
+                and row["soft_contacts"] > row["finger_contacts"]
+                for row in tail
+            )
+        )
+        body_drift = (
+            float(
+                np.linalg.norm(
+                    np.asarray([row["body_center_m"] for row in tail]) - tail[0]["body_center_m"], axis=1
+                ).max()
+            )
+            if tail
+            else None
+        )
+        # The final uninterrupted zero-contact interval is sustained release;
+        # a brief earlier gap followed by recontact must not establish its time.
+        last_contact = max((i for i, row in enumerate(after_open) if row["finger_contacts"]), default=-1)
+        first_clear = (
+            after_open[last_contact + 1]["time_s"] if released and last_contact + 1 < len(after_open) else None
+        )
+        lowered_success = bool(
+            lower_before_release
+            and len(diagnostics) == steps
+            and steps >= round(duration * CONTROL_HZ)
+            and lifted > 0.08
+            and clearance > 0.05
+            and bilateral_ring_grasp
             and released
             and table_supported
             and body_drift is not None
             and body_drift < 0.02
-            and finger_distance > 0.08
-            and settled_inverted == 0
-            and max_inverted_fraction < 0.002
+            and pre_impact_inverted == 0
         )
         result = {
+            "task": task,
             "transit_body_lift_m": lifted,
             "transit_clearance_m": clearance,
-            "body_translation_x_m": final["body_translation_x_m"],
-            "target_error_x_m": target_error_x,
-            "peak_finger_contacts": peak_finger_contacts,
             "bilateral_ring_grasp": bilateral_ring_grasp,
             "released": released,
+            "first_finger_free_s": first_clear,
+            "table_contact_before_release": impact is not None and first_clear is not None and impact < first_clear,
             "table_supported": table_supported,
-            "post_release_body_drift_m": body_drift,
-            "final_finger_ring_distance_m": finger_distance,
+            "final_half_second_body_drift_m": body_drift,
+            "target_error_xy_m": float(
+                np.linalg.norm(
+                    np.asarray(diagnostics[-1]["body_center_m"][:2]) - [initial_body[0] + TARGET_X - SOURCE_X, -0.10]
+                )
+            ),
+            "contact_free_flight_samples": len(flight),
+            "contact_free_flight_window_s": [flight[0]["time_s"], flight[-1]["time_s"]] if flight else None,
+            "contact_free_com_fall_m": fall,
+            "mean_contact_free_com_acceleration_m_s2": acceleration.tolist() if acceleration is not None else None,
+            "model_gravity_m_s2": gravity.tolist(),
+            "gravity_relative_error": gravity_error,
+            "first_table_contact_after_transport_s": impact,
+            "max_pre_impact_inverted_tetrahedra": pre_impact_inverted,
+            "max_pre_release_inverted_tetrahedra": max(
+                (
+                    row["inverted_tetrahedra"]
+                    for row in diagnostics
+                    if first_clear is None or row["time_s"] < first_clear
+                ),
+                default=0,
+            ),
             "max_inverted_tetrahedra": max_inverted,
-            "max_inverted_fraction": max_inverted_fraction,
-            "settled_inverted_tetrahedra": settled_inverted,
-            "success": bool(success),
+            "minimum_tet_volume_ratio": min(row["minimum_tet_volume_ratio"] for row in diagnostics),
+            "airborne_release_success": airborne_success,
+            "lowered_release_success": lowered_success,
+            "all_episode_mesh_integrity_pass": max_inverted == 0,
+            "success": (lowered_success if lower_before_release else airborne_success) and max_inverted == 0,
         }
         (out / "result.json").write_text(json.dumps(result, indent=2) + "\n")
         print(json.dumps(result), flush=True)
@@ -330,10 +418,13 @@ def run(out: Path, *, steps: int, render_every: int = 0):
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out", type=Path, default=OUTPUT / "run")
-    parser.add_argument("--steps", type=int, default=round(DURATION * CONTROL_HZ))
+    parser.add_argument("--steps", type=int, default=None)
     parser.add_argument("--render-every", type=int, default=0)
+    parser.add_argument("--lower-before-release", type=float, default=0.0, metavar="METRES")
     args = parser.parse_args()
-    run(args.out, steps=args.steps, render_every=args.render_every)
+    if not 0.0 <= args.lower_before_release < 0.4:
+        parser.error("--lower-before-release must be between 0 and 0.4 metres")
+    run(args.out, steps=args.steps, render_every=args.render_every, lower_before_release=args.lower_before_release)
 
 
 if __name__ == "__main__":

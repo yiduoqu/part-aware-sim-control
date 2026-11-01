@@ -55,9 +55,11 @@ class ScriptedGripperSpec:
     lift_z: float = 0.40
     lower_offset_z: float = 0.295
     release_lower_z: float = 0.17
+    settle_s: float = 0.0
+    airborne_release: bool = False
     control_hz: int = 30
     substeps: int = 20
-    duration: float = 13.0
+    duration: float = 16.0
 
 
 @rss.register_entity("scripted_loop_gripper")
@@ -114,35 +116,66 @@ class ScriptedGripper(rss.Entity):
         dt = 1.0 / (spec.control_hz * spec.substeps)
         poses = np.zeros((count, 2, 7), dtype=np.float32)
         poses[:, :, 6] = 1.0
+        angles = np.zeros(count, dtype=np.float32)
         for index in range(count):
-            time = index * dt
+            time = index * dt - spec.settle_s
+            # Reserve two seconds after transport for an optional descent.
+            release_time = time - (2.0 if spec.airborne_release and spec.release_lower_z else 0.0)
             close = smooth(time, 0.40, 0.85)
             grasp_gap = spec.half_gap + (spec.closed_half_gap - spec.half_gap) * close
-            left_gap = grasp_gap + (spec.release_half_gap - grasp_gap) * smooth(time, 8.0, 8.5)
-            right_gap = grasp_gap + (spec.release_half_gap - grasp_gap) * smooth(time, 10.2, 10.7)
+            left_open = (6.0, 6.5) if spec.airborne_release else (10.7, 11.2)
+            # Clear the left jaw, tip the loaded right finger, then withdraw
+            # it. Opening the right jaw first carries the loop sideways.
+            right_open = (8.0, 8.5) if spec.airborne_release else (12.5, 13.0)
+            left_gap = grasp_gap + (spec.release_half_gap - grasp_gap) * smooth(release_time, *left_open)
+            right_gap = grasp_gap + (spec.release_half_gap - grasp_gap) * smooth(release_time, *right_open)
             approach = spec.approach_z * smooth(time, 0.05, 0.35)
-            lower = smooth(time, 5.6, 7.2)
+            lower = 0.0 if spec.airborne_release else smooth(time, 5.6, 9.4)
             lift = spec.lift_z * smooth(time, 1.2, 2.8) * (1.0 - lower)
             move = spec.travel_x * smooth(time, 3.0, 4.8)
-            retreat = smooth(time, 11.3, 12.1)
-            release_lower = spec.release_lower_z * smooth(time, 8.5, 9.4)
+            retreat = 0.0 if spec.airborne_release else smooth(time, 13.6, 14.4)
+            release_lower = (
+                spec.release_lower_z * smooth(time, 5.5, 7.5)
+                if spec.airborne_release
+                else (spec.release_lower_z * smooth(time, 8.5, 9.4))
+            )
             center = self.center + np.array(
                 [move, -0.12 * retreat, approach + lift + spec.lower_offset_z * lower - release_lower + 0.08 * retreat]
             )
             poses[index, 0, :3] = center + np.array([-left_gap, 0.0, 0.0])
             poses[index, 1, :3] = center + np.array([right_gap, 0.0, 0.0])
-            # Once the left jaw is clear, tip the supporting right ledge
-            # downward so the loop slides off before that jaw withdraws.
-            tip = smooth(time, 9.4, 10.2) * (1.0 - smooth(time, 10.7, 11.2))
+            # Tip the supporting right ledge downward so the loop can slide
+            # off. Release holds the midpoint fixed while tipping.
+            tip = (
+                smooth(release_time, 7.0, 7.5)
+                if spec.airborne_release
+                else smooth(time, 11.7, 12.5) * (1.0 - smooth(time, 13.0, 13.5))
+            )
             angle = -0.5 * np.pi * tip
+            angles[index] = angle
             poses[index, 1, 4] = np.sin(angle / 2.0)
             poses[index, 1, 6] = np.cos(angle / 2.0)
         velocities = np.zeros((count, 2, 6), dtype=np.float32)
         velocities[:-1, :, :3] = np.diff(poses[:, :, :3], axis=0) / dt
+        # The right finger rotates about the world y axis. Contact friction
+        # needs its angular velocity as well as its prescribed orientation.
+        velocities[:-1, 1, 4] = np.diff(angles) / dt
         self._poses = wp.array(poses, dtype=wp.transform, device=pipeline.model.device)
         self._velocities = wp.array(velocities, dtype=wp.spatial_vector, device=pipeline.model.device)
         self._body_indices = wp.array(self.bodies, dtype=int, device=pipeline.model.device)
         self._tick = wp.zeros(1, dtype=int, device=pipeline.model.device)
+
+    def fit_grasp(self, points: np.ndarray) -> None:
+        """Align the approach once, after settling and before finger motion."""
+        target = points.mean(axis=0) + np.array([0.0, 0.0, 0.003])
+        offset = target - self.center - np.array([0.0, 0.0, self.spec.approach_z])
+        poses, velocities = self._poses.numpy(), self._velocities.numpy()
+        dt = 1.0 / (self.spec.control_hz * self.spec.substeps)
+        blend = np.array([smooth(i * dt - self.spec.settle_s, 0.05, 0.35) for i in range(len(poses))])
+        poses[:, :, :3] += blend[:, None, None] * offset
+        velocities[:-1, :, :3] = np.diff(poses[:, :, :3], axis=0) / dt
+        self._poses.assign(poses)
+        self._velocities.assign(velocities)
 
     def contribute_hooks(self, hooks) -> None:
         hooks.add("pre_solve", self._drive, name="drive-loop-fingers")

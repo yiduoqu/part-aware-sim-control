@@ -2,8 +2,10 @@
 
 `clawhauser_pick_place.py` builds an RSS scene with one labelled tetrahedral
 Clawhauser, a bench, and two scripted kinematic fingers. The fingers pinch its
-loop by Newton contact, lift it, move it 180 mm across the table, lower it,
-release it, and withdraw. There are no particle-body attachments or scripted
+loop by Newton contact, lift it, and move it 180 mm across the table. To release,
+the left jaw opens, the right finger tips downward, then the right jaw withdraws.
+Opening the right jaw before tipping carries the loop sideways and can leave it
+hanging on the finger. There are no particle-body attachments or scripted
 object transforms. The mesh remains one face-connected, part-labelled FEM
 volume throughout the run; tail, body, and loop are not separate objects.
 
@@ -24,7 +26,12 @@ rss_root="$PWD"
 source ../newton/outputs/stage1_setup/activate.sh
 export PYTHONPATH="$rss_root:$rss_root/../newton"
 python "$rss_root/examples/10_heterogeneous/clawhauser_pick_place.py" \
-  --out "$rss_root/outputs/clawhauser/run" --render-every 3
+  --out "$rss_root/outputs/clawhauser/drop" --render-every 1
+
+# Lower the closed gripper before the same release sequence (metres).
+python "$rss_root/examples/10_heterogeneous/clawhauser_pick_place.py" \
+  --lower-before-release 0.20 \
+  --out "$rss_root/outputs/clawhauser/lowered_release" --render-every 1
 ```
 
 On the GH200's Linux ARM environment, `uv sync` of the entire RSS project is
@@ -35,15 +42,25 @@ needs `imageio-ffmpeg` there for video output.
 
 The output contains state arrays, per-frame diagnostics, a manifest, and a
 result summary. The `overview.mp4` video is written when rendering is enabled.
-The example runs at 30 Hz with 20 Newton substeps and 12 VBD iterations per
-substep. Its success check requires bilateral loop contact during transit,
-clearance over the table, placement near the target, no finger contact after
-release, a supported and stable final body, and no inverted tetrahedra in the
-settled interval. It also reports the peak transient inversion count and
-requires it to stay below 0.2% of the source elements. Inspect the recorded
-positions, contacts, and video as well as the result summary: this is an
-initial contact-manipulation scene, not a claim that every intermediate FEM
-element remains inversion-free.
+The example runs at 30 Hz with 80 Newton substeps and 48 VBD iterations per
+substep. The default 12-second episode releases in the air; lowering adds a
+two-second descent after transport and records 14 seconds. Materials, mesh,
+finger geometry, friction and solver settings are identical in both modes.
+The fingers remain kinematic, with no actuator force cap.
+
+The result separates airborne release, lowered release and mesh integrity.
+Airborne release requires a contact-free falling interval; lowered release
+requires final finger clearance, table contact and less than 20 mm body drift
+over the final half-second. Target error is reported without a landing-accuracy
+gate. Overall `success` also requires zero recorded inverted tetrahedra: a
+successful release can therefore coexist with a failed impact-integrity check.
+Diagnostics sample 30 Hz control frames, not every internal solver substep.
+Table contact before release is recorded separately; contact counts are not
+measurements of table load. A lower-height drop is not proof of supported
+placement before opening.
+The current 200 mm descent releases and settles, but finishes about 160 mm from
+the nominal target and briefly inverts elements after release. It is not an
+accepted accurate pick-and-place result.
 
 ## AIRBOT Play arm variant
 
