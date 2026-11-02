@@ -319,9 +319,9 @@ def build_scene(
     if sim.model.attachment_particle_body_count:
         raise RuntimeError("the contact grasp scene must not contain particle attachments")
     if mu is not None:
-        # Newton VBD exposes one global soft-contact friction coefficient; this is
-        # it, and here it is the knob the sweep turns.
+        # VBD and ADMM read separate global friction fields for this interface.
         sim.model.soft_contact_mu = float(mu)
+        sim.model.particle_mu = float(mu)
     if abs(float(grip.entity.center[2]) - (TABLE_Z + geometry["grip_z_m"])) > 1.0e-6:
         raise RuntimeError(
             f"the claw sits at z={grip.entity.center[2]:.4f} and the hole's centre at "
