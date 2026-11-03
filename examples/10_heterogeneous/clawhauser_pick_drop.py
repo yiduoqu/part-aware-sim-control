@@ -35,11 +35,10 @@ ASSET = Path(__file__).resolve().parent / "assets" / "clawhauser"
 OUTPUT = Path(__file__).resolve().parents[2] / "outputs" / "clawhauser_pick_drop"
 CONTROL_HZ = 30
 SUBSTEPS = 20
-# Opening ends at 5.7 s; the remaining 4.3 s observes the released toy settling.
-DURATION = 10.0
+# 20 s: the phases below still end at 5.2 s, so the drop is unchanged and the
+# remaining 11 s is the toy at rest. That is the window a drift is measured in.
+DURATION = 20.0
 TABLE_Z = 0.75
-MIN_LIFT_CLEARANCE_M = 0.020
-EDGE_PARALLEL_EPSILON = 1.0e-12
 # The move: 80 mm along the bench, and a lift that takes the toy's own length
 # clear of the surface it is resting on. The toy hangs from the pinch with its
 # tail about the loop's height (197 mm) below the pads, so a 210 mm lift is what
@@ -89,7 +88,7 @@ SOURCE_HASHES = {
 
 def build_scene(
     *,
-    coarse: bool = False,
+    coarse: bool,
     mu: float | None = None,
     force_limit: float = GRASP_LIMIT_N,
     squeeze: float = GRIP_SQUEEZE,
@@ -145,9 +144,6 @@ def build_scene(
         "particle_rest_shape_contact_exclusion_radius": 0.006,
         "particle_vertex_contact_buffer_size": 32,
         "particle_edge_contact_buffer_size": 64,
-        # Warp compares this with squared edge lengths too. The default 1e-5
-        # treats millimetre mesh edges as points during rest-contact exclusion.
-        "particle_edge_parallel_epsilon": EDGE_PARALLEL_EPSILON,
         "particle_enable_tile_solve": False,
         "rigid_body_particle_contact_buffer_size": 4096,
     }
@@ -160,14 +156,7 @@ def build_scene(
             **common,
         )
         if coarse
-        else rss.backend(
-            "robosimstudio_materials.chebyshev_acceleration.SolverVBDChebyshev",
-            chebyshev_rho=0.9,
-            chebyshev_gamma=1.0,
-            chebyshev_start=0,
-            chebyshev_restart=False,
-            **common,
-        )
+        else rss.backend("vbd", **common)
     )
     physics = rss.ArrangementSpec(
         control_hz=CONTROL_HZ,
@@ -198,7 +187,6 @@ def build_scene(
             pose=pose,
             quat=quat,
             contact_ke=CONTACT_KE,
-            damping=5000.0,
         )
     )
     jaw = scene.add(
@@ -285,18 +273,17 @@ def waypoints(grip, capacity: int, dt: float, lift: float) -> np.ndarray:
 
 def judge(geometry: dict, diagnostics, quality, entity, steps: int) -> dict:
     final = diagnostics[-1]
-    # Measure transport during its commanded phase, excluding the earlier
-    # swing into the hanging pose and rolling after release.
-    carry_start = next((row for row in diagnostics if row["time_s"] >= PHASES["carry"][0]), final)
-    carry_end = next((row for row in diagnostics if row["time_s"] >= PHASES["carry"][1]), final)
-    moved = float(carry_end["body_centre_m"][0] - carry_start["body_centre_m"][0])
+    start_x = diagnostics[0]["body_centre_m"][0]
+    # Where the toy was carried to, at the last frame the pads held it: after the
+    # release it rolls, and where it rolls to is not what the carry did.
     held = max((row["frame"] for row in diagnostics if row["finger_contacts"]), default=1)
+    moved = float(diagnostics[held - 1]["body_centre_m"][0] - start_x)
     rolled = float(final["body_centre_m"][0] - diagnostics[held - 1]["body_centre_m"][0])
     # How much clearance the toy gained at its lowest point: the toy hangs from
     # the pinch, so its centre drops as it swings, but its tail leaving the bench
     # is what says it was picked up.
     lifted = float(max(row["minimum_z_m"] for row in diagnostics) - diagnostics[0]["minimum_z_m"])
-    tail = [row for row in diagnostics if row["time_s"] >= final["time_s"] - 0.5]
+    tail = diagnostics[-round(0.5 * CONTROL_HZ) :]
     released = max(row["finger_contacts"] for row in tail) == 0
     clearance = float(min(row["minimum_z_m"] for row in tail) - TABLE_Z)
     # Touch-down: the first frame after the pads let go whose lowest point is on
@@ -312,46 +299,25 @@ def judge(geometry: dict, diagnostics, quality, entity, steps: int) -> dict:
         drift = float(
             np.linalg.norm(np.asarray(final["body_centre_m"][:2]) - np.asarray(landing["body_centre_m"][:2]))
         )
-    # Peak frame-to-frame whole-vertex-centroid speed: endpoint displacement
-    # alone would call an oscillating toy stationary.
+    # Mean speed of the centre over the last half second of the run.
+    span = min(len(diagnostics) - 1, round(0.5 * CONTROL_HZ))
     rest_speed = 0.0
-    if len(tail) >= 2:
-        centres = np.asarray([row["body_centre_m"] for row in tail])
-        times = np.asarray([row["time_s"] for row in tail])
-        rest_speed = float(np.max(np.linalg.norm(np.diff(centres, axis=0), axis=1) / np.diff(times)))
+    if span >= 1:
+        rest_speed = float(
+            np.linalg.norm(np.asarray(final["body_centre_m"]) - np.asarray(diagnostics[-1 - span]["body_centre_m"]))
+            / (final["time_s"] - diagnostics[-1 - span]["time_s"])
+        )
     max_finger_contacts = max(row["finger_contacts"] for row in diagnostics)
-    transit = [row for row in diagnostics if PHASES["hang"][0] <= row["time_s"] <= PHASES["open"][0]]
-    transit_clearance = min((row["minimum_z_m"] - TABLE_Z for row in transit), default=None)
-    held_until_open = bool(
-        final["time_s"] >= PHASES["open"][0] and transit and all(row["finger_contacts"] for row in transit)
-    )
     quality_read = quality.read()
     inverted_substeps = sum(quality_read["inverted_tet_substeps_by_part"])
-    local_inversion = bool(inverted_substeps or min(quality_read["minimum_J_by_part"]) <= 0.0)
-    nonfinite = bool(sum(quality_read["nonfinite_tet_substeps_by_part"]))
     max_inverted = max(row["inverted_tetrahedra"] for row in diagnostics)
     max_penetration = float(np.max(np.concatenate([row["penetration_m"] for row in diagnostics] + [np.zeros(1)])))
-    if local_inversion or nonfinite:
-        stop = "invalid-mesh"
-    elif not released:
+    if not released:
         stop = "held"
-    elif max(row["minimum_z_m"] for row in diagnostics) - TABLE_Z < MIN_LIFT_CLEARANCE_M:
+    elif lifted < 0.5 * geometry["lift_m"]:
         stop = "not-lifted"
-    elif not held_until_open:
-        stop = "lost-before-opening"
     else:
         stop = "dropped"
-    checks = {
-        "complete_cycle": final["time_s"] >= DURATION,
-        "held_until_open": held_until_open,
-        "transit_clearance": transit_clearance is not None and transit_clearance >= MIN_LIFT_CLEARANCE_M,
-        "carry_distance": abs(moved - (TARGET_X - SOURCE_X)) <= 0.020,
-        "released": bool(released),
-        "table_support": -0.0005 <= clearance and max(row["minimum_z_m"] for row in tail) - TABLE_Z <= 0.002,
-        "settled_speed": rest_speed <= 0.005,
-        "mesh_quality": max_inverted == 0 and not local_inversion and not nonfinite,
-        "recorded_penetration": max_penetration <= 0.0005,
-    }
     result = {
         "geometry": geometry,
         "weight_n": float(entity.source_mass.sum() * 9.81),
@@ -365,16 +331,18 @@ def judge(geometry: dict, diagnostics, quality, entity, steps: int) -> dict:
         "rest_speed_m_s": rest_speed,
         "settled_clearance_m": clearance,
         "max_finger_contacts": max_finger_contacts,
-        "held_until_open": held_until_open,
-        "minimum_transit_clearance_m": transit_clearance,
         "max_inverted_tetrahedra": max_inverted,
-        "local_inversion": local_inversion,
-        "nonfinite": nonfinite,
+        "local_inversion": bool(inverted_substeps or min(quality_read["minimum_J_by_part"]) <= 0.0),
         "max_penetration_m": max_penetration,
         "quality": quality_read,
         "steps": steps,
-        "checks": checks,
-        "success": all(checks.values()),
+        "success": bool(
+            released
+            and abs(moved - (TARGET_X - SOURCE_X)) <= 0.020
+            and -0.0005 <= clearance <= 0.002
+            and max_inverted == 0
+            and max_penetration <= 0.0005
+        ),
     }
     return result
 
@@ -384,43 +352,37 @@ def run(
     *,
     steps: int,
     render_every: int = 0,
-    coarse: bool = False,
+    coarse: bool = True,
     mu: float | None = None,
     force_limit: float = GRASP_LIMIT_N,
     squeeze: float = GRIP_SQUEEZE,
     enable_self_contact: bool = True,
     contact_matching: str = "sticky",
 ) -> dict:
-    if steps < 1:
-        raise ValueError("steps must be positive")
     out.mkdir(parents=True, exist_ok=True)
-    setup_started = time.perf_counter()
     sim, obj, jaw, camera, geometry = build_scene(
         coarse=coarse,
         mu=mu,
         force_limit=force_limit,
         squeeze=squeeze,
         self_contact=enable_self_contact,
-        contact_matching=contact_matching,
+        contact_matching=contact_matching
     )
     entity = obj.entity
     particles = entity.particles
     tets = entity.source_tets
     solver = sim.pipeline.program.solver
     contacts = sim.pipeline.contacts
-    expected_solver = "SolverVBDCoarse" if coarse else "SolverVBDChebyshev"
-    if type(solver).__name__ != expected_solver:
-        raise RuntimeError(f"expected {expected_solver}, got {type(solver).__name__}")
-    pipeline = solver.collision_pipeline or sim.pipeline.program.collision
-    if contact_matching == "sticky" and (solver.collision_pipeline is None or contacts is not solver.contacts):
-        raise RuntimeError("VBD must own the collision pipeline and expose its live contacts to RSS")
-    # Read the same owned buffer that VBD consumes, including persistent
-    # self-contact anchors configured before the buffer was allocated.
+    # Self-contact pairs are written by whichever detector the solver built. This
+    # scene drives detection from RSS, so the solver owns a tri-mesh detector and
+    # its pairs are NOT in ``contacts.soft_self_contact_data`` (allocated before
+    # the solver existed, and therefore without the struct). Read the buffer that
+    # is actually populated, and record which one it was.
     pair_info, pair_buffer = None, "absent"
     for name, info in (
+        ("solver.detector", getattr(solver, "trimesh_collision_info", None)),
         ("solver.contacts", getattr(getattr(solver, "contacts", None), "soft_self_contact_data", None)),
         ("pipeline.contacts", getattr(contacts, "soft_self_contact_data", None)),
-        ("solver.detector", getattr(solver, "trimesh_collision_info", None)),
     ):
         if info is not None:
             pair_info, pair_buffer = info, name
@@ -435,26 +397,6 @@ def run(
         raise RuntimeError("the solver's self-contact setting does not match the scene's")
     if self_contact["enabled"] and pair_info is None:
         raise RuntimeError("self-contact is on but no pair buffer was found; the counts would read zero")
-    if contact_matching == "sticky":
-        if pipeline._soft_contact_matcher is None or not contacts._soft_contact_points_persist:
-            raise RuntimeError("persistent rigid-soft contact matching is not active")
-        if enable_self_contact:
-            matcher = pipeline._self_contact_matcher
-            detector = pipeline._soft_self_contact_detector
-            if matcher is None or not all(
-                len(getattr(pair_info, name))
-                for name in ("vertex_colliding_triangles_anchor", "edge_colliding_edges_anchor")
-            ):
-                raise RuntimeError("persistent self-contact matching is not active")
-            if any(
-                value != EDGE_PARALLEL_EPSILON
-                for value in (
-                    solver._self_contact_edge_edge_parallel_epsilon,
-                    detector.edge_edge_parallel_epsilon,
-                    matcher._edge_edge_parallel_epsilon,
-                )
-            ):
-                raise RuntimeError("the edge tolerance did not reach both detection and contact matching")
     # The block's own motion, cumulative since the last read: ``path_length`` is
     # cleared with the substep budget, so reading it here would only see the
     # last of the step's 20 substeps.
@@ -469,40 +411,8 @@ def run(
     mass = float(entity.source_mass.sum())
     start = q0.mean(axis=0)
     print(json.dumps({"mass_kg": mass, "weight_n": mass * 9.81, "start_centre_m": start.tolist()}), flush=True)
-    metadata = {
-        "solver": type(solver).__name__,
-        "native_iterations": solver.iterations,
-        "substeps": SUBSTEPS,
-        "control_hz": CONTROL_HZ,
-        "requested_frames": steps,
-        "phases_s": PHASES,
-        "viscous_tet_damping_pa_s": np.unique(sim.model.tet_materials.numpy()[:, 2]).tolist(),
-        "jaw_force_cap_n": jaw.spec.force_limit,
-        "carrier_force_cap_n": jaw.spec.push_force_limit,
-        "attachments": sim.model.attachment_particle_body_count,
-        "full_surface_contact": False,
-        "contact_matching": pipeline.contact_matching,
-        "owned_contact_buffer": contacts is solver.contacts,
-        "self_contact": self_contact,
-        "edge_parallel_epsilon": EDGE_PARALLEL_EPSILON,
-        "source_hashes": SOURCE_HASHES,
-        "task_source_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
-        "geometry": geometry,
-        "finger_bodies": list(jaw.entity.bodies),
-        "finger_shapes": list(jaw.entity.finger_shapes),
-    }
-    if not coarse:
-        metadata["chebyshev"] = {
-            name: getattr(solver, f"chebyshev_{name}") for name in ("rho", "gamma", "start", "restart")
-        }
-    if metadata["native_iterations"] != 12 or metadata["viscous_tet_damping_pa_s"] != [5000.0]:
-        raise RuntimeError("the validation must retain 12 VBD iterations and 5000 Pa s viscosity")
-    (out / "metadata.json").write_text(json.dumps(metadata, indent=2) + "\n")
-    setup_seconds = time.perf_counter() - setup_started
 
     diagnostics = []
-    positions, body_poses = [], []
-    step_seconds = diagnostics_seconds = render_seconds = 0.0
     videos, video_error = None, None
     if render_every:
         from robosimstudio.core.render.video import VideoSet
@@ -510,24 +420,15 @@ def run(
         # Written at 60 fps: each rendered control frame fills a 60th times the
         # render interval, so the video runs at the scene's own speed.
         videos = VideoSet(str(out), fps=60, holds=max(1, 60 * render_every // CONTROL_HZ))
-        try:
-            videos.__enter__()
-        except Exception as exc:
-            video_error = repr(exc)
-            videos = None
+        videos.__enter__()
     started = time.perf_counter()
     try:
         for frame in range(steps):
-            phase_started = time.perf_counter()
             sim.run(1).sync()
-            step_seconds += time.perf_counter() - phase_started
-            phase_started = time.perf_counter()
             state = sim.pipeline.state_0
             q = state.particle_q.numpy()
             body_q = state.body_q.numpy()
             owned = q[particles]
-            positions.append(q.copy())
-            body_poses.append(body_q.copy())
             det = np.linalg.det(owned[tets[:, 1:]] - owned[tets[:, :1]])
             count = int(contacts.soft_contact_count.numpy()[0])
             contact_shapes = contacts.soft_contact_shape.numpy()[: min(count, contacts.soft_contact_max)]
@@ -568,25 +469,11 @@ def run(
                 "minimum_z_m": float(owned[:, 2].min()),
                 "inverted_tetrahedra": int(np.count_nonzero(det <= 0)),
                 "finger_contacts": int(np.count_nonzero(finger & touching)),
-                "max_penetration_m": float(np.max(depth, initial=0.0)),
                 "penetration_m": depth,
             }
             diagnostics.append(row)
-            diagnostics_seconds += time.perf_counter() - phase_started
             if videos is not None and frame % render_every == 0:
-                phase_started = time.perf_counter()
-                try:
-                    videos.append_frames({camera.name: sim.render(camera)})
-                except Exception as exc:
-                    # Keep the sole physics trial and its saved states usable
-                    # even if rendering or video encoding fails.
-                    video_error = repr(exc)
-                    try:
-                        videos.__exit__(None, None, None)
-                    except Exception:
-                        pass
-                    videos = None
-                render_seconds += time.perf_counter() - phase_started
+                videos.append_frames({camera.name: sim.render(camera)})
             if frame % 15 == 0 or frame == steps - 1:
                 print(json.dumps({k: v for k, v in row.items() if k != "penetration_m"}), flush=True)
     finally:
@@ -597,7 +484,6 @@ def run(
                 video_error = repr(exc)
 
     (out / "geometry.json").write_text(json.dumps(geometry, indent=2) + "\n")
-    np.savez_compressed(out / "states.npz", particle_q=np.asarray(positions), body_q=np.asarray(body_poses))
     # The per-frame penetration arrays stay in memory for the judge; the file
     # keeps the scalars, since a list of arrays is not JSON.
     (out / "diagnostics.json").write_text(
@@ -605,20 +491,10 @@ def run(
         + "\n"
     )
     result = judge(geometry, diagnostics, quality, entity, steps)
-    result["peak_jaw_drive_n"] = jaw.entity.peak_force.numpy().tolist()
-    result["checks"]["jaw_force_cap"] = max(result["peak_jaw_drive_n"]) <= force_limit + 1.0e-6
-    result["success"] = all(result["checks"].values())
-    result["failed_checks"] = [name for name, passed in result["checks"].items() if not passed]
     result["self_contact"] = self_contact
     result["contact_matching"] = contact_matching
     result["video_error"] = video_error
     result["mean_frame_ms"] = 1000.0 * (time.perf_counter() - started) / max(1, len(diagnostics))
-    result["timing_s"] = {
-        "setup": setup_seconds,
-        "stepping_with_quality_hook": step_seconds,
-        "diagnostics_and_state_readback": diagnostics_seconds,
-        "render_and_video_append": render_seconds,
-    }
     (out / "result.json").write_text(json.dumps(result, indent=2) + "\n")
     print(json.dumps({k: v for k, v in result.items() if k not in ("geometry", "quality")}), flush=True)
     return result
@@ -629,10 +505,7 @@ def main() -> None:
     parser.add_argument("--out", type=Path, default=OUTPUT / "run")
     parser.add_argument("--steps", type=int, default=round(DURATION * CONTROL_HZ))
     parser.add_argument("--render-every", type=int, default=0)
-    acceleration = parser.add_mutually_exclusive_group()
-    acceleration.add_argument("--coarse", action="store_true", help="opt into the coarse common-translation solve")
-    acceleration.add_argument("--no-coarse", dest="coarse", action="store_false", help=argparse.SUPPRESS)
-    parser.set_defaults(coarse=False)
+    parser.add_argument("--no-coarse", action="store_true", help="stock VBD, no common-translation solve")
     parser.add_argument("--mu", type=float, default=None, help="global soft-contact friction coefficient")
     parser.add_argument(
         "--force-limit",
@@ -660,7 +533,7 @@ def main() -> None:
         args.out,
         steps=args.steps,
         render_every=args.render_every,
-        coarse=args.coarse,
+        coarse=not args.no_coarse,
         mu=args.mu,
         force_limit=args.force_limit,
         squeeze=args.squeeze,

@@ -113,9 +113,7 @@ def effective_backend(spec: BackendSpec, *, has_particles: bool = True) -> Backe
     return get_backend(spec.solver).effective(spec, has_particles=has_particles)
 
 
-def build_solver(
-    spec: BackendSpec, view: Any, *, has_particles: bool = True, collision_pipeline: Any = None
-) -> Any:
+def build_solver(spec: BackendSpec, view: Any, *, has_particles: bool = True) -> Any:
     """Construct the solver over ``view`` with the spec's effective parameters.
 
     Raises:
@@ -125,8 +123,6 @@ def build_solver(
     """
     cls = resolve_backend_class(spec)
     kwargs = effective_backend(spec, has_particles=has_particles).kwargs()
-    if collision_pipeline is not None:
-        kwargs["collision_pipeline"] = collision_pipeline
     try:
         solver = cls(model=view, **kwargs)
     except TypeError as exc:

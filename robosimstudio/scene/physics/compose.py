@@ -765,6 +765,7 @@ def compose(
         elif spec.broad_phase != "explicit":
             kwargs["broad_phase"] = spec.broad_phase
         collision = newton.CollisionPipeline(model, **kwargs)
+        contacts = collision.contacts()
 
     newton_solver = None
     if newton_islands:
@@ -775,19 +776,10 @@ def compose(
             channels=channels,
             spec=arrangement.coupling,
             collision=spec,
-            collision_pipeline=collision,
         )
         newton_solver = build_coupled(ctx)
         if one_way:
             contacts = newton_solver.contacts
-    if collision is not None:
-        # Owned VBD allocates after configuring self-contact, so diagnostics
-        # must read its buffer rather than a second, rigid-soft-only buffer.
-        contacts = (
-            newton_solver.contacts
-            if getattr(newton_solver, "collision_pipeline", None) is collision
-            else collision.contacts()
-        )
     host_solvers: dict[str, Any] = {}
     host_recipes: dict[str, dict] = {}
     for island in host_islands:

@@ -1,6 +1,10 @@
 # Contact merge and one validation — 2026-11-03
 
-## Outcome
+## Current candidate
+
+At the user's subsequent request to replicate Hanson's default coarse solver, the active RSS candidate reverts `ac28ac3` and restores the published pick/drop scene and original collision path. The prior Chebyshev candidate is preserved on `yiduo/archive-chebyshev-merge-20261103` at `3f088be`; all evidence remains in this branch. The simulation sources match the configuration already measured in job 4860245; see [comparison](BUG_FIX_hanson_baseline_20261103.md). No additional simulation was run for this restoration. The known early loss remains, and neither main branch has been updated.
+
+## Initial merge outcome
 
 The branch merge candidates are prepared and pushed, but **neither remote main was advanced** because the single agreed standalone validation failed pickup. No retry, tuning campaign or additional simulation was run during the initial merge validation. The user subsequently authorized a separate unmodified Hanson baseline comparison; see [that comparison](BUG_FIX_hanson_baseline_20261103.md).
 

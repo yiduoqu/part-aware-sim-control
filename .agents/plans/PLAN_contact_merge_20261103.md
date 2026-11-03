@@ -1,5 +1,15 @@
 # Contact merge: one combined validation
 
+## Current configuration — user update on 2026-11-03
+
+The user subsequently requested: "replicate his default coarse translation solver". The active candidate now restores Hanson's published pick/drop runtime from RSS `d50f86f`: SolverVBDCoarse with its common-translation block, external RSS collision calls, the original edge tolerance and 20-second duration. Commit `ac28ac3` is reverted. Its prior implementation and evidence are preserved on `yiduo/archive-chebyshev-merge-20261103` at `3f088be`.
+
+This supersedes the Chebyshev selection, owned-pipeline integration and 1e-12 scene override in the original plan below. The source mesh/materials, 20 x 12 stepping and configured force limits remain Hanson's. Newton remains `3d3f9e4c`. No new solver or simulation is added in this restoration. The exact published configuration was already run for 600 frames in job 4860245; see [baseline comparison](../reports/BUG_FIX_hanson_baseline_20261103.md).
+
+The acceptance criteria remain those below. This known baseline lifts but loses the toy at 2.57 seconds and does not pass the complete task. Restoring the original example also restores its native result format; that flag does not replace the stricter assessment archived with the comparison. Both main branches remain unchanged.
+
+## Original approved plan and initial implementation
+
 User-authorized scope: merge Hanson's Newton and RSS work, retaining narrow fixes and historical evidence; validate once. No parameter sweeps, new solver, AIRBOT, or broader test infrastructure.
 
 ## Sources and merge resolution
