@@ -2,7 +2,7 @@
 
 ## Outcome
 
-The branch merge candidates are prepared and pushed, but **neither remote main was advanced** because the single agreed standalone validation failed pickup. No retry, tuning campaign or additional simulation was run.
+The branch merge candidates are prepared and pushed, but **neither remote main was advanced** because the single agreed standalone validation failed pickup. No retry, tuning campaign or additional simulation was run during the initial merge validation. The user subsequently authorized a separate unmodified Hanson baseline comparison; see [that comparison](BUG_FIX_hanson_baseline_20261103.md).
 
 - Newton integration branch: `yiduo/integrate-sticky-contacts-20261103`, commit `3d3f9e4c13fd0e60e7e53a9870946c0983d1d14c`, fast-forwarding main `1a640e4b5e6ce9e530b359ea1d99d07600703198` with all three Hanson sticky-contact commits.
 - RSS integration branch: `yiduo/integrate-hanson-v3-20261103`. Merge `ecca1ef` combines main `f1b648c1d987aee080e2eff742752e9f64048fab` and Hanson `d50f86f51b31a1fbc42844ef78a4b851eb693159`. `8d81fe6` preserves historical evidence/documentation. **Tested code revision: `ac28ac3`**, connecting the native owned pipeline and the standalone validation.
