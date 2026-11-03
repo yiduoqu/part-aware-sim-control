@@ -322,6 +322,9 @@ class ScheduleExecutor:
         """What the built-in ``solve`` step drives: ``solver.step(state_in, state_out, control, contacts, dt)``."""
         self.collision = collision
         """The main collision pipeline the built-in ``collide`` step runs, or ``None``."""
+        self._solver_owns_collision = (
+            collision is not None and getattr(solver, "collision_pipeline", None) is collision
+        )
         self.collide_every = max(1, int(collide_every))
         self.control_hz = float(control_hz)
         self.substeps = assert_even_substeps(substeps)
@@ -411,10 +414,18 @@ class ScheduleExecutor:
             self._run_phase("rigid_force", self.state_0, index, self.sim_dt)
             self._run_phase("pre_solve", self.state_0, index, self.sim_dt)
             self._run_phase("collide", self.state_0, index, self.sim_dt)
-            if self.collision is not None and self.contacts is not None and index % self.collide_every == 0:
+            if (
+                not self._solver_owns_collision
+                and self.collision is not None
+                and self.contacts is not None
+                and index % self.collide_every == 0
+            ):
                 self.collision.collide(self.state_0, self.contacts)
             if self.solver is not None:
-                self.solver.step(self.state_0, self.state_1, self.control, self.contacts, self.sim_dt)
+                # Owned pipelines detect inside step; contacts stays available
+                # here for diagnostics, but Newton requires None as the input.
+                contacts = None if self._solver_owns_collision else self.contacts
+                self.solver.step(self.state_0, self.state_1, self.control, contacts, self.sim_dt)
             self._run_phase("solve", self.state_0, index, self.sim_dt)
             self.state_0, self.state_1 = self.state_1, self.state_0
             self._run_phase("post_solve", self.state_0, index, self.sim_dt)

@@ -25,7 +25,7 @@ import warp as wp
 from robosimstudio.registry import Registry, same_source
 from robosimstudio.specs.physics import ArrangementSpec, CollisionSpec, CouplerSpec, get_backend
 
-from .backends import build_solver
+from .backends import build_solver, resolve_backend_class
 from .errors import CompositionError
 from .islands import Island
 
@@ -75,6 +75,7 @@ class CouplerBuild:
     channels: list[Channel]
     spec: CouplerSpec
     collision: CollisionSpec
+    collision_pipeline: Any = None
 
     def entries(self, entry_cls) -> list:
         """One ``SolverCoupled.Entry`` per island.
@@ -721,7 +722,17 @@ def build_bare(ctx: CouplerBuild) -> Any:
     # A bare island owns the whole model, so its particles are the model's --
     # its own index list is empty when it came from the entity-free path.
     particles = bool(island.particles.size) or (not island.nodes and int(ctx.model.particle_count) > 0)
-    return build_solver(island.backend, ctx.model, has_particles=particles)
+    pipeline = None
+    if ctx.collision_pipeline is not None and ctx.collision.contact_matching == "sticky":
+        from newton.solvers import SolverVBD
+
+        if issubclass(resolve_backend_class(island.backend), SolverVBD):
+            # Persistent self-contact anchors live in the pipeline's Contacts;
+            # VBD must initialize that storage and drive both collision paths.
+            if ctx.collision.collide_every != 1:
+                raise CompositionError("single-island sticky VBD requires collision(collide_every=1)")
+            pipeline = ctx.collision_pipeline
+    return build_solver(island.backend, ctx.model, has_particles=particles, collision_pipeline=pipeline)
 
 
 def build_coupled(ctx: CouplerBuild) -> Any:
