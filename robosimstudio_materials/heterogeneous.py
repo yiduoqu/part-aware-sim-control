@@ -106,7 +106,8 @@ class HeterogeneousSoftSpec:
 
     `pose` places the source mesh origin in the work-surface frame. Young's
     modulus, Poisson ratio, and density come exclusively from `params_path`.
-    `damping` is a solver setting, not a source material estimate.
+    `damping` is a scene-selected viscosity, not a source material estimate;
+    changing it changes the physical deformation-rate response.
     """
 
     stage: ClassVar[str] = "deformables"
@@ -120,7 +121,7 @@ class HeterogeneousSoftSpec:
     scale: float = 1.0
     damping: float = 5e3
     """Viscous tet damping [Pa·s] -- Newton's ``k_damp`` -- one value for the whole
-    mesh, so the loop and the ten-times-softer body resist deformation alike.
+    mesh. It affects both rate-dependent stress and numerical conditioning.
     """
     particle_radius: float = 0.0007
     contact_ke: float = 30000.0
