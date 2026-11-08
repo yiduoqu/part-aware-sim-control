@@ -166,9 +166,7 @@ def _drive_slides(
     axis = wp.quat_rotate(rotation, wp.vec3(1.0, 0.0, 0.0))
     separation = wp.transform_get_translation(right) - wp.transform_get_translation(left)
     half_gap = wp.dot(separation, axis) * 0.5
-    gap_rate = wp.dot(
-        wp.spatial_top(rates[frame, 1]) - wp.spatial_top(rates[frame, 0]), axis
-    ) * 0.5
+    gap_rate = wp.dot(wp.spatial_top(rates[frame, 1]) - wp.spatial_top(rates[frame, 0]), axis) * 0.5
     coordinate, rate, _lateral, _angle = _slide_state(
         carrier,
         bodies[finger],
@@ -177,9 +175,7 @@ def _drive_slides(
         body_qd,
         body_com,
     )
-    effort = wp.clamp(
-        ke * (half_gap - coordinate) + kd * (gap_rate - rate), -limit, limit
-    )
+    effort = wp.clamp(ke * (half_gap - coordinate) + kd * (gap_rate - rate), -limit, limit)
     joint_f[dofs[finger]] = effort
     applied[finger] = wp.spatial_vector(wp.vec3(effort, 0.0, 0.0), wp.vec3())
     peak_force[finger] = wp.max(peak_force[finger], wp.abs(effort))
@@ -217,7 +213,7 @@ def _advance_tick(tick: wp.array[int], lengths: wp.array[int]):
     tick[0] = wp.min(tick[0] + 1, lengths[0] - 1)
 
 
-GRASP_LIMIT_N = 5.0
+GRASP_LIMIT_N = 10.0
 """The jaws' closing budget: the slides never press the loop harder [N]."""
 PUSH_LIMIT_N = 200.0
 """The carrier's push budget while pressing the toy [N]. Independent of the
@@ -389,9 +385,7 @@ class ParallelGripper(rss.Entity):
         self.bodies, self.finger_shapes, self.shapes_by_side = [], [], []
         for sign in (-1, 1):
             body = builder.add_link(
-                xform=wp.transform(
-                    self.center + np.array((sign * spec.half_gap, 0.0, 0.0)), wp.quat_identity()
-                ),
+                xform=wp.transform(self.center + np.array((sign * spec.half_gap, 0.0, 0.0)), wp.quat_identity()),
                 com=wp.vec3(sign * com_x, 0.0, com_z),
                 mass=spec.finger_mass,
                 inertia=wp.mat33(np.diag(finger_inertia)),
