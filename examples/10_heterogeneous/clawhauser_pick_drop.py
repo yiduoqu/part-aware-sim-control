@@ -33,8 +33,10 @@ from clawhauser_scene import (
     SELF_CONTACT_RADIUS,
     add_scene_arguments,
     arrangement,
+    build_sim,
     check_build,
     load_toy,
+    physics_for,
     scene_kwargs,
     toy_spec,
 )
@@ -116,8 +118,12 @@ def build_scene(
     feedback_clamp: float = 0.0,
     surface_contact: bool = False,
     rigid_loop: bool = False,
+    uniform_soft: bool = False,
+    body_scale: float = 1.0,
+    rigid_body_parts: tuple[int, ...] = (),
 ):
     vertices, tets, labels = load_toy()
+    settings = physics_for(PHYSICS, uniform_soft, rigid_loop, body_scale)
     ring = ring_geometry(vertices, tets, labels)
 
     # Lying flat in its own rest pose, grasped on the loop's rim: the same pose and
@@ -151,7 +157,7 @@ def build_scene(
 
     split = claw != "claw"
     physics = arrangement(
-        PHYSICS,
+        settings,
         claw=claw,
         coarse=coarse,
         solver_name=solver_name,
@@ -163,7 +169,7 @@ def build_scene(
         surface_contact=surface_contact,
     )
     scene = rss.Scene(cell=CELL, physics=physics, name="clawhauser_pick_drop")
-    obj = scene.add(toy_spec(PHYSICS, pose=pose, quat=quat))
+    obj = scene.add(toy_spec(settings, pose=pose, quat=quat, rigid_body_parts=rigid_body_parts))
     jaw = None
     if split:
         arm_gripper.add_arm(scene, base_offset=ARM_BASE, force_limit=force_limit)
@@ -199,19 +205,20 @@ def build_scene(
         fov_y=fov_y,
     )
     camera = scene.add(camera_spec)
-    sim = scene.build(device="cuda:0", warmup=False, use_cuda_graph=False)
+    sim = build_sim(scene, rigid_loop=rigid_loop)
     entity = obj.entity
     geometry.update(
         check_build(
             sim,
             entity,
             tets,
-            PHYSICS,
+            settings,
             claw=claw,
             force_limit=force_limit,
             mu=mu,
             grip_mu=grip_mu,
             rigid_loop=rigid_loop,
+            rigid_body_parts=rigid_body_parts,
         )
     )
     return sim, obj, jaw, camera, geometry
@@ -371,6 +378,9 @@ def run(
     feedback_clamp: float = 0.0,
     surface_contact: bool = False,
     rigid_loop: bool = False,
+    uniform_soft: bool = False,
+    body_scale: float = 1.0,
+    rigid_body_parts: tuple[int, ...] = (),
 ) -> dict:
     out.mkdir(parents=True, exist_ok=True)
     sim, obj, jaw, camera, geometry = build_scene(
@@ -388,6 +398,9 @@ def run(
         feedback_clamp=feedback_clamp,
         surface_contact=surface_contact,
         rigid_loop=rigid_loop,
+        uniform_soft=uniform_soft,
+        body_scale=body_scale,
+        rigid_body_parts=rigid_body_parts,
     )
     entity = obj.entity
     particles = entity.particles

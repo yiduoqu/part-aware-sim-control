@@ -60,14 +60,17 @@ from pathlib import Path
 import arm_gripper
 import newton
 import numpy as np
+import rigid_part_body
 from clawhauser_scene import (
     COARSE_BUDGET,
     CONTACT_GAP,
     SELF_CONTACT_RADIUS,
     add_scene_arguments,
     arrangement,
+    build_sim,
     check_build,
     load_toy,
+    physics_for,
     scene_kwargs,
     toy_spec,
 )
@@ -268,9 +271,13 @@ def build_scene(
     feedback_clamp: float = 0.0,
     surface_contact: bool = False,
     rigid_loop: bool = False,
+    uniform_soft: bool = False,
+    body_scale: float = 1.0,
+    rigid_body_parts: tuple[int, ...] = (),
     rod_radius: float = ROD_RADIUS,
 ):
     vertices, tets, labels = load_toy()
+    settings = physics_for(PHYSICS, uniform_soft, rigid_loop, body_scale)
     ring = ring_geometry(vertices, tets, labels)
 
     # Lying flat in its own rest pose, grasped on the loop's rim: the same pose and
@@ -327,7 +334,7 @@ def build_scene(
 
     split = claw != "claw"
     physics = arrangement(
-        PHYSICS,
+        settings,
         claw=claw,
         coarse=coarse,
         solver_name=solver_name,
@@ -352,7 +359,7 @@ def build_scene(
             at=(rod_x, ROD_FREE_Y + span / 2.0, rod_z, -np.sin(np.pi / 4.0), 0.0, 0.0, np.cos(np.pi / 4.0)),
         )
     )
-    obj = scene.add(toy_spec(PHYSICS, pose=pose, quat=quat))
+    obj = scene.add(toy_spec(settings, pose=pose, quat=quat, rigid_body_parts=rigid_body_parts))
     grip = None
     if split:
         arm_gripper.add_arm(scene, base_offset=ARM_BASE, force_limit=force_limit)
@@ -381,19 +388,20 @@ def build_scene(
         # in frame for the whole carry, as in the cup and pick-and-drop scenes.
         eye, look_at, fov_y = (0.76, -0.55, 1.163), (0.46, 0.0, 0.95), 45.0
     camera = scene.add(rss.CameraSpec(name="overview", width=960, height=540, eye=eye, look_at=look_at, fov_y=fov_y))
-    sim = scene.build(device="cuda:0", warmup=False, use_cuda_graph=False)
+    sim = build_sim(scene, rigid_loop=rigid_loop)
     entity = obj.entity
     geometry.update(
         check_build(
             sim,
             entity,
             tets,
-            PHYSICS,
+            settings,
             claw=claw,
             force_limit=force_limit,
             mu=mu,
             grip_mu=grip_mu,
             rigid_loop=rigid_loop,
+            rigid_body_parts=rigid_body_parts,
         )
     )
     if grip is not None and abs(float(grip.entity.center[2]) - (TABLE_Z + geometry["grip_z_m"])) > 1.0e-6:
@@ -600,6 +608,9 @@ def run(
     feedback_clamp: float = 0.0,
     surface_contact: bool = False,
     rigid_loop: bool = False,
+    uniform_soft: bool = False,
+    body_scale: float = 1.0,
+    rigid_body_parts: tuple[int, ...] = (),
     rod_radius: float = ROD_RADIUS,
 ) -> dict:
     out.mkdir(parents=True, exist_ok=True)
@@ -618,6 +629,9 @@ def run(
         feedback_clamp=feedback_clamp,
         surface_contact=surface_contact,
         rigid_loop=rigid_loop,
+        uniform_soft=uniform_soft,
+        body_scale=body_scale,
+        rigid_body_parts=rigid_body_parts,
         rod_radius=rod_radius,
     )
     surface = np.asarray(rss.get_cell(CELL).surface_frame[:3], dtype=np.float64)
@@ -766,6 +780,8 @@ def run(
                 if arm is not None
                 else [[float(v) for v in body_q[b][:3]] for b in grip.entity.bodies],
             }
+            if rigid_body_parts:
+                row.update(rigid_part_body.frame_record(entity, owned, body_q))
             diagnostics.append(row)
             if arm is not None and frame + 1 == thread_frame:
                 route, info = arm_thread_route(arm, sim, owned, ring, geometry, rod_world, control_dt)

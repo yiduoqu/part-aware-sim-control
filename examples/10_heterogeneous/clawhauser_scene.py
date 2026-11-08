@@ -22,6 +22,7 @@ is not the scene's own task:
 from __future__ import annotations
 
 import argparse
+import dataclasses
 import hashlib
 import math
 from dataclasses import dataclass
@@ -29,6 +30,7 @@ from pathlib import Path
 
 import arm_gripper
 import numpy as np
+import rigid_part_body
 import rigid_projection
 
 import robosimstudio as rss
@@ -44,8 +46,10 @@ __all__ = [
     "PhysicsSettings",
     "add_scene_arguments",
     "arrangement",
+    "build_sim",
     "check_build",
     "load_toy",
+    "physics_for",
     "scene_kwargs",
     "set_contact",
     "solver_backend",
@@ -134,6 +138,38 @@ REFERENCE = PhysicsSettings(
 blows up full-surface contact. Its body E, Poisson ratios and tail and body density
 already match the source, so only the tail's E and the loop's density and damping
 are overridden."""
+
+
+BODY_YOUNG_PA = 5.0e5
+"""The body's source Young's modulus [Pa]."""
+UNIFORM_YOUNG_PA = 0.5 * (5.0e5 + 5.0e6)
+"""The uniform toy's Young's modulus [Pa]: the mean of the body's 0.5 MPa and the loop's 5 MPa."""
+UNIFORM_DENSITY = 300.0
+"""The uniform toy's density [kg/m^3]: the body's (and the tail's), which the reference already gives the loop."""
+UNIFORM_POISSON = 0.5 * (0.45 + 0.49)
+"""The uniform toy's Poisson ratio: the mean of the body's 0.45 and the loop's 0.49."""
+
+
+def physics_for(
+    base: PhysicsSettings, uniform_soft: bool, rigid_loop: bool, body_scale: float = 1.0
+) -> PhysicsSettings:
+    """``base`` with the scene flags' material changes.
+
+    ``uniform_soft`` gives tail, body and loop one E, Poisson ratio and density (the
+    loop can't then be projected rigid); ``body_scale`` multiplies the body's E. Damping
+    follows each tet's shear modulus, so it changes with them.
+    """
+    if not uniform_soft:
+        body = ((1, "youngs_modulus_pa", BODY_YOUNG_PA * body_scale),) if body_scale != 1.0 else ()
+        return dataclasses.replace(base, part_overrides=base.part_overrides + body)
+    if rigid_loop or body_scale != 1.0:
+        raise ValueError("--uniform-soft excludes --rigid-loop and --body-scale")
+    rows = (
+        ("youngs_modulus_pa", UNIFORM_YOUNG_PA),
+        ("poisson_ratio", UNIFORM_POISSON),
+        ("density_kg_m3", UNIFORM_DENSITY),
+    )
+    return dataclasses.replace(base, part_overrides=tuple((part, *row) for part in (0, 1, 2) for row in rows))
 
 
 def load_toy() -> tuple[np.ndarray, np.ndarray, np.ndarray]:
@@ -244,9 +280,28 @@ def arrangement(
     )
 
 
-def toy_spec(settings: PhysicsSettings, *, pose, quat) -> HeterogeneousSoftSpec:
-    """The Clawhauser at ``pose``/``quat``, with the settings' contact and part overrides."""
-    return HeterogeneousSoftSpec(
+def build_sim(scene, *, rigid_loop: bool):
+    """Build ``scene`` on the GPU, replaying each frame's substeps as one CUDA graph when it can.
+
+    The first frame runs eagerly so every kernel compiles, then the substep block is captured and
+    replayed; the scenes write their per-frame targets into the same device arrays, which the graph
+    reads. ``rigid_loop`` reads the state back to the host every substep, so it stays eager.
+    """
+    sim = scene.build(device="cuda:0", warmup=False, use_cuda_graph=not rigid_loop)
+    if not rigid_loop:
+        sim.pipeline.invalidate_graph()
+    return sim
+
+
+def toy_spec(settings: PhysicsSettings, *, pose, quat, rigid_body_parts: tuple[int, ...] = ()) -> HeterogeneousSoftSpec:
+    """The Clawhauser at ``pose``/``quat``, with the settings' contact and part overrides.
+
+    ``rigid_body_parts`` builds those parts as rigid bodies tied to the toy (:mod:`rigid_part_body`).
+    """
+    rigid = {"rigid_parts": tuple(rigid_body_parts)} if rigid_body_parts else {}
+    kind = rigid_part_body.RigidPartSoftSpec if rigid_body_parts else HeterogeneousSoftSpec
+    return kind(
+        **rigid,
         name="clawhauser",
         mesh_path=str(ASSET / "final_mesh.mesh"),
         params_path=str(ASSET / "heterogeneous_params.npz"),
@@ -302,6 +357,7 @@ def check_build(
     mu: float | None,
     grip_mu: float | None,
     rigid_loop: bool = False,
+    rigid_body_parts: tuple[int, ...] = (),
 ) -> dict:
     """Check what Newton built, apply the contact settings, and return the report.
 
@@ -310,6 +366,8 @@ def check_build(
     is read through the coupler, which every VBD attribute has to come from.
     """
     split = claw != "claw"
+    if rigid_loop and 2 in rigid_body_parts:
+        raise ValueError("--rigid-body-parts 2 and --rigid-loop are exclusive: both make the loop rigid")
     solver = arm_gripper.vbd_solver(sim.pipeline.program.solver)
     if not type(solver).__name__.startswith("SolverVBD"):
         raise RuntimeError(f"expected a VBD solver, got {type(solver).__name__}")
@@ -322,7 +380,21 @@ def check_build(
         report["arm"] = arm_gripper.check_arm(sim, limit=force_limit)
     if sim.model.tet_count != len(tets) or len(entity.tet_part_labels) != len(tets):
         raise RuntimeError("RSS lost Clawhauser tetrahedra or part labels")
-    if sim.model.attachment_particle_body_count:
+    if rigid_body_parts:
+        if sim.model.attachment_particle_body_count != sum(len(rp.nodes) for rp in entity.rigid_parts):
+            raise RuntimeError("a rigid part lost node attachments")
+        report["rigid_body_parts"] = {
+            f"part{rp.part}": {
+                "body": rp.body,
+                "nodes": int(len(rp.nodes)),
+                "seam_nodes": int(rp.seam.sum()),
+                "body_mass_kg": rp.body_mass,
+                "part_mass_kg": rp.part_mass,
+            }
+            for rp in entity.rigid_parts
+        }
+        report["rigid_body_parts"]["attach_stiffness_n_m"] = entity.spec.attach_stiffness
+    elif sim.model.attachment_particle_body_count:
         raise RuntimeError("the contact grasp scene must not contain particle attachments")
     grip_mu = settings.grip_mu if grip_mu is None else grip_mu
     report["friction"] = set_contact(sim, solver, settings, mu=mu, grip_mu=grip_mu if split else None)
@@ -389,6 +461,22 @@ def add_scene_arguments(parser: argparse.ArgumentParser, *, out: Path, steps: in
         "--surface-contact", action="store_true", help="soft contacts over the whole surface, not only particles"
     )
     parser.add_argument(
+        "--body-scale", type=float, default=1.0, help="multiply the body's Young's modulus (heterogeneous toy only)"
+    )
+    parser.add_argument(
+        "--uniform-soft",
+        action="store_true",
+        help="one E, Poisson ratio and density (the loop/body mean) over the whole toy",
+    )
+    parser.add_argument(
+        "--rigid-body-parts",
+        type=int,
+        nargs="+",
+        default=(),
+        metavar="PART",
+        help="simulate these parts (0 tail, 1 body, 2 loop) as rigid bodies tied to the toy by attachments",
+    )
+    parser.add_argument(
         "--rigid-loop", action="store_true", help="project the loop onto a rigid pose after every substep"
     )
 
@@ -412,4 +500,7 @@ def scene_kwargs(args: argparse.Namespace) -> dict:
         "feedback_clamp": args.feedback_clamp,
         "surface_contact": args.surface_contact,
         "rigid_loop": args.rigid_loop,
+        "uniform_soft": args.uniform_soft,
+        "body_scale": args.body_scale,
+        "rigid_body_parts": tuple(args.rigid_body_parts),
     }

@@ -59,8 +59,10 @@ from clawhauser_scene import (
     SELF_CONTACT_RADIUS,
     add_scene_arguments,
     arrangement,
+    build_sim,
     check_build,
     load_toy,
+    physics_for,
     scene_kwargs,
     toy_spec,
 )
@@ -261,10 +263,14 @@ def build_scene(
     feedback_clamp: float = 0.0,
     surface_contact: bool = False,
     rigid_loop: bool = False,
+    uniform_soft: bool = False,
+    body_scale: float = 1.0,
+    rigid_body_parts: tuple[int, ...] = (),
     bore: float = BORE_RADIUS,
     push_cap: float = PUSH_LIMIT_N,
 ):
     vertices, tets, labels = load_toy()
+    settings = physics_for(PHYSICS, uniform_soft, rigid_loop, body_scale)
     ring = ring_geometry(vertices, tets, labels)
     ring["body_ids"] = np.unique(tets[labels == 1])
 
@@ -330,7 +336,7 @@ def build_scene(
     print(json.dumps({"geometry": geometry}), flush=True)
 
     physics = arrangement(
-        PHYSICS,
+        settings,
         claw=claw,
         coarse=coarse,
         solver_name=solver_name,
@@ -382,7 +388,7 @@ def build_scene(
             )
         )
 
-    obj = scene.add(toy_spec(PHYSICS, pose=pose, quat=quat))
+    obj = scene.add(toy_spec(settings, pose=pose, quat=quat, rigid_body_parts=rigid_body_parts))
     grip = None
     if claw == "claw":
         grip = scene.add(
@@ -414,19 +420,20 @@ def build_scene(
         eye, look_at, fov_y = (0.20, -1.05, 1.32), (0.55, 0.0, 0.92), 50.0
     camera = rss.CameraSpec(name="overview", width=960, height=540, eye=eye, look_at=look_at, fov_y=fov_y)
     scene.add(camera)
-    sim = scene.build(device="cuda:0", warmup=False, use_cuda_graph=False)
+    sim = build_sim(scene, rigid_loop=rigid_loop)
     entity = obj.entity
     geometry.update(
         check_build(
             sim,
             entity,
             tets,
-            PHYSICS,
+            settings,
             claw=claw,
             force_limit=force_limit,
             mu=mu,
             grip_mu=grip_mu,
             rigid_loop=rigid_loop,
+            rigid_body_parts=rigid_body_parts,
         )
     )
     # The shapes, not the entity ranges: a range ends one past its last shape, and
@@ -638,6 +645,9 @@ def run(
     feedback_clamp: float = 0.0,
     surface_contact: bool = False,
     rigid_loop: bool = False,
+    uniform_soft: bool = False,
+    body_scale: float = 1.0,
+    rigid_body_parts: tuple[int, ...] = (),
     bore: float = BORE_RADIUS,
     push_cap: float = PUSH_LIMIT_N,
 ) -> dict:
@@ -657,6 +667,9 @@ def run(
         feedback_clamp=feedback_clamp,
         surface_contact=surface_contact,
         rigid_loop=rigid_loop,
+        uniform_soft=uniform_soft,
+        body_scale=body_scale,
+        rigid_body_parts=rigid_body_parts,
         bore=bore,
         push_cap=push_cap,
     )
