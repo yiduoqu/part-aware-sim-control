@@ -379,6 +379,19 @@ def _slide_apply(
         wp.atomic_add(body_f, p, wp.spatial_vector(-push, wp.cross(lever, -push)))
 
 
+@wp.kernel
+def _zero_inverse_mass(rows: wp.array[wp.int32], inv_mass: wp.array[float], inv_inertia: wp.array[wp.mat33]):
+    b = rows[wp.tid()]
+    inv_mass[b] = 0.0
+    inv_inertia[b] = wp.mat33(0.0)
+
+
+@wp.kernel
+def _copy_body_rows(rows: wp.array[wp.int32], source: wp.array[wp.transform], dest: wp.array[wp.transform]):
+    b = rows[wp.tid()]
+    dest[b] = source[b]
+
+
 class SolverOneWay:
     """Two solvers over one model, the rigid one leading: a kinematic mirror, fed back only along slides.
 
@@ -437,6 +450,10 @@ class SolverOneWay:
             average of it (1 feeds every substep's push as it is).
         slide_feedback_clamp: With slide feedback, cap the fed push at this multiple of each slide's
             effort limit (0 leaves it uncapped).
+        soft_bodies: Bodies the deformable island owns -- a part of a soft body built as a rigid body and
+            tied to it by attachments. The deformable solver then integrates them (not in external-rigid
+            mode), with every other body's effective inverse mass zeroed so it holds them where the rigid
+            solver puts them; the rigid solver sees them as kinematic.
     """
 
     def __init__(
@@ -451,10 +468,23 @@ class SolverOneWay:
         slide_feedback: bool = False,
         slide_feedback_smoothing: float = 1.0,
         slide_feedback_clamp: float = 0.0,
+        soft_bodies: np.ndarray | None = None,
     ) -> None:
         self.model = model
+        # Bodies the deformable solver integrates (a part of a soft body built as a rigid body): the
+        # rigid solver's copy of their poses is stale, so the deformable solver's are kept.
+        self._soft_bodies = (
+            wp.array(soft_bodies, dtype=wp.int32, device=model.device)
+            if soft_bodies is not None and len(soft_bodies)
+            else None
+        )
+        self._held = None
+        if self._soft_bodies is not None:
+            held = np.setdiff1d(np.arange(int(model.body_count), dtype=np.int32), soft_bodies)
+            self._held = wp.array(held, dtype=wp.int32, device=model.device) if held.size else None
         self.rigid = rigid
         self.soft = soft
+        self._hold_rigid_bodies()
         self.collision = collision
         self.contacts = collision.contacts()
         self.names = names
@@ -655,9 +685,20 @@ class SolverOneWay:
         self.rigid.step(state_in, state_out, control, None, dt)
         # The pipeline collides ``state_in``: this substep's arm against the particles where they start.
         wp.copy(state_in.body_q, state_out.body_q)
+        if self._soft_bodies is not None:
+            wp.launch(
+                _copy_body_rows,
+                dim=self._soft_bodies.shape[0],
+                inputs=[self._soft_bodies, self._body_q_prev],
+                outputs=[state_in.body_q],
+                device=self.device,
+            )
         self.collision.collide(state_in, self.contacts)
-        # And VBD's friction is the pad's motion from ``state_in`` to ``state_out``, so put it back.
-        wp.copy(state_in.body_q, self._body_q_prev)
+        if self._soft_bodies is None:
+            # And VBD's friction is the pad's motion from ``state_in`` to ``state_out``, so put it back.
+            wp.copy(state_in.body_q, self._body_q_prev)
+        # Otherwise VBD integrates bodies and holds the rigid solver's at their new ``state_in`` pose; its
+        # friction is their motion from the pose it kept last substep.
         self.soft.step(state_in, state_out, control, self.contacts, dt, **self._observing())
 
     def _observing(self) -> dict:
@@ -668,6 +709,23 @@ class SolverOneWay:
     def notify_model_changed(self, flags) -> None:
         for inner in (self.rigid, self.soft):
             inner.notify_model_changed(int(flags))
+        self._hold_rigid_bodies()  # a body-property change refreshes the solver's effective masses
+
+    def _hold_rigid_bodies(self) -> None:
+        """Zero the deformable solver's effective inverse mass of the bodies the rigid solver moves.
+
+        Done once on the solver's own arrays rather than through a model view, which would put an
+        attribute lookup on every model read of every step.
+        """
+        if getattr(self, "_held", None) is None:
+            return
+        wp.launch(
+            _zero_inverse_mass,
+            dim=self._held.shape[0],
+            inputs=[self._held],
+            outputs=[self.soft.body_inv_mass_effective, self.soft.body_inv_inertia_effective],
+            device=self.model.device,
+        )
 
     def reset(self, state, world_mask=None, flags=None) -> None:
         if self.observables is not None:
@@ -688,6 +746,7 @@ class SolverOneWay:
                 )
             except TypeError:
                 reset(state)
+        self._hold_rigid_bodies()
 
 
 def build_one_way(ctx: CouplerBuild) -> Any:
@@ -701,8 +760,13 @@ def build_one_way(ctx: CouplerBuild) -> Any:
     rigid = next((i for i in ctx.islands if i is not deformable), None)
     if deformable is None or rigid is None or rigid.is_deformable:
         raise CompositionError("the one_way coupler needs one rigid island and one deformable island")
-    rigid_solver = build_solver(rigid.backend, ctx.model, has_particles=False)
-    soft_spec = deformable.backend.with_(integrate_with_external_rigid_solver=True)
+    owned = np.asarray(deformable.bodies, dtype=np.int32)
+    rigid_model = _kinematic_view(ctx.model, owned, rigid.name) if owned.size else ctx.model
+    # A deformable island that owns bodies is integrated by its solver, which holds the rest (SolverOneWay).
+    soft_spec = (
+        deformable.backend if owned.size else deformable.backend.with_(integrate_with_external_rigid_solver=True)
+    )
+    rigid_solver = build_solver(rigid.backend, rigid_model, has_particles=False)
     soft_solver = build_solver(soft_spec, ctx.model, has_particles=bool(deformable.particles.size))
     collision = ctx.collision
     kwargs: dict[str, Any] = {
@@ -726,7 +790,19 @@ def build_one_way(ctx: CouplerBuild) -> Any:
         slide_feedback=slides,
         slide_feedback_smoothing=smoothing,
         slide_feedback_clamp=clamp,
+        soft_bodies=owned,
     )
+
+
+def _kinematic_view(model, owned: np.ndarray, name: str) -> Any:
+    """A view of ``model`` with ``owned`` kinematic, so the rigid solver (MuJoCo: mocap) doesn't move them."""
+    from newton.solvers.experimental.coupled import ModelView
+
+    view = ModelView(model, name)
+    flags = model.body_flags.numpy()
+    flags[owned] = int(newton.BodyFlags.KINEMATIC)
+    view.body_flags = wp.array(flags, dtype=model.body_flags.dtype, device=model.device)
+    return view
 
 
 class SolverCosim:
