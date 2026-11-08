@@ -20,7 +20,10 @@ from robosimstudio.domains.capabilities import ParticleMixin
 from robosimstudio.scene.entity import Entity
 from robosimstudio.scene.registry import register_entity
 
-__all__ = ["EntityHeterogeneousSoft", "HeterogeneousSoftSpec", "load_labelled_tets"]
+__all__ = ["PART_FIELDS", "EntityHeterogeneousSoft", "HeterogeneousSoftSpec", "load_labelled_tets"]
+
+PART_FIELDS = ("youngs_modulus_pa", "poisson_ratio", "density_kg_m3", "damping_pa_s")
+"""The per-part values a :class:`HeterogeneousSoftSpec` override may replace."""
 
 
 def load_labelled_tets(mesh_path: str | Path, params_path: str | Path) -> tuple[np.ndarray, ...]:
@@ -105,9 +108,9 @@ class HeterogeneousSoftSpec:
     """Paths and placement for a single connected labelled FEM object.
 
     `pose` places the source mesh origin in the work-surface frame. Young's
-    modulus, Poisson ratio, and density come exclusively from `params_path`.
-    `damping` is a scene-selected viscosity, not a source material estimate;
-    changing it changes the physical deformation-rate response.
+    modulus, Poisson ratio, and density come from `params_path`, except where
+    `part_overrides` replaces one part's value. `damping` and `damping_ratio` are
+    solver settings, not source material estimates.
     """
 
     stage: ClassVar[str] = "deformables"
@@ -121,7 +124,11 @@ class HeterogeneousSoftSpec:
     scale: float = 1.0
     damping: float = 5e3
     """Viscous tet damping [Pa·s] -- Newton's ``k_damp`` -- one value for the whole
-    mesh. It affects both rate-dependent stress and numerical conditioning.
+    mesh, so the loop and the ten-times-softer body resist deformation alike.
+    """
+    damping_ratio: float = 0.0
+    """Stiffness-proportional damping [s]. When positive, each tet's ``k_damp`` is
+    this times its own shear modulus, in place of the uniform ``damping``.
     """
     particle_radius: float = 0.0007
     contact_ke: float = 30000.0
@@ -130,12 +137,20 @@ class HeterogeneousSoftSpec:
     settle_frames: int = 0
     settle_substeps: int = 0
     particle_sets: tuple = ()
+    part_overrides: tuple = ()
+    """``(part_id, field, value)`` rows replacing a part's source estimate, where
+    ``field`` is one of :data:`PART_FIELDS`. The source files stay untouched;
+    the entity keeps both the source arrays and the ones it built with.
+    """
 
     def __post_init__(self) -> None:
         if not self.mesh_path or not self.params_path or not self.materials_path:
             raise ValueError("heterogeneous soft body needs mesh, parameter, and material paths")
-        if self.scale <= 0 or self.particle_radius <= 0 or self.damping < 0:
+        if self.scale <= 0 or self.particle_radius <= 0 or self.damping < 0 or self.damping_ratio < 0:
             raise ValueError("scale and particle radius must be positive; damping cannot be negative")
+        for row in self.part_overrides:
+            if len(row) != 3 or row[1] not in PART_FIELDS:
+                raise ValueError(f"part override {row!r} is not (part_id, one of {PART_FIELDS}, value)")
 
 
 @register_entity("heterogeneous_soft")
@@ -179,13 +194,35 @@ class EntityHeterogeneousSoft(ParticleMixin, Entity):
             actual = np.column_stack((elastic[rows], density[rows]))
             if not np.allclose(actual, expected, rtol=1e-6, atol=0):
                 raise ValueError(f"{spec.materials_path}: part {part_id} disagrees with the per-tet arrays")
+        source_elastic, source_density = elastic.copy(), density.copy()
+        for part_id, field, value in spec.part_overrides:
+            if int(part_id) not in parts:
+                raise ValueError(f"{spec.name}: override names part {part_id}, which the mesh does not have")
+            rows = labels == int(part_id)
+            if field == "density_kg_m3":
+                density[rows] = float(value)
+            elif field != "damping_pa_s":  # applied once the shear modulus is known
+                elastic[rows, PART_FIELDS.index(field)] = float(value)
+        if np.any(elastic[:, 0] <= 0) or np.any((elastic[:, 1] < 0) | (elastic[:, 1] >= 0.5)) or np.any(density <= 0):
+            raise ValueError(f"{spec.name}: an override puts E, Poisson ratio or density outside the FEM range")
 
         young, nu = elastic.T
         mu = young / (2.0 * (1.0 + nu))
         lam = young * nu / ((1.0 + nu) * (1.0 - 2.0 * nu))
+        damping = spec.damping_ratio * mu if spec.damping_ratio > 0 else np.full(len(tets), spec.damping)
+        for part_id, field, value in spec.part_overrides:
+            if field == "damping_pa_s":
+                damping[labels == int(part_id)] = float(value)
+        if np.any(damping < 0):
+            raise ValueError(f"{spec.name}: a damping override is negative")
         volume = np.linalg.det(vertices[tets[:, 1:]] - vertices[tets[:, :1]]) * spec.scale**3 / 6.0
-        masses = np.zeros(len(vertices), dtype=np.float64)
-        np.add.at(masses, tets.ravel(), np.repeat(density * volume / 4.0, 4))
+
+        def nodal(per_tet: np.ndarray) -> np.ndarray:
+            out = np.zeros(len(vertices), dtype=np.float64)
+            np.add.at(out, tets.ravel(), np.repeat(per_tet * volume / 4.0, 4))
+            return out
+
+        masses = nodal(density)
         if np.any(masses <= 0):
             raise ValueError(f"{spec.mesh_path}: zero-mass vertices")
 
@@ -217,7 +254,7 @@ class EntityHeterogeneousSoft(ParticleMixin, Entity):
             density=1.0,
             k_mu=mu,
             k_lambda=lam,
-            k_damp=float(spec.damping),
+            k_damp=damping,
             particle_radius=spec.particle_radius,
             color=colors,
             label=spec.name,
@@ -230,18 +267,22 @@ class EntityHeterogeneousSoft(ParticleMixin, Entity):
         self.part_materials = parts
         self.source_vertices = vertices
         self.source_tets = tets
-        self.source_elastic = elastic
-        self.source_density = density
-        self.source_mass = masses
+        self.source_elastic = source_elastic
+        self.source_density = source_density
+        self.source_mass = nodal(source_density)
+        # What Newton was given: the source with `part_overrides` applied.
+        self.elastic = elastic
+        self.density = density
+        self.damping = damping
+        self.mass = masses
 
     def host_actor(self):
         raise ValueError(f"{self.name}: labelled FEM needs a Newton particle solver; route soft to VBD")
 
     def apply_model_materials(self, model: newton.Model) -> None:
-        # VBD reads soft_contact_mu; ADMM rigid-particle contacts read particle_mu.
-        # Both use the same scene coefficient. The source's per-part values stay
-        # on `part_materials`; the loop value is used for the first grasping task.
+        # Newton VBD exposes one soft friction coefficient for this model. The
+        # source's per-part values stay on `part_materials`; the loop value is
+        # used here because the first task grasps the loop.
         model.soft_contact_ke = float(self.spec.contact_ke)
         model.soft_contact_kd = float(self.spec.contact_kd)
         model.soft_contact_mu = float(self.spec.contact_mu)
-        model.particle_mu = float(self.spec.contact_mu)

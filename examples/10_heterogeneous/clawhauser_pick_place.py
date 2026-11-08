@@ -12,6 +12,7 @@ import argparse
 import hashlib
 import json
 import subprocess
+import time
 from pathlib import Path
 
 import newton
@@ -27,6 +28,8 @@ CONTROL_HZ = 30
 SUBSTEPS = 20
 DURATION = 13.0
 TABLE_Z = 0.75
+GRIP_SQUEEZE = 0.012
+"""How far past the grasp patch's measured width the closed pads aim [m]."""
 # RSS positions are relative to the bench's work-surface frame, whose origin
 # is world x=0.6 m. These values place the toy at world x=0.47 and 0.65 m.
 SOURCE_X = -0.13
@@ -39,7 +42,13 @@ SOURCE_HASHES = {
 }
 
 
-def build_scene():
+def build_scene(
+    *,
+    coarse: bool = False,
+    mu: float | None = 4.0,
+    force_limit: float = ScriptedGripperSpec.force_limit,
+    squeeze: float = GRIP_SQUEEZE,
+):
     for relative, expected in SOURCE_HASHES.items():
         actual = hashlib.sha256((ASSET / relative).read_bytes()).hexdigest()
         if actual != expected:
@@ -65,13 +74,32 @@ def build_scene():
     local_center = vertices[grasp_ids].mean(axis=0)
     grasp_center = (SOURCE_X + local_center[0], -local_center[1], pose[2] - local_center[2])
     half_span = np.max(np.abs(vertices[grasp_ids, 0] - local_center[0]))
+    # A named squeeze is the closed pads' travel past the grasp patch's measured
+    # half-width; the drive's force cap still decides how far they get.
+    closed_half_gap = float(half_span + ScriptedGripperSpec.pad_half_thickness - squeeze)
 
-    vbd = rss.backend(
-        "vbd",
-        iterations=12,
-        particle_enable_self_contact=False,
-        particle_enable_tile_solve=False,
-        rigid_body_particle_contact_buffer_size=4096,
+    common = {
+        "particle_enable_self_contact": False,
+        "particle_enable_tile_solve": False,
+        "rigid_body_particle_contact_buffer_size": 4096,
+    }
+    vbd = (
+        rss.backend(
+            "robosimstudio_materials.coarse_translation.SolverVBDCoarse",
+            coarse_translation=True,
+            coarse_contact_gap=0.002,
+            coarse_budget=0.0005,
+            iterations=12,
+            **common,
+        )
+        if coarse
+        else rss.backend(
+            "robosimstudio_materials.chebyshev_acceleration.SolverVBDChebyshev",
+            iterations=160,
+            chebyshev_rho=0.95,
+            chebyshev_gamma=1.0,
+            **common,
+        )
     )
     physics = rss.ArrangementSpec(
         control_hz=CONTROL_HZ,
@@ -84,6 +112,7 @@ def build_scene():
             contact_ke=100000.0,
             contact_kd=25.0,
             broad_phase="nxn",
+            contact_matching="sticky",
         ),
     )
     scene = rss.Scene(cell="bench_075", physics=physics, name="clawhauser_loop_pick_place")
@@ -120,7 +149,8 @@ def build_scene():
         ScriptedGripperSpec(
             center=grasp_center,
             half_gap=float(half_span + 0.012),
-            closed_half_gap=0.010,
+            closed_half_gap=closed_half_gap,
+            force_limit=force_limit,
             travel_x=TARGET_X - SOURCE_X,
             control_hz=CONTROL_HZ,
             substeps=SUBSTEPS,
@@ -137,9 +167,11 @@ def build_scene():
     )
     scene.add(camera)
     sim = scene.build(device="cuda:0", warmup=False, use_cuda_graph=False)
+    if mu is not None:
+        sim.model.soft_contact_mu = float(mu)
     entity = obj.entity
-    if type(sim.pipeline.program.solver).__name__ != "SolverVBD":
-        raise RuntimeError(f"expected Newton VBD, got {type(sim.pipeline.program.solver).__name__}")
+    if not type(sim.pipeline.program.solver).__name__.startswith("SolverVBD"):
+        raise RuntimeError(f"expected a VBD solver, got {type(sim.pipeline.program.solver).__name__}")
     if sim.model.tet_count != len(tets) or len(entity.tet_part_labels) != len(tets):
         raise RuntimeError("RSS lost Clawhauser tetrahedra or part labels")
     if sim.model.attachment_particle_body_count:
@@ -158,9 +190,20 @@ def build_scene():
     return sim, obj, grip, camera, grasp_ids, labels
 
 
-def run(out: Path, *, steps: int, render_every: int = 0):
+def run(
+    out: Path,
+    *,
+    steps: int,
+    render_every: int = 0,
+    coarse: bool = False,
+    mu: float | None = 4.0,
+    force_limit: float = ScriptedGripperSpec.force_limit,
+    squeeze: float = GRIP_SQUEEZE,
+):
     out.mkdir(parents=True, exist_ok=True)
-    sim, obj, grip, camera, ring_ids, labels = build_scene()
+    sim, obj, grip, camera, ring_ids, labels = build_scene(
+        coarse=coarse, mu=mu, force_limit=force_limit, squeeze=squeeze
+    )
     entity = obj.entity
     particle_ids = entity.particles
     ring_ids = particle_ids[ring_ids]
@@ -179,6 +222,7 @@ def run(out: Path, *, steps: int, render_every: int = 0):
 
         videos = VideoSet(str(out), fps=max(1, CONTROL_HZ // render_every))
         videos.__enter__()
+    started = time.perf_counter()
     try:
         for frame in range(steps):
             sim.run(1).sync()
@@ -325,6 +369,9 @@ def run(out: Path, *, steps: int, render_every: int = 0):
             "max_inverted_fraction": max_inverted_fraction,
             "settled_inverted_tetrahedra": settled_inverted,
             "success": bool(success),
+            "elapsed_s": time.perf_counter() - started,
+            "mean_frame_ms": 1000.0 * (time.perf_counter() - started) / max(1, len(diagnostics)),
+            "mean_step_ms": 1000.0 * (time.perf_counter() - started) / max(1, len(diagnostics) * SUBSTEPS),
         }
         (out / "result.json").write_text(json.dumps(result, indent=2) + "\n")
         print(json.dumps(result), flush=True)
@@ -336,8 +383,24 @@ def main() -> None:
     parser.add_argument("--out", type=Path, default=OUTPUT / "run")
     parser.add_argument("--steps", type=int, default=round(DURATION * CONTROL_HZ))
     parser.add_argument("--render-every", type=int, default=0)
+    parser.add_argument("--coarse", action="store_true", help="run the coarse common-translation solve")
+    parser.add_argument("--mu", type=float, default=4.0, help="global soft-contact friction coefficient")
+    parser.add_argument(
+        "--force-limit", type=float, default=ScriptedGripperSpec.force_limit, help="the jaws' closing budget [N]"
+    )
+    parser.add_argument(
+        "--squeeze", type=float, default=GRIP_SQUEEZE, help="close travel past the grasp patch's width [m]"
+    )
     args = parser.parse_args()
-    run(args.out, steps=args.steps, render_every=args.render_every)
+    run(
+        args.out,
+        steps=args.steps,
+        render_every=args.render_every,
+        coarse=args.coarse,
+        mu=args.mu,
+        force_limit=args.force_limit,
+        squeeze=args.squeeze,
+    )
 
 
 if __name__ == "__main__":
