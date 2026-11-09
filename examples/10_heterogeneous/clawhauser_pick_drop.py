@@ -28,18 +28,22 @@ from pathlib import Path
 
 import arm_gripper
 import numpy as np
-from clawhauser_scene import REFERENCE as PHYSICS
 from clawhauser_scene import (
+    ARM_AIM,
+    ARM_CLOSE,
     SELF_CONTACT_RADIUS,
+    Trajectory,
     add_scene_arguments,
     arrangement,
     build_sim,
     check_build,
     load_toy,
+    loop_shift,
     physics_for,
     scene_kwargs,
     toy_spec,
 )
+from clawhauser_scene import REFERENCE as PHYSICS
 from loop_geometry import ring_geometry, smooth
 from mesh_quality import MeshQuality, penetration
 from parallel_gripper import ParallelGripperSpec
@@ -51,7 +55,7 @@ CONTROL_HZ = PHYSICS.control_hz
 SUBSTEPS = PHYSICS.substeps
 # 10 s: the phases below end at 7.6 s, and the rest is the toy at rest -- the
 # window a drift is measured in.
-DURATION = 10.0
+DURATION = 12.0
 TABLE_Z = 0.75
 REST_Z = TABLE_Z + PHYSICS.particle_radius
 """Where the toy's lowest node rests [m]: one particle radius above the bench.
@@ -90,12 +94,13 @@ PHASES = {
     # nothing).
     "close": (0.0, 0.6),
     # The pads hold still once they are closed: the toy settles onto the pinch
-    # before the lift loads it.
-    "lift": (1.1, 3.1),
-    "hang": (3.1, 3.9),
-    "carry": (3.9, 5.9),
-    "open": (6.4, 6.8),
-    "withdraw": (7.0, 7.6),
+    # before the lift loads it. Over 4 s, the bottle scene's: lifted in 2 s the
+    # uniform toy's loop slid out of a 1 kg pinch, in 4 s it settles in and holds.
+    "lift": (1.1, 5.1),
+    "hang": (5.1, 5.9),
+    "carry": (5.9, 7.9),
+    "open": (8.4, 8.8),
+    "withdraw": (9.0, 9.6),
 }
 """Planned phase windows. ``hang`` is a phase with no motion: the toy comes off
 the bench at an angle and swings to hang from the pinch before it is carried.
@@ -190,8 +195,9 @@ def build_scene(
             )
         )
     if split:
-        # Three-quarter from the arm's side: reach, close and lift all in frame.
-        eye, look_at, fov_y = (0.10, -0.95, 1.22), (0.42, 0.0, 0.92), 50.0
+        # Three-quarter from across the bench, so the arm on its riser at -y does not block
+        # the toy: reach, close, lift and carry all in frame.
+        eye, look_at, fov_y = (1.05, -0.50, 1.20), (0.55, 0.0, 0.90), 45.0
     else:
         # Side on and level with the loop: the pads close across the frame and the
         # lift is vertical, so the grasp reads as a side pinch.
@@ -252,8 +258,10 @@ def waypoints(grip, capacity: int, dt: float, lift: float) -> np.ndarray:
     return poses
 
 
-def arm_route(sim, geometry: dict, capacity: int, dt: float):
+def arm_route(sim, geometry: dict, capacity: int, dt: float, shift=(0.0, 0.0, 0.0)):
     """The claw's path as tool-centre poses and a pad-face gap.
+
+    ``shift`` moves the open pads onto the settled loop in ``ARM_AIM`` (:func:`loop_shift`).
 
     The gap is stated between the faces here, where the claw states it between
     the pads' centres, so ``squeeze`` is the same travel past the loop in both.
@@ -268,16 +276,20 @@ def arm_route(sim, geometry: dict, capacity: int, dt: float):
     squeeze = float(geometry["grip_squeeze_m"])
 
     def tcp_at(time: float) -> np.ndarray:
-        return centre + np.array(
-            (
-                (TARGET_X - SOURCE_X) * smooth(time, *PHASES["carry"]),
-                0.0,
-                geometry["lift_m"] * smooth(time, *PHASES["lift"]) + WITHDRAW_Z * smooth(time, *PHASES["withdraw"]),
+        return (
+            centre
+            + np.asarray(shift) * smooth(time, *ARM_AIM)
+            + np.array(
+                (
+                    (TARGET_X - SOURCE_X) * smooth(time, *PHASES["carry"]),
+                    0.0,
+                    geometry["lift_m"] * smooth(time, *PHASES["lift"]) + WITHDRAW_Z * smooth(time, *PHASES["withdraw"]),
+                )
             )
         )
 
     def half_gap_at(time: float) -> float:
-        face = reach + squeeze - 2.0 * squeeze * smooth(time, *PHASES["close"])
+        face = reach + squeeze - 2.0 * squeeze * smooth(time, *ARM_CLOSE)
         return face + (OPENED_HALF_GAP - face) * smooth(time, *PHASES["open"])
 
     route = control.plan(quat=arm_gripper.GRASP_QUAT, capacity=capacity, dt=dt, tcp_at=tcp_at, half_gap_at=half_gap_at)
@@ -381,6 +393,7 @@ def run(
     uniform_soft: bool = False,
     body_scale: float = 1.0,
     rigid_body_parts: tuple[int, ...] = (),
+    pinch_offset: float = 0.0,
 ) -> dict:
     out.mkdir(parents=True, exist_ok=True)
     sim, obj, jaw, camera, geometry = build_scene(
@@ -458,6 +471,7 @@ def run(
     print(json.dumps({"mass_kg": mass, "weight_n": mass * 9.81, "start_centre_m": start.tolist()}), flush=True)
 
     diagnostics = []
+    trajectory = Trajectory(sim, entity)
     videos, video_error = None, None
     if render_every:
         from robosimstudio.core.render.video import VideoSet
@@ -487,6 +501,10 @@ def run(
             q = state.particle_q.numpy()
             body_q = state.body_q.numpy()
             owned = q[particles]
+            if arm is not None and frame + 1 == round(ARM_AIM[0] * CONTROL_HZ):
+                shift = loop_shift(entity, q0, owned) - np.array((0.0, pinch_offset, 0.0))
+                arm, route = arm_route(sim, geometry, steps, 1.0 / CONTROL_HZ, shift)
+                print(json.dumps({"aim_shift_mm": np.round(1000.0 * shift, 1).tolist()}), flush=True)
             det = np.linalg.det(owned[tets[:, 1:]] - owned[tets[:, :1]])
             count = int(contacts.soft_contact_count.numpy()[0])
             contact_shapes = contacts.soft_contact_shape.numpy()[: min(count, contacts.soft_contact_max)]
@@ -539,6 +557,7 @@ def run(
                 # open reads as a grasp that never released.
                 row["aperture_m"] = arm.aperture()
                 row["gripper_command"] = float(arm.hand.command)
+            trajectory.add(row["time_s"], owned, body_q)
             diagnostics.append(row)
             if videos is not None and frame % render_every == 0:
                 videos.append_frames({camera.name: sim.render(camera)})
@@ -554,6 +573,7 @@ def run(
     (out / "geometry.json").write_text(json.dumps(geometry, indent=2) + "\n")
     # The per-frame penetration arrays stay in memory for the judge; the file
     # keeps the scalars, since a list of arrays is not JSON.
+    trajectory.save(out / "trajectory.npz")
     (out / "diagnostics.json").write_text(
         json.dumps([{k: v for k, v in row.items() if k != "penetration_m"} for row in diagnostics], indent=2) + "\n"
     )
