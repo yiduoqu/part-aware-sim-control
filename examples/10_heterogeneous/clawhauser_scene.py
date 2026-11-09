@@ -37,6 +37,8 @@ import robosimstudio as rss
 from robosimstudio_materials.heterogeneous import HeterogeneousSoftSpec, load_labelled_tets
 
 __all__ = [
+    "ARM_AIM",
+    "ARM_CLOSE",
     "ASSET",
     "COARSE_BUDGET",
     "CONTACT_GAP",
@@ -44,11 +46,13 @@ __all__ = [
     "SELF_CONTACT_RADIUS",
     "SOLVERS",
     "PhysicsSettings",
+    "Trajectory",
     "add_scene_arguments",
     "arrangement",
     "build_sim",
     "check_build",
     "load_toy",
+    "loop_shift",
     "physics_for",
     "scene_kwargs",
     "set_contact",
@@ -114,6 +118,16 @@ class PhysicsSettings:
         return math.sqrt(self.soft_mu * self.shape_mu)
 
 
+ARM_AIM = (0.3, 0.45)
+"""The arm's open pads wait while the toy settles, then move as far as the loop did [s].
+
+The loop slides toward the body before the pads close -- 13.5 mm for the rigid loop, more
+for the uniform one -- so pads aimed at its widest band at rest closed on its far, narrow end,
+which the uniform ring folded at and slid out of. See :func:`loop_shift`.
+"""
+ARM_CLOSE = (0.45, 1.05)
+"""When the arm's pads close [s]: once they are over the settled loop, before the lift."""
+
 DAMP_BETA = 5.0e-4
 """The handoff's damping ratio [s]: each tet's ``k_damp`` is this times its shear modulus."""
 BODY_SHEAR_PA = 5.0e5 / (2.0 * (1.0 + 0.45))
@@ -170,6 +184,70 @@ def physics_for(
         ("density_kg_m3", UNIFORM_DENSITY),
     )
     return dataclasses.replace(base, part_overrides=tuple((part, *row) for part in (0, 1, 2) for row in rows))
+
+
+class Trajectory:
+    """Everything a scene is re-rendered from, saved as ``trajectory.npz``.
+
+    Per frame: ``time`` [s], ``particle_q`` [m, (F, N, 3)] the toy's particles and ``body_q``
+    [(F, B, 7), p + xyzw] every body (the arm's links and fingers, a rigid part's body). The toy:
+    ``tets``, ``part_labels`` and ``surface`` (triangles over toy-local particle ids). Every
+    shape: ``shape_body`` (-1: static), ``shape_transform`` (in its body's frame, or the world's
+    for a static), ``shape_type`` (``newton.GeoType``), ``shape_scale``, ``shape_color``,
+    ``shape_visible``, ``shape_label``, and ``mesh_<i>_vertices`` / ``mesh_<i>_faces`` for each
+    visible mesh shape ``i`` (vertices unscaled). A shape's world pose is ``body_q[body]`` times
+    its transform.
+    """
+
+    def __init__(self, sim, entity) -> None:
+        self.sim, self.entity = sim, entity
+        self.time, self.particle_q, self.body_q = [], [], []
+
+    def add(self, time: float, particle_q: np.ndarray, body_q: np.ndarray) -> None:
+        self.time.append(float(time))
+        self.particle_q.append(np.asarray(particle_q, dtype=np.float32))
+        self.body_q.append(np.asarray(body_q, dtype=np.float32))
+
+    def save(self, path: Path) -> None:
+        import newton
+
+        tets = np.asarray(self.entity.source_tets)
+        model = self.sim.model
+        visible = (model.shape_flags.numpy() & int(newton.ShapeFlags.VISIBLE)) != 0
+        meshes = {}
+        for index, source in enumerate(model.shape_source):
+            if visible[index] and isinstance(source, newton.Mesh):
+                meshes[f"mesh_{index}_vertices"] = np.asarray(source.vertices, dtype=np.float32)
+                meshes[f"mesh_{index}_faces"] = np.asarray(source.indices, dtype=np.int32).reshape(-1, 3)
+        np.savez_compressed(
+            path,
+            time=np.asarray(self.time),
+            particle_q=np.stack(self.particle_q),
+            body_q=np.stack(self.body_q),
+            tets=tets,
+            part_labels=np.asarray(self.entity.tet_part_labels),
+            surface=newton.TetMesh.compute_surface_triangles(tets.ravel()).reshape(-1, 3),
+            body_label=np.asarray([str(label) for label in model.body_label]),
+            shape_body=model.shape_body.numpy(),
+            shape_transform=model.shape_transform.numpy(),
+            shape_type=model.shape_type.numpy(),
+            shape_scale=model.shape_scale.numpy(),
+            shape_color=model.shape_color.numpy(),
+            shape_visible=visible,
+            shape_label=np.asarray([str(label) for label in model.shape_label]),
+            **meshes,
+        )
+
+
+def loop_shift(entity, rest: np.ndarray, now: np.ndarray) -> np.ndarray:
+    """How far the loop's centroid moved in the bench plane since ``rest`` [m, (x, y, 0)].
+
+    ``rest`` and ``now`` are the toy's particle positions. The arm's pads are aimed at the
+    loop's widest band at rest; moved by this, they are on it where it settled.
+    """
+    loop = np.unique(entity.source_tets[entity.tet_part_labels == 2])
+    shift = now[loop].mean(axis=0) - rest[loop].mean(axis=0)
+    return np.array((shift[0], shift[1], 0.0))
 
 
 def load_toy() -> tuple[np.ndarray, np.ndarray, np.ndarray]:
@@ -469,6 +547,12 @@ def add_scene_arguments(parser: argparse.ArgumentParser, *, out: Path, steps: in
         help="one E, Poisson ratio and density (the loop/body mean) over the whole toy",
     )
     parser.add_argument(
+        "--pinch-offset",
+        type=float,
+        default=0.0,
+        help="pinch the arm's pads this far toward the body past the loop's widest band [m]",
+    )
+    parser.add_argument(
         "--rigid-body-parts",
         type=int,
         nargs="+",
@@ -503,4 +587,5 @@ def scene_kwargs(args: argparse.Namespace) -> dict:
         "uniform_soft": args.uniform_soft,
         "body_scale": args.body_scale,
         "rigid_body_parts": tuple(args.rigid_body_parts),
+        "pinch_offset": args.pinch_offset,
     }
