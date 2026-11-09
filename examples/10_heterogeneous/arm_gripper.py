@@ -18,27 +18,32 @@ import newton
 import numpy as np
 
 import robosimstudio as rss
-from robosimstudio.core.render.palette import BENCH_LIGHT, GROUND
+from robosimstudio.core.render.finish import Finish
+from robosimstudio.core.render.palette import GROUND
 from robosimstudio.engines.pose import quat_rotate
 from robosimstudio.robots.registry import register_gripper
 from robosimstudio.specs import ActuationSpec, ArmSpec, AssetSpec, CellSpec, EmbodimentSpec, GripperSpec, StaticSpec
+from robosimstudio.specs.asset import ShapeSpec
 
 ASSET = Path(__file__).resolve().parent / "assets" / "airbot_play" / "airbot_play.xml"
 CELL = "bench_075_airbot"
 """``bench_075``'s top, extended behind the arm's mount."""
 
-MOUNT = (-0.30, 0.0, 0.132, 0.0, 0.0, 0.0, 1.0)
-"""The arm's base in the work-surface frame: on its pedestal, 0.17 m from the toy.
+MOUNT = (-0.22, -0.22, 0.232, 0.0, 0.0, 0.0, 1.0)
+"""The arm's base in the work-surface frame: on its riser, beside and behind the toy.
 
-At 0.35 m the hand could not stay vertical over the bottle.
-
-Lowering it to the bench top changes the IK's wrist roll and the pads miss the
-loop, so the mount height every route was planned and measured at is kept, and
-the pedestal below carries it.
+At 0.35 m the hand could not stay vertical over the bottle. Off to -y, the hand
+can also turn its fingers along the rod to thread the loop: from (-0.30, 0) that
+pose missed by 47 mm, from here by under 1 mm, with every vertical grasp, lift and
+carry still within 14 mm. On the bench top the lifts missed by 41-90 mm. The riser
+is 236 mm tall so the hand reaches 0.45 m over the rod straight down, where a toy
+held by its tail (``--grasp tail``) brings its loop to the rod; at 136 mm that pose
+missed by 86 mm.
 """
 
-PEDESTAL_TOP = 0.136
-"""The plinth's height above the bench [m].
+PEDESTAL_TOP = 0.236
+PEDESTAL_RADIUS = 0.065
+"""The riser's height above the bench and radius [m]; the toy's nearest point is 73 mm off its axis.
 
 The base mesh starts 3.9 mm above the body origin, so this is flush with it.
 """
@@ -61,9 +66,19 @@ rss.register_cell(
             ),
             StaticSpec(
                 name="arm_pedestal",
-                half_extents=(0.09, 0.09, PEDESTAL_TOP / 2.0),
-                xform=(0.584 + MOUNT[0], 0.0, 0.75 + PEDESTAL_TOP / 2.0, 0.0, 0.0, 0.0, 1.0),
-                color=BENCH_LIGHT,
+                shape=ShapeSpec(kind="cylinder", radius=PEDESTAL_RADIUS, half_height=PEDESTAL_TOP / 2.0),
+                xform=(0.584 + MOUNT[0], MOUNT[1], 0.75 + PEDESTAL_TOP / 2.0, 0.0, 0.0, 0.0, 1.0),
+                color=(0.30, 0.31, 0.34),
+                finish=Finish(roughness=0.35, metallic=0.8),
+            ),
+            # A thin foot plate under the column, drawn only: it reads as a mount, not a block.
+            StaticSpec(
+                name="arm_pedestal_foot",
+                shape=ShapeSpec(kind="cylinder", radius=PEDESTAL_RADIUS + 0.007, half_height=0.003),
+                xform=(0.584 + MOUNT[0], MOUNT[1], 0.753, 0.0, 0.0, 0.0, 1.0),
+                collide=False,
+                color=(0.18, 0.19, 0.21),
+                finish=Finish(roughness=0.35, metallic=0.8),
             ),
         ),
         provenance="bench_075's table extended 180 mm to the AIRBOT's mount",
@@ -294,8 +309,34 @@ def _rotate(quat: np.ndarray, vectors: np.ndarray) -> np.ndarray:
     return vectors + 2.0 * np.cross(axis, inner)
 
 
+def axis_angle_quat(axis, angle: float) -> np.ndarray:
+    """The xyzw quaternion turning ``angle`` [rad] about ``axis``."""
+    axis = np.asarray(axis, dtype=np.float64)
+    axis = axis / max(float(np.linalg.norm(axis)), 1e-12)
+    return np.append(axis * np.sin(0.5 * angle), np.cos(0.5 * angle))
+
+
+def quat_multiply(a, b) -> np.ndarray:
+    """``a * b`` for xyzw quaternions: ``b``'s rotation, then ``a``'s."""
+    (ax, ay, az, aw), (bx, by, bz, bw) = np.asarray(a, np.float64), np.asarray(b, np.float64)
+    return np.array(
+        (
+            aw * bx + ax * bw + ay * bz - az * by,
+            aw * by - ax * bz + ay * bw + az * bx,
+            aw * bz + ax * by - ay * bx + az * bw,
+            aw * bw - ax * bx - ay * by - az * bz,
+        )
+    )
+
+
 def pad_bounds(sim, *, name: str = ARM) -> tuple[np.ndarray, np.ndarray]:
     """World-space bounds of the fingers' collision boxes, ``(low, high)`` [m]."""
+    points = pad_corners(sim, name=name)
+    return points.min(axis=0), points.max(axis=0)
+
+
+def pad_corners(sim, *, name: str = ARM) -> np.ndarray:
+    """World-space corners of the fingers' collision boxes [m, (N, 3)]."""
     model = sim.model
     shapes = finger_shapes(sim, name=name)
     # The finger groups carry the visual meshes too; only the boxes collide.
@@ -310,8 +351,7 @@ def pad_bounds(sim, *, name: str = ARM) -> tuple[np.ndarray, np.ndarray]:
         corners = local[index, :3] + _rotate(local[index, 3:], signs * scale[index])
         frame = body_q[int(body[index])]
         points.append(frame[:3] + _rotate(frame[3:], corners))
-    points = np.concatenate(points)
-    return points.min(axis=0), points.max(axis=0)
+    return np.concatenate(points)
 
 
 def check_arm(sim, *, limit: float = GRASP_LIMIT_N, name: str = ARM) -> dict:
@@ -371,13 +411,17 @@ class ArmControl:
         self.coords = np.asarray(self.arm.arm_coords, dtype=int)
 
     def plan(self, *, quat, capacity: int, dt: float, tcp_at, half_gap_at) -> Route:
-        """Solve the arm's path: ``tcp_at(time)`` in metres, ``half_gap_at(time)`` in metres."""
+        """Solve the arm's path: ``tcp_at(time)`` in metres, ``half_gap_at(time)`` in metres.
 
-        def sample(index: int) -> tuple[np.ndarray, float]:
+        ``quat`` is the tool frame (xyzw), or a function of time returning it for a hand that turns.
+        """
+
+        def sample(index: int) -> tuple[np.ndarray, float, np.ndarray]:
             time = index * dt
-            return np.asarray(tcp_at(time), dtype=np.float64), float(half_gap_at(time))
+            at = quat(time) if callable(quat) else quat
+            return np.asarray(tcp_at(time), dtype=np.float64), float(half_gap_at(time)), np.asarray(at, np.float64)
 
-        return self._plan(quat=quat, capacity=capacity, sample=sample)
+        return self._plan(capacity=capacity, sample=sample)
 
     def plan_poses(self, poses, *, quat, substeps: int, origin=0.0, pad_inset: float = 0.0) -> Route:
         """A scene's own claw path, retargeted onto the arm's tool centre.
@@ -395,34 +439,41 @@ class ArmControl:
         capacity = -(-frames // substeps)
         shift = np.broadcast_to(np.asarray(origin, dtype=np.float64), (3,))
 
-        def sample(index: int) -> tuple[np.ndarray, float]:
+        fixed = np.asarray(quat, dtype=np.float64)
+
+        def sample(index: int) -> tuple[np.ndarray, float, np.ndarray]:
             frame = min(index * substeps, frames - 1)
             place = 0.5 * (poses[frame, 0, :3].astype(np.float64) + poses[frame, 1, :3].astype(np.float64))
             gap = 0.5 * float(np.linalg.norm(poses[frame, 1, :3] - poses[frame, 0, :3]))
             # The poses are the claw's pads, so the point is a pad midpoint.
-            return tcp_for_pads(place + shift), gap - float(pad_inset)
+            return tcp_for_pads(place + shift), gap - float(pad_inset), fixed
 
-        return self._plan(quat=quat, capacity=capacity, sample=sample)
+        return self._plan(capacity=capacity, sample=sample)
 
-    def _plan(self, *, quat, capacity: int, sample) -> Route:
+    def _plan(self, *, capacity: int, sample) -> Route:
         """Solve one tool-centre waypoint per control frame, seeded from the last."""
         seed = self.sim.pipeline.state_0.joint_q.numpy().astype(np.float32)
         joint_q = np.empty((capacity, len(self.coords)), dtype=np.float32)
         command = np.empty(capacity, dtype=np.float32)
         worst = 0.0
         solved = seed
-        last: tuple[np.ndarray, float] | None = None
+        last: tuple[np.ndarray, float, np.ndarray] | None = None
         with self.arm.host_fk():
             for index in range(capacity):
-                target, half_gap = sample(index)
-                # Most frames hold still; only solve when the pose or the
-                # aperture actually moved.
-                if last is None or np.linalg.norm(target - last[0]) > 1e-7 or abs(half_gap - last[1]) > 1e-9:
+                target, half_gap, quat = sample(index)
+                # Most frames hold still; only solve when the pose, the
+                # aperture or the hand's orientation actually moved.
+                if (
+                    last is None
+                    or np.linalg.norm(target - last[0]) > 1e-7
+                    or abs(half_gap - last[1]) > 1e-9
+                    or np.abs(quat - last[2]).max() > 1e-9
+                ):
                     solved = self.arm.solve_q_full(seed, target, quat)
                     position_error, _ = self.arm.pose_errors(solved, target, quat)
                     worst = max(worst, float(position_error))
                     seed = solved
-                    last = (target, half_gap)
+                    last = (target, half_gap, quat)
                 joint_q[index] = solved[self.coords]
                 command[index] = finger_command(half_gap)
         return Route(joint_q=joint_q, command=command, worst_position_error_m=worst)
