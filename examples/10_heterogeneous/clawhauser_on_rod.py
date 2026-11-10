@@ -60,14 +60,22 @@ from pathlib import Path
 import arm_gripper
 import newton
 import numpy as np
+import rigid_part_body
+import scenery
 from clawhauser_scene import (
+    ARM_AIM,
+    ARM_CLOSE,
     COARSE_BUDGET,
     CONTACT_GAP,
     SELF_CONTACT_RADIUS,
+    Trajectory,
     add_scene_arguments,
     arrangement,
+    build_sim,
     check_build,
     load_toy,
+    loop_shift,
+    physics_for,
     scene_kwargs,
     toy_spec,
 )
@@ -77,11 +85,12 @@ from mesh_quality import MeshQuality, penetration
 from parallel_gripper import ParallelGripperSpec
 
 import robosimstudio as rss
+from robosimstudio.core.math import quat_to_mat
 
 OUTPUT = Path(__file__).resolve().parents[2] / "outputs" / "clawhauser_on_rod"
 CONTROL_HZ = PHYSICS.control_hz
 SUBSTEPS = PHYSICS.substeps
-DURATION = 10.0
+DURATION = 14.0
 """Long enough for the guarded seat to stop early or late and still leave the last
 half second still, so that the window the hang is judged on is a quiet one.
 """
@@ -154,9 +163,19 @@ CLEARANCE = 0.030
 """Space the hanging toy keeps under its lowest point [m]; the gate asks 20 mm."""
 ARM_CLEARANCE = 0.060
 """The arm's rod height margin: its pinched loop hangs ~30 mm lower than the claw's."""
-ARM_LIFT = (1.1, 3.1)
-ARM_HANG_END = 3.9
-"""The arm's lift window and the end of its hang [s]: pick-and-drop's, which holds the loop."""
+ARM_LIFT = (1.1, 5.1)
+ARM_HANG_END = 5.9
+"""The arm's lift window and the end of its hang [s]: the bottle's 4 s lift, which a soft
+loop settles into instead of sliding out of."""
+ARM_TURN = (0.0, 2.0)
+"""The hand's turn after the hang [s]: about the pads' midpoint, until the hole's axis lies along the rod.
+
+The pinch holds the ring by friction, so it does not swing plumb under the pads: measured on the
+rigid-body loop, the hole's axis hung 55-72 degrees off the rod's, its plane only 20-35 degrees off
+flat, and the slide met the rod with the hole facing up. Turning the hand turns the ring with it.
+"""
+ARM_TURN_SETTLE = 2.5
+"""When the thread is planned, after the turn starts [s]: the toy settles under the turned pinch first."""
 ARM_THREAD = {
     "align": (0.0, 0.8),
     "thread": (1.0, 2.6),
@@ -268,9 +287,13 @@ def build_scene(
     feedback_clamp: float = 0.0,
     surface_contact: bool = False,
     rigid_loop: bool = False,
+    uniform_soft: bool = False,
+    body_scale: float = 1.0,
+    rigid_body_parts: tuple[int, ...] = (),
     rod_radius: float = ROD_RADIUS,
 ):
     vertices, tets, labels = load_toy()
+    settings = physics_for(PHYSICS, uniform_soft, rigid_loop, body_scale)
     ring = ring_geometry(vertices, tets, labels)
 
     # Lying flat in its own rest pose, grasped on the loop's rim: the same pose and
@@ -321,13 +344,17 @@ def build_scene(
         "thread_z_m": thread_height,
         "thread_lift_m": THREAD_LIFT,
         "withdraw_z_m": WITHDRAW_Z,
-        "grip_centre_m": [SOURCE_X + float(hole[0]), -GRIP_TO_BODY if claw == "claw" else 0.0, float(grip_z)],
+        "grip_centre_m": [
+            SOURCE_X + float(hole[0]),
+            -GRIP_TO_BODY if claw == "claw" else 0.0,
+            float(grip_z),
+        ],
     }
     print(json.dumps({"geometry": geometry}), flush=True)
 
     split = claw != "claw"
     physics = arrangement(
-        PHYSICS,
+        settings,
         claw=claw,
         coarse=coarse,
         solver_name=solver_name,
@@ -340,8 +367,16 @@ def build_scene(
     )
     scene = rss.Scene(cell=CELL, physics=physics, name="clawhauser_on_rod")
     rod_x = SOURCE_X + float(hole[0])
-    scene.add(rss.slab(name="rod_base", half=(0.030, 0.030, 0.006), at=(rod_x, POST_Y, 0.006), collide=True))
-    scene.add(rss.post(name="rod_post", radius=POST_RADIUS, half_height=rod_z / 2.0, at=(rod_x, POST_Y, rod_z / 2.0)))
+    # The square base collides and is hidden under a round foot that touches nothing.
+    scene.add(
+        rss.slab(name="rod_base", half=(0.030, 0.030, 0.006), at=(rod_x, POST_Y, 0.006), collide=True, visible=False)
+    )
+    scene.add(scenery.rod_foot(at=(rod_x, POST_Y)))
+    steel = {"color": scenery.STEEL_COLOR, "finish": scenery.STEEL}
+    scene.add(
+        rss.post(name="rod_post", radius=POST_RADIUS, half_height=rod_z / 2.0, at=(rod_x, POST_Y, rod_z / 2.0), **steel)
+    )
+    scene.add(scenery.rod_elbow(at=(rod_x, POST_Y, rod_z), radius=POST_RADIUS))
     span = POST_Y - POST_RADIUS - ROD_FREE_Y
     rod = scene.add(
         rss.post(
@@ -350,9 +385,10 @@ def build_scene(
             half_height=span / 2.0,
             # A quarter turn about x lays the cylinder's own z axis along y.
             at=(rod_x, ROD_FREE_Y + span / 2.0, rod_z, -np.sin(np.pi / 4.0), 0.0, 0.0, np.cos(np.pi / 4.0)),
+            **steel,
         )
     )
-    obj = scene.add(toy_spec(PHYSICS, pose=pose, quat=quat))
+    obj = scene.add(toy_spec(settings, pose=pose, quat=quat, rigid_body_parts=rigid_body_parts))
     grip = None
     if split:
         arm_gripper.add_arm(scene, base_offset=ARM_BASE, force_limit=force_limit)
@@ -381,19 +417,20 @@ def build_scene(
         # in frame for the whole carry, as in the cup and pick-and-drop scenes.
         eye, look_at, fov_y = (0.76, -0.55, 1.163), (0.46, 0.0, 0.95), 45.0
     camera = scene.add(rss.CameraSpec(name="overview", width=960, height=540, eye=eye, look_at=look_at, fov_y=fov_y))
-    sim = scene.build(device="cuda:0", warmup=False, use_cuda_graph=False)
+    sim = build_sim(scene, rigid_loop=rigid_loop)
     entity = obj.entity
     geometry.update(
         check_build(
             sim,
             entity,
             tets,
-            PHYSICS,
+            settings,
             claw=claw,
             force_limit=force_limit,
             mu=mu,
             grip_mu=grip_mu,
             rigid_loop=rigid_loop,
+            rigid_body_parts=rigid_body_parts,
         )
     )
     if grip is not None and abs(float(grip.entity.center[2]) - (TABLE_Z + geometry["grip_z_m"])) > 1.0e-6:
@@ -489,8 +526,11 @@ def hole_surface_ids(vertices: np.ndarray, ring: dict) -> np.ndarray:
     return loop_ids[radius <= nearest[bins] + 0.0015]
 
 
-def arm_route(sim, geometry: dict, capacity: int, dt: float):
-    """Close on the loop's sides and lift the pads' bottoms ``LIFT_ABOVE`` over the rod's top."""
+def arm_route(sim, geometry: dict, capacity: int, dt: float, shift=(0.0, 0.0, 0.0)):
+    """Close on the loop's sides and lift the pads' bottoms ``LIFT_ABOVE`` over the rod's top.
+
+    ``shift`` moves the open pads onto the settled loop in ``ARM_AIM`` (:func:`loop_shift`).
+    """
     control = arm_gripper.ArmControl(sim)
     centre = arm_gripper.tcp_for_pads(
         np.asarray(rss.get_cell(CELL).surface_frame[:3], dtype=np.float64)
@@ -501,48 +541,143 @@ def arm_route(sim, geometry: dict, capacity: int, dt: float):
     lift = geometry["rod_z_m"] + geometry["rod_radius_m"] + LIFT_ABOVE - PAD_CLEARANCE
 
     def tcp_at(time: float) -> np.ndarray:
-        return centre + np.array((0.0, 0.0, lift * smooth(time, *ARM_LIFT)))
+        return (
+            centre + np.asarray(shift) * smooth(time, *ARM_AIM) + np.array((0.0, 0.0, lift * smooth(time, *ARM_LIFT)))
+        )
 
     def half_gap_at(time: float) -> float:
-        return reach + squeeze - 2.0 * squeeze * smooth(time, *PHASES["close"])
+        return reach + squeeze - 2.0 * squeeze * smooth(time, *ARM_CLOSE)
 
     route = control.plan(quat=arm_gripper.GRASP_QUAT, capacity=capacity, dt=dt, tcp_at=tcp_at, half_gap_at=half_gap_at)
     return control, route
 
 
-def arm_thread_route(control, sim, owned: np.ndarray, ring: dict, geometry: dict, rod_world: np.ndarray, dt: float):
-    """Align the open part of the hole with the rod, slide on, lower, open and withdraw.
+def hole_axis(points: np.ndarray) -> np.ndarray:
+    """The hole's axis: the normal of the plane through its inner surface."""
+    return np.linalg.svd(points - points.mean(axis=0))[2][2]
 
-    The open part is the hole's inner surface below the pads' bottoms; the rod's
-    axis is put midway between that surface's lowest point and the pads, and the
-    lowering stops with the rod's top ``PAD_ROD_GAP`` under the pads.
-    ``rod_world`` is the rod axis in world coordinates (x, free-end y, z).
+
+def axis_angle(quat) -> tuple[np.ndarray, float]:
+    """An xyzw quaternion's rotation axis and angle [rad], the angle in [0, pi]."""
+    quat = np.asarray(quat, dtype=np.float64)
+    quat = quat if quat[3] >= 0.0 else -quat
+    angle = 2.0 * float(np.arccos(np.clip(quat[3], -1.0, 1.0)))
+    norm = float(np.linalg.norm(quat[:3]))
+    return (quat[:3] / norm if norm > 1e-12 else np.array((1.0, 0.0, 0.0))), angle
+
+
+def arm_turn_route(control, owned: np.ndarray, ring: dict, geometry: dict, dt: float):
+    """Turn the hand about the pads' midpoint so the hole's axis lies along the rod (world y).
+
+    Any turn that does so may be followed by a spin about the rod's own axis and still does,
+    so 24 are tried -- 12 spins, the hole facing either way -- and of those the arm reaches
+    within 2 mm of the best, the one that moves its joints least is taken. The fingers must
+    point toward the post: the ring lies near flat in the pinch, so its hole runs along the
+    fingers and the rod runs between them, its free end short of the palm. The joints move
+    least because a turn that swings the base 1.3 rad in half a second (measured) cannot be
+    tracked and throws the toy. Returns the route, the turn (xyzw), which the thread keeps,
+    and what was measured.
     """
     tcp = np.asarray(control.tcp(), dtype=np.float64)
-    low, _ = arm_gripper.pad_bounds(sim)
-    pads_low = float(low[2])
-    points = owned[ring["inner_ids"]]
-    free = points[points[:, 2] < pads_low - 0.001]
-    if len(free) < 3:
-        free = points
+    offset = np.array((0.0, 0.0, arm_gripper.PAD_RISE))
+    pivot = tcp + offset  # the pads' midpoint: the inverse of ``tcp_for_pads``
+    normal = hole_axis(owned[ring["inner_ids"]])
+    normal = normal if normal[1] >= 0.0 else -normal
+    cross = np.cross(normal, (0.0, 1.0, 0.0))
+    align = (
+        arm_gripper.axis_angle_quat(cross, float(np.arccos(np.clip(normal[1], -1.0, 1.0))))
+        if np.linalg.norm(cross) > 1e-9
+        else np.array((0.0, 0.0, 0.0, 1.0))
+    )
+    seed = control.sim.pipeline.state_0.joint_q.numpy().astype(np.float32)
+    options = []
+    for flip in (0.0, np.pi):
+        for spin in np.radians(np.arange(0.0, 360.0, 30.0)):
+            turn = arm_gripper.quat_multiply(
+                arm_gripper.axis_angle_quat((0.0, 1.0, 0.0), spin),
+                arm_gripper.quat_multiply(arm_gripper.axis_angle_quat((1.0, 0.0, 0.0), flip), align),
+            )
+            # Fingers toward the post only, or the rod's post end runs through the palm.
+            if (quat_to_mat(turn) @ np.array((0.0, 0.0, -1.0)))[1] > 0.0:
+                options.append(turn)
+    candidates = []
+    with control.arm.host_fk():
+        for turn in options:
+            quat = arm_gripper.quat_multiply(turn, arm_gripper.GRASP_QUAT)
+            target = pivot - quat_to_mat(turn) @ offset
+            solved = control.arm.solve_q_full(seed, target, quat)
+            position, orientation = control.arm.pose_errors(solved, target, quat)
+            travel = float(np.abs(solved[control.coords] - seed[control.coords]).max())
+            candidates.append((position + 0.05 * orientation, travel, turn))
+    best = min(cost for cost, _, _ in candidates)
+    _, travel, turn = min((c for c in candidates if c[0] <= best + 0.002), key=lambda c: c[1])
+    axis, angle = axis_angle(turn)
+    held = float(geometry["reach_m"]) - float(geometry["grip_squeeze_m"])
+
+    def part(time: float) -> np.ndarray:
+        return arm_gripper.axis_angle_quat(axis, angle * smooth(time, *ARM_TURN))
+
+    def tcp_at(time: float) -> np.ndarray:
+        return pivot - quat_to_mat(part(time)) @ offset
+
+    def quat_at(time: float) -> np.ndarray:
+        return arm_gripper.quat_multiply(part(time), arm_gripper.GRASP_QUAT)
+
+    capacity = int(np.ceil(ARM_TURN_SETTLE / dt)) + 2
+    route = control.plan(quat=quat_at, capacity=capacity, dt=dt, tcp_at=tcp_at, half_gap_at=lambda _: held)
+    info = {
+        "hole_axis": np.round(normal, 3).tolist(),
+        "turn_xyzw": np.round(turn, 4).tolist(),
+        "turn_deg": round(float(np.degrees(angle)), 1),
+        "fingers": np.round(quat_to_mat(turn) @ np.array((0.0, 0.0, -1.0)), 3).tolist(),
+        "ik_cost_m": round(best, 4),
+        "joint_travel_rad": round(travel, 3),
+        "route_error_m": route.worst_position_error_m,
+    }
+    return route, turn, info
+
+
+def arm_thread_route(
+    control, sim, owned: np.ndarray, ring: dict, geometry: dict, rod_world: np.ndarray, dt: float, turn=None
+):
+    """Put the rod's axis through the hole's centre, slide on, lower, open and withdraw.
+
+    The hole's centre is its inner surface's centroid: the pads hold the ring's widest part, so
+    the hole is between them. Aiming past the pads' ends -- the old rule, from when they squeezed
+    the ring's upper half shut -- jammed the rod into the ring (40-170 N on it before the release).
+    The lowering stops with the rod's top ``PAD_ROD_GAP`` under the pads. ``turn`` is the turn
+    (xyzw) the hand made after the hang, which the thread keeps (none: the fingers point straight
+    down). The opened hand withdraws up, square to its pinch axis, so its fingers slide past the
+    rod's sides; backing out along the fingers dragged the loop off the rod's free end.
+    ``rod_world`` is the rod axis in world coordinates (x, free-end y, z).
+    """
+    turn = np.array((0.0, 0.0, 0.0, 1.0)) if turn is None else np.asarray(turn, dtype=np.float64)
+    quat = arm_gripper.quat_multiply(turn, arm_gripper.GRASP_QUAT)
+    pinch = quat_to_mat(quat) @ np.asarray(arm_gripper.CLOSE_AXIS, dtype=np.float64)
+    withdraw = np.array((0.0, 0.0, 1.0)) - pinch[2] * pinch
+    withdraw /= max(float(np.linalg.norm(withdraw)), 1e-9)
+    tcp = np.asarray(control.tcp(), dtype=np.float64)
+    pads_low = float(arm_gripper.pad_corners(sim)[:, 2].min())
+    hole = owned[ring["inner_ids"]].mean(axis=0)
     radius = float(geometry["rod_radius_m"])
-    axis = 0.5 * (pads_low + float(free[:, 2].min()))
-    dx = float(rod_world[0]) - float(free[:, 0].mean())
-    dy = float(rod_world[1]) + THREAD_ENGAGE - float(free[:, 1].mean())
-    dz = float(rod_world[2]) - axis
-    lower = max(0.0, pads_low - PAD_ROD_GAP - radius - axis)
+    dx = float(rod_world[0]) - float(hole[0])
+    dy = float(rod_world[1]) + THREAD_ENGAGE - float(hole[1])
+    dz = float(rod_world[2]) - float(hole[2])
+    lower = max(0.0, pads_low - PAD_ROD_GAP - radius - float(hole[2]))
     capacity = int(np.ceil((ARM_THREAD["withdraw"][1] + 0.5) / dt)) + 2
     held = float(geometry["reach_m"]) - float(geometry["grip_squeeze_m"])
 
     def tcp_at(time: float) -> np.ndarray:
-        return tcp + np.array(
-            (
-                dx * smooth(time, *ARM_THREAD["align"]),
-                dy * smooth(time, *ARM_THREAD["thread"]),
-                dz * smooth(time, *ARM_THREAD["align"])
-                - lower * smooth(time, *ARM_THREAD["lower"])
-                + WITHDRAW_Z * smooth(time, *ARM_THREAD["withdraw"]),
+        return (
+            tcp
+            + np.array(
+                (
+                    dx * smooth(time, *ARM_THREAD["align"]),
+                    dy * smooth(time, *ARM_THREAD["thread"]),
+                    dz * smooth(time, *ARM_THREAD["align"]) - lower * smooth(time, *ARM_THREAD["lower"]),
+                )
             )
+            + WITHDRAW_Z * smooth(time, *ARM_THREAD["withdraw"]) * withdraw
         )
 
     def half_gap_at(time: float) -> float:
@@ -550,10 +685,10 @@ def arm_thread_route(control, sim, owned: np.ndarray, ring: dict, geometry: dict
         # already are asks for no force and lets the loop go.
         return held + (OPENED_HALF_GAP - held) * smooth(time, *ARM_THREAD["open"])
 
-    route = control.plan(quat=arm_gripper.GRASP_QUAT, capacity=capacity, dt=dt, tcp_at=tcp_at, half_gap_at=half_gap_at)
+    route = control.plan(quat=quat, capacity=capacity, dt=dt, tcp_at=tcp_at, half_gap_at=half_gap_at)
     info = {
-        "free_points": len(free),
-        "free_height_mm": 1000.0 * (pads_low - float(free[:, 2].min())),
+        "hole_m": np.round(hole, 4).tolist(),
+        "withdraw": np.round(withdraw, 3).tolist(),
         "align_mm": np.round(1000.0 * np.array((dx, dy, dz)), 2).tolist(),
         "lower_mm": 1000.0 * lower,
         "route_error_m": route.worst_position_error_m,
@@ -600,6 +735,10 @@ def run(
     feedback_clamp: float = 0.0,
     surface_contact: bool = False,
     rigid_loop: bool = False,
+    uniform_soft: bool = False,
+    body_scale: float = 1.0,
+    rigid_body_parts: tuple[int, ...] = (),
+    pinch_offset: float = 0.0,
     rod_radius: float = ROD_RADIUS,
 ) -> dict:
     out.mkdir(parents=True, exist_ok=True)
@@ -618,6 +757,9 @@ def run(
         feedback_clamp=feedback_clamp,
         surface_contact=surface_contact,
         rigid_loop=rigid_loop,
+        uniform_soft=uniform_soft,
+        body_scale=body_scale,
+        rigid_body_parts=rigid_body_parts,
         rod_radius=rod_radius,
     )
     surface = np.asarray(rss.get_cell(CELL).surface_frame[:3], dtype=np.float64)
@@ -694,6 +836,7 @@ def run(
         videos = VideoSet(str(out), fps=60, holds=max(1, 60 * render_every // CONTROL_HZ))
         videos.__enter__()
     diagnostics = []
+    trajectory = Trajectory(sim, entity)
     seat_frame = None
     seat_streak = 0
     started = time.perf_counter()
@@ -766,9 +909,20 @@ def run(
                 if arm is not None
                 else [[float(v) for v in body_q[b][:3]] for b in grip.entity.bodies],
             }
+            if rigid_body_parts:
+                row.update(rigid_part_body.frame_record(entity, owned, body_q))
+            trajectory.add(row["time_s"], owned, body_q)
             diagnostics.append(row)
+            if arm is not None and frame + 1 == round(ARM_AIM[0] * CONTROL_HZ):
+                shift = loop_shift(entity, q0, owned) - np.array((0.0, pinch_offset, 0.0))
+                arm, route = arm_route(sim, geometry, thread_frame + 2, control_dt, shift)
+                print(json.dumps({"aim_shift_mm": np.round(1000.0 * shift, 1).tolist()}), flush=True)
             if arm is not None and frame + 1 == thread_frame:
-                route, info = arm_thread_route(arm, sim, owned, ring, geometry, rod_world, control_dt)
+                route, turn, info = arm_turn_route(arm, owned, ring, geometry, control_dt)
+                route_start = frame + 1
+                print(json.dumps({"turn": {"frame": frame + 1, **info}}), flush=True)
+            if arm is not None and frame + 1 == thread_frame + round(ARM_TURN_SETTLE * CONTROL_HZ):
+                route, info = arm_thread_route(arm, sim, owned, ring, geometry, rod_world, control_dt, turn)
                 route_start = frame + 1
                 seat_frame = frame + 1 + round(ARM_THREAD["lower"][1] * CONTROL_HZ)
                 print(json.dumps({"thread": {"frame": frame + 1, **info}}), flush=True)
@@ -813,6 +967,7 @@ def run(
             except Exception as exc:  # recorded, not swallowed
                 video_error = repr(exc)
 
+    trajectory.save(out / "trajectory.npz")
     (out / "diagnostics.json").write_text(json.dumps(diagnostics, indent=2) + "\n")
     (out / "manifest.json").write_text(
         json.dumps(

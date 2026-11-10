@@ -53,14 +53,21 @@ from pathlib import Path
 import arm_gripper
 import newton
 import numpy as np
+import scenery
 from clawhauser_scene import (
+    ARM_AIM,
+    ARM_CLOSE,
     COARSE_BUDGET,
     CONTACT_GAP,
     SELF_CONTACT_RADIUS,
+    Trajectory,
     add_scene_arguments,
     arrangement,
+    build_sim,
     check_build,
     load_toy,
+    loop_shift,
+    physics_for,
     scene_kwargs,
     toy_spec,
 )
@@ -74,10 +81,11 @@ import robosimstudio as rss
 OUTPUT = Path(__file__).resolve().parents[2] / "outputs" / "clawhauser_stuff_into_bottle"
 CONTROL_HZ = PHYSICS.control_hz
 SUBSTEPS = PHYSICS.substeps
-DURATION = 24.5
+DURATION = 20.0
 """Long enough for the grasp, the guarded descent that stalls on the rim, the
 release, and the press that follows the body to the container's floor, and for
-the open and withdraw to finish inside the run.
+the open and withdraw to finish inside the run. With the 4 s carry the arm's last
+motion was at 15.2 s (17.3 s with the old 6 s one); 24.5 s left a still tail.
 """
 BORE_RADIUS = 0.050
 """Inner radius of the container: 100 mm across by default. The body is 110 mm
@@ -226,14 +234,15 @@ plumb in xy 1 s in, but its body keeps drifting under the pinch for another half
 second, and the carry is measured from that pose. Everything after the hang is
 measured (``carry_path``).
 """
-CARRY_TIME = 6.0
+CARRY_TIME = 4.0
 """How long the lateral carry takes [s]. The grasp is 146 mm from the bore's
 axis, measured at the end of the hang, and 2 s of that is 73 mm/s under a toy
 hanging from a free pinch: it lagged the pads by the whole 146 mm and its body
 was 152 mm short of the bore when the descent started, so it jammed on the rim.
-24 mm/s is under the toy's own pendulum response, so it follows the pads.
+4 s (37 mm/s average on a minimum-jerk profile) replaced 6 s once replans started
+from the commanded path: the drops at the carry were its jump, not its speed.
 """
-CARRY_HOLD = 1.0
+CARRY_HOLD = 0.5
 """Still beat after the carry [s]. The pads hold still and the toy settles under
 them, so the descent starts from where the toy is rather than where the pads are.
 """
@@ -261,10 +270,14 @@ def build_scene(
     feedback_clamp: float = 0.0,
     surface_contact: bool = False,
     rigid_loop: bool = False,
+    uniform_soft: bool = False,
+    body_scale: float = 1.0,
+    rigid_body_parts: tuple[int, ...] = (),
     bore: float = BORE_RADIUS,
     push_cap: float = PUSH_LIMIT_N,
 ):
     vertices, tets, labels = load_toy()
+    settings = physics_for(PHYSICS, uniform_soft, rigid_loop, body_scale)
     ring = ring_geometry(vertices, tets, labels)
     ring["body_ids"] = np.unique(tets[labels == 1])
 
@@ -330,7 +343,7 @@ def build_scene(
     print(json.dumps({"geometry": geometry}), flush=True)
 
     physics = arrangement(
-        PHYSICS,
+        settings,
         claw=claw,
         coarse=coarse,
         solver_name=solver_name,
@@ -345,14 +358,16 @@ def build_scene(
 
     # The container: PANELS flat panels whose corners meet on the bore's outer
     # radius, so the inner surface is a faceted bore that never intrudes past the
-    # radius it claims, plus a floor under all of them.
+    # radius it claims, plus a floor under all of them. They collide and are hidden;
+    # a smooth glass cup that touches nothing is drawn in their place.
+    scene.add(scenery.cup(bore=bore, wall=WALL, rim=RIM_Z, floor=FLOOR_Z, at=(TARGET_X, 0.0)))
     glass = [
         scene.add(
             rss.slab(
                 name="container_floor",
                 half=(bore + WALL, bore + WALL, FLOOR_Z / 2.0),
                 at=(TARGET_X, 0.0, FLOOR_Z / 2.0),
-                color=(0.55, 0.68, 0.74),
+                visible=False,
             )
         )
     ]
@@ -377,12 +392,12 @@ def build_scene(
                         float(np.sin(yaw / 2.0)),
                         float(np.cos(yaw / 2.0)),
                     ),
-                    color=(0.62, 0.74, 0.80),
+                    visible=False,
                 )
             )
         )
 
-    obj = scene.add(toy_spec(PHYSICS, pose=pose, quat=quat))
+    obj = scene.add(toy_spec(settings, pose=pose, quat=quat, rigid_body_parts=rigid_body_parts))
     grip = None
     if claw == "claw":
         grip = scene.add(
@@ -414,19 +429,20 @@ def build_scene(
         eye, look_at, fov_y = (0.20, -1.05, 1.32), (0.55, 0.0, 0.92), 50.0
     camera = rss.CameraSpec(name="overview", width=960, height=540, eye=eye, look_at=look_at, fov_y=fov_y)
     scene.add(camera)
-    sim = scene.build(device="cuda:0", warmup=False, use_cuda_graph=False)
+    sim = build_sim(scene, rigid_loop=rigid_loop)
     entity = obj.entity
     geometry.update(
         check_build(
             sim,
             entity,
             tets,
-            PHYSICS,
+            settings,
             claw=claw,
             force_limit=force_limit,
             mu=mu,
             grip_mu=grip_mu,
             rigid_loop=rigid_loop,
+            rigid_body_parts=rigid_body_parts,
         )
     )
     # The shapes, not the entity ranges: a range ends one past its last shape, and
@@ -450,12 +466,23 @@ def arm_centre(geometry: dict) -> np.ndarray:
     return origin + np.asarray(geometry["grip_centre_m"], dtype=np.float64)
 
 
-def waypoints(centre, opened: float, closed: float, capacity: int, dt: float, geometry: dict) -> np.ndarray:
+def waypoints(
+    centre,
+    opened: float,
+    closed: float,
+    capacity: int,
+    dt: float,
+    geometry: dict,
+    close=PHASES["close"],
+    shift=(0.0, 0.0, 0.0),
+) -> np.ndarray:
     """The path to the hang: close, lift, and hold.
 
     ``opened`` and ``closed`` are the mover's own gap at each end. Where the toy
     hangs is not authored: a rim pinch leaves the body off the pads' axis by
     however the hoop folds, so the carry is built from the toy measured after it.
+    The arm closes in ``ARM_CLOSE`` after ``shift`` moves its open pads onto the
+    settled loop (:func:`loop_shift`).
     """
     centre = np.asarray(centre, dtype=np.float64)
     lift = geometry["lift_m"]
@@ -463,8 +490,12 @@ def waypoints(centre, opened: float, closed: float, capacity: int, dt: float, ge
     poses[:, :, 6] = 1.0
     for index in range(capacity):
         time = index * dt
-        gap = opened + (closed - opened) * smooth(time, *PHASES["close"])
-        place = centre + np.array([0.0, 0.0, lift * smooth(time, *PHASES["lift"])])
+        gap = opened + (closed - opened) * smooth(time, *close)
+        place = (
+            centre
+            + np.asarray(shift) * smooth(time, *ARM_AIM)
+            + np.array([0.0, 0.0, lift * smooth(time, *PHASES["lift"])])
+        )
         poses[index, 0, :3] = place + np.array([-gap, 0.0, 0.0])
         poses[index, 1, :3] = place + np.array([gap, 0.0, 0.0])
     return poses
@@ -502,7 +533,7 @@ def carry_path(positions, target, dt: float, capacity: int, geometry: dict, clos
                 centre[2]
                 + raise_m * smooth(time, 0.0, RAISE_TIME)
                 + geometry["lower_m"] * smooth(time, lower_at, descend_at)
-                + max(-DESCEND_RATE * max(0.0, time - descend_at), geometry["descend_m"])
+                + geometry["descend_m"] * smooth(time, descend_at, descend_at - geometry["descend_m"] / DESCEND_RATE)
                 + WITHDRAW_Z * smooth(time, withdraw_at, withdraw_at + 0.5),
             ]
         )
@@ -568,7 +599,7 @@ def chase_path(positions: np.ndarray, dt: float, body_centre: np.ndarray) -> np.
         align = smooth(time, 0.0, ALIGN_TIME)
         cx = centre[0] + (body_centre[0] - centre[0]) * align
         cy = centre[1] + (body_centre[1] - centre[1]) * align
-        drop = -PUSH_RATE * max(0.0, time - ALIGN_TIME)
+        drop = -PUSH_RATE * PUSH_TIME * smooth(time, ALIGN_TIME, fallback)
         rise = WITHDRAW_Z * smooth(time, fallback, fallback + JAM_WITHDRAW)
         poses[index, 0, :3] = np.array([cx - gap, cy, centre[2] + drop + rise])
         poses[index, 1, :3] = np.array([cx + gap, cy, centre[2] + drop + rise])
@@ -603,7 +634,7 @@ def press_path(
     for index in range(count):
         time = index * dt
         gap = start_half_gap + (opened - start_half_gap) * smooth(time, hold_end, open_end)
-        drop = -PRESS_RATE * min(time, press_s)
+        drop = -depth * smooth(time, 0.0, press_s)
         rise = WITHDRAW_Z * smooth(time, open_end, rise_end)
         poses[index, 0, :3] = centre + np.array([-gap, 0.0, drop + rise])
         poses[index, 1, :3] = centre + np.array([gap, 0.0, drop + rise])
@@ -638,6 +669,10 @@ def run(
     feedback_clamp: float = 0.0,
     surface_contact: bool = False,
     rigid_loop: bool = False,
+    uniform_soft: bool = False,
+    body_scale: float = 1.0,
+    rigid_body_parts: tuple[int, ...] = (),
+    pinch_offset: float = 0.0,
     bore: float = BORE_RADIUS,
     push_cap: float = PUSH_LIMIT_N,
 ) -> dict:
@@ -657,6 +692,9 @@ def run(
         feedback_clamp=feedback_clamp,
         surface_contact=surface_contact,
         rigid_loop=rigid_loop,
+        uniform_soft=uniform_soft,
+        body_scale=body_scale,
+        rigid_body_parts=rigid_body_parts,
         bore=bore,
         push_cap=push_cap,
     )
@@ -706,7 +744,13 @@ def run(
         open_gap = float(grip.spec.half_gap)
         capacity = grip.entity.capacity
     plan = waypoints(
-        grip.entity.center if grip is not None else arm_centre(geometry), open_gap, closed_gap, capacity, dt, geometry
+        grip.entity.center if grip is not None else arm_centre(geometry),
+        open_gap,
+        closed_gap,
+        capacity,
+        dt,
+        geometry,
+        close=PHASES["close"] if grip is not None else ARM_CLOSE,
     )
     # The plan's own first sample, printed because a plan is a thing that can be
     # wrong on its own: a ramp read at a negative time once put the jaws 210 mm
@@ -727,6 +771,18 @@ def run(
     )
     arm = None if grip is not None else arm_gripper.ArmControl(sim)
     route, route_start = None, 0
+    path, path_start = None, 0
+
+    def commanded_pads(frame: int) -> np.ndarray:
+        """Where the current path puts the two pads at ``frame`` [m, (2, 3)].
+
+        Every replan starts here, so the motion is continuous. Starting from the
+        measured finger bodies made the arm jump at each one: its finger origins are
+        not its pad points (the tool centre sits ``arm_gripper.PAD_RISE`` off them) and they lag
+        the route, and the jump at the carry shook the toy out of the pinch.
+        """
+        index = min((frame - path_start) * SUBSTEPS, len(path) - 1)
+        return path[index, :, :3].astype(np.float64)
 
     def set_path(poses, *, start: int) -> None:
         """Hand the next stretch of motion to whichever mover the scene has.
@@ -735,7 +791,8 @@ def run(
         movers read it: the claw consumes it per substep, the arm resamples it at
         the control rate and solves IK for it.
         """
-        nonlocal arm, route, route_start
+        nonlocal arm, route, route_start, path, path_start
+        path, path_start = np.asarray(poses), start
         if arm is None:
             grip.entity.set_trajectory(poses)
             return
@@ -774,6 +831,7 @@ def run(
     print(json.dumps({"mass_kg": mass, "weight_n": weight, "rim_z_m": rim}), flush=True)
 
     diagnostics = []
+    trajectory = Trajectory(sim, entity)
     descend_frame = round(PHASES["hang"][1] * CONTROL_HZ)
     jam_frame = None
     chase_frame = None
@@ -805,6 +863,13 @@ def run(
             owned = q[particles]
             if not np.isfinite(owned).all():
                 raise RuntimeError(f"non-finite Clawhauser state at frame {frame}")
+            if arm is not None and frame + 1 == round(ARM_AIM[0] * CONTROL_HZ):
+                shift = loop_shift(entity, q0, owned) - np.array((0.0, pinch_offset, 0.0))
+                set_path(
+                    waypoints(arm_centre(geometry), open_gap, closed_gap, capacity, dt, geometry, ARM_CLOSE, shift),
+                    start=0,
+                )
+                print(json.dumps({"aim_shift_mm": np.round(1000.0 * shift, 1).tolist()}), flush=True)
             det = np.linalg.det(owned[tets[:, 1:]] - owned[tets[:, :1]])
             contacts = sim.pipeline.contacts
             count = int(contacts.soft_contact_count.numpy()[0])
@@ -921,12 +986,13 @@ def run(
                 row["slide_lateral_m"] = grip.entity.slide_lateral_error.numpy().tolist()
                 row["slide_angle_rad"] = grip.entity.slide_angular_error.numpy().tolist()
                 row["applied_carrier"] = grip.entity.applied_carrier.numpy().tolist()
+            trajectory.add(row["time_s"], owned, body_q)
             diagnostics.append(row)
             if frame + 1 == round(PHASES["hang"][1] * CONTROL_HZ):
                 # The toy has hung still: carry the pads so the band that enters
                 # the cup first is over the bore's axis, measured from where the toy
                 # actually hangs rather than from the pose it was grasped in.
-                fingers = np.array([[body_q[b][0], body_q[b][1], body_q[b][2]] for b in finger_bodies])
+                fingers = commanded_pads(frame + 1)
                 pads = 0.5 * (fingers[0] + fingers[1])[:2]
                 # The part that enters first, not the body's centroid: the toy
                 # hangs canted from the pinch, so aiming the centroid put its tail
@@ -981,7 +1047,7 @@ def run(
             jam_streak = jam_streak + 1 if armed and stalled else 0
             if jam_frame is None and jam_streak > 0:
                 jam_frame = frame + 1
-                fingers = np.array([[body_q[b][0], body_q[b][1], body_q[b][2]] for b in finger_bodies])
+                fingers = commanded_pads(frame + 1)
                 body_centre = body_top_centre(owned, ring)[:2]
                 pads = 0.5 * (fingers[0] + fingers[1])[:2]
                 over_bore = float(np.linalg.norm(pads - axis)) < bore
@@ -1028,7 +1094,7 @@ def run(
                 and frame + 1 >= jam_frame + round((JAM_RELEASE + SETTLE_TIME) * CONTROL_HZ)
             ):
                 chase_frame = frame + 1
-                fingers = np.array([[body_q[b][0], body_q[b][1], body_q[b][2]] for b in finger_bodies])
+                fingers = commanded_pads(frame + 1)
                 settled = body_top_centre(owned, ring)[:2]
                 set_path(chase_path(fingers, dt, settled), start=frame + 1)
                 print(
@@ -1053,7 +1119,7 @@ def run(
             ):
                 body_contact_seen = True
                 press_frame = frame + 1
-                fingers = np.array([[body_q[b][0], body_q[b][1], body_q[b][2]] for b in finger_bodies])
+                fingers = commanded_pads(frame + 1)
                 set_path(press_path(fingers, dt), start=frame + 1)
                 print(
                     json.dumps({"press_contact_frame": press_frame, "depth_m": depth_best}),
@@ -1095,6 +1161,7 @@ def run(
             except Exception as exc:  # recorded, not swallowed
                 video_error = repr(exc)
 
+    trajectory.save(out / "trajectory.npz")
     (out / "diagnostics.json").write_text(json.dumps(diagnostics, indent=2) + "\n")
     (out / "manifest.json").write_text(
         json.dumps(
