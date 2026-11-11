@@ -335,3 +335,21 @@ The one number that held across all three runs is the grip's ceiling: the pads
 sat at 10.1 / 10.2 N along the closing axis for as long as they held, with
 total loads of 11.1 N, and the highest squeeze anywhere was 12.81 N on the rod
 and 16.63 N in the bottle's press.
+
+## USB hub into a box
+
+`usb_hub_box.py` picks the revised USB hub (`assets/usb_hub/`) up by its housing and
+lowers its cable into an open glass box. The housing and the connector with its plug
+are rigid bodies (`rigid_part_body`, the connector and plug one 2 g body); the cable
+is FEM at 20 MPa with 3e4 Pa·s damping. Chebyshev 80, 40 substeps. The pads close
+30 mm from the housing's cable end, lift 400 mm, carry what hangs over the box,
+lower it in and open.
+
+At Chebyshev 80 the plug end clears the bench by 151 mm, the cable's 99th-percentile
+stretch peaks at 1.12, 90% of it ends in the box with the housing, and no tet
+inverts. VBD 80 lets the housing slip out of the pads; VBD 120 and Chebyshev 60 are
+the fewest iterations that still carry it.
+
+```bash
+python examples/10_heterogeneous/usb_hub_box.py --out OUT --render-every 2
+```
