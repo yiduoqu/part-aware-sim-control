@@ -1,0 +1,255 @@
+{
+  "schema_version": "hag4r-agentic-gpt-staged-material-inference-v1",
+  "image_path": "/workspace/HAG4R-runpod/outputs/agentic_asset_refinement/dev20_diagno_and_reroute_Part2_10_class_685_usb_hub_instance_5b08a25c_yiduo_20260817_091507/revisions/revision_0001/omnipart/026/mesh_combined_part_labels_top.png",
+  "processed_image_path": "/workspace/HAG4R-runpod/outputs/agentic_asset_refinement/dev20_diagno_and_reroute_Part2_10_class_685_usb_hub_instance_5b08a25c_yiduo_20260817_091507/revisions/revision_0001/segmentation/026/026_white_bg.png",
+  "part_colors_path": "/workspace/HAG4R-runpod/outputs/agentic_asset_refinement/dev20_diagno_and_reroute_Part2_10_class_685_usb_hub_instance_5b08a25c_yiduo_20260817_091507/revisions/revision_0001/omnipart/026/part_labels.npz",
+  "num_parts": 4,
+  "inferred_object_name": "USB hub with attached cable",
+  "geometry_inference": {
+    "inferred_object_name": "USB hub with attached cable",
+    "predictions": [
+      {
+        "attachment_pattern": "primary body with one cable-root connection and a visible terminal opening",
+        "geometric_category": "rounded rectangular housing",
+        "geometry_description": "large elongated rectangular body with softened bevels and a dark port opening at one end; the cable-root attachment is at the opposite end",
+        "part_color_rgb": [
+          141.0,
+          211.0,
+          199.0
+        ],
+        "part_index": 0,
+        "relative_size": "large"
+      },
+      {
+        "attachment_pattern": "continuous elongated connector path attached to the hub at one end and the inline connector/terminal assembly at the other",
+        "geometric_category": "long flexible cable",
+        "geometry_description": "slender curved loop-like cable spanning from the hub housing toward the distal connector assembly",
+        "part_color_rgb": [
+          255.0,
+          255.0,
+          179.0
+        ],
+        "part_index": 1,
+        "relative_size": "medium"
+      },
+      {
+        "attachment_pattern": "encloses and joins the cable end to the distal USB-A plug",
+        "geometric_category": "compact inline connector sleeve",
+        "geometry_description": "small compact block around the cable near the distal assembly, with short axial extent and distinct boundary from the cable and plug",
+        "part_color_rgb": [
+          190.0,
+          186.0,
+          218.0
+        ],
+        "part_index": 2,
+        "relative_size": "small"
+      },
+      {
+        "attachment_pattern": "single distal attachment through the inline connector; endpoint remains separate from the cable",
+        "geometric_category": "elongated USB-A plug terminal",
+        "geometry_description": "distinct elongated endpoint body with a broad rectangular plug silhouette beyond the inline connector; visible as a separate distal component in the refreshed views",
+        "part_color_rgb": [
+          251.0,
+          128.0,
+          114.0
+        ],
+        "part_index": 3,
+        "relative_size": "small"
+      }
+    ]
+  },
+  "fill_mode_decision": {
+    "schema_version": "hag4r-material-fill-mode-decision-v1",
+    "inferred_object_name": "USB hub with attached cable",
+    "predictions": [
+      {
+        "fill_mode_evidence": [
+          "large rounded rectangular body occupies a broad solid silhouette in all six indexed views",
+          "the visible port is an end opening on an otherwise body-like housing, not an exposed thin sheet"
+        ],
+        "fill_mode_rationale": "The elongated hub housing is a compact closed body whose structural mass and port-end walls should be represented as a filled volume.",
+        "part_color_rgb": [
+          141.0,
+          211.0,
+          199.0
+        ],
+        "part_index": 0,
+        "volume_fill_mode": "solid_fill"
+      },
+      {
+        "fill_mode_evidence": [
+          "long narrow cable path is continuous from the hub to the distal connector",
+          "the indexed cable region has a compact cross-section rather than a sheet-like surface"
+        ],
+        "fill_mode_rationale": "The cable is a slender continuous flexible body; a filled cylindrical volume preserves its bendable mass and attached load path.",
+        "part_color_rgb": [
+          255.0,
+          255.0,
+          179.0
+        ],
+        "part_index": 1,
+        "volume_fill_mode": "solid_fill"
+      },
+      {
+        "fill_mode_evidence": [
+          "small bounded connector block is visible across multiple views",
+          "the region encloses the cable end and joins the distal plug, indicating a filled connector component"
+        ],
+        "fill_mode_rationale": "The inline connector sleeve is a compact connector body that should retain its solid contact and attachment volume.",
+        "part_color_rgb": [
+          190.0,
+          186.0,
+          218.0
+        ],
+        "part_index": 2,
+        "volume_fill_mode": "solid_fill"
+      },
+      {
+        "fill_mode_evidence": [
+          "distinct elongated plug silhouette has a bounded body across indexed views",
+          "it attaches at one end through the inline connector and must retain endpoint contact volume"
+        ],
+        "fill_mode_rationale": "The USB-A plug is a compact endpoint connector with structural metal/plastic mass, not a hollow decorative shell.",
+        "part_color_rgb": [
+          251.0,
+          128.0,
+          114.0
+        ],
+        "part_index": 3,
+        "volume_fill_mode": "solid_fill"
+      }
+    ]
+  },
+  "geometry_stage_notes": [
+    "Geometry is based on six OmniPart indexed label views; the repaired segmentation keeps the distal USB-A terminal as indexed part 3 with visible appearance evidence."
+  ],
+  "fill_mode_stage_notes": [
+    "All four repaired indexed components are compact volumetric bodies; no thin sheet or shell topology is evidenced in the six label views."
+  ],
+  "semantics_stage_notes": [
+    "The refreshed segmentation makes the distal USB-A terminal an explicit visible indexed part; its metal profile is kept distinct from the flexible cable and rigid hub."
+  ],
+  "stage_attempts": {
+    "geometry": [
+      {
+        "attempt_index": 1,
+        "error": "",
+        "stage": "part_geometry",
+        "status": "success"
+      }
+    ],
+    "fill_mode": [
+      {
+        "attempt_index": 1,
+        "error": "",
+        "stage": "fill_mode",
+        "status": "success"
+      }
+    ],
+    "semantics": [
+      {
+        "attempt_index": 1,
+        "error": "",
+        "stage": "constitutive_parameters",
+        "status": "success"
+      }
+    ],
+    "repair": [
+      {
+        "error": "",
+        "stage": "material_validation",
+        "status": "success"
+      }
+    ]
+  },
+  "predictions": [
+    {
+      "density_kg_m3": 1100,
+      "friction_coefficient": 0.35,
+      "major_material_name": "rigid plastic",
+      "part_color_rgb": [
+        141.0,
+        211.0,
+        199.0
+      ],
+      "part_index": 0,
+      "part_name": "pale_mint_usb_hub_housing",
+      "part_semantics": "elongated rigid hub body containing the port opening and carrying the attached cable; profile=rigid_plastic_hub; tuple density_kg_m3=1100, youngs_modulus_pa=2200000000, poisson_ratio=0.37, friction_coefficient=0.35",
+      "part_texture": "smooth pale mint molded plastic with softly rounded bevels",
+      "poisson_ratio": 0.37,
+      "youngs_modulus_pa": 2200000000,
+      "volume_fill_mode": "solid_fill",
+      "fill_mode_rationale": "The elongated hub housing is a compact closed body whose structural mass and port-end walls should be represented as a filled volume.",
+      "fill_mode_evidence": [
+        "large rounded rectangular body occupies a broad solid silhouette in all six indexed views",
+        "the visible port is an end opening on an otherwise body-like housing, not an exposed thin sheet"
+      ]
+    },
+    {
+      "density_kg_m3": 1100,
+      "friction_coefficient": 0.9,
+      "major_material_name": "rubber",
+      "part_color_rgb": [
+        255.0,
+        255.0,
+        179.0
+      ],
+      "part_index": 1,
+      "part_name": "black_flexible_usb_cable",
+      "part_semantics": "long curved cable providing the flexible connection from the hub housing to the distal connector assembly; profile=rubber_flexible; tuple density_kg_m3=1100, youngs_modulus_pa=5000000, poisson_ratio=0.49, friction_coefficient=0.9",
+      "part_texture": "smooth black flexible polymer/rubber jacket",
+      "poisson_ratio": 0.49,
+      "youngs_modulus_pa": 5000000,
+      "volume_fill_mode": "solid_fill",
+      "fill_mode_rationale": "The cable is a slender continuous flexible body; a filled cylindrical volume preserves its bendable mass and attached load path.",
+      "fill_mode_evidence": [
+        "long narrow cable path is continuous from the hub to the distal connector",
+        "the indexed cable region has a compact cross-section rather than a sheet-like surface"
+      ]
+    },
+    {
+      "density_kg_m3": 7850,
+      "friction_coefficient": 0.4,
+      "major_material_name": "metal",
+      "part_color_rgb": [
+        190.0,
+        186.0,
+        218.0
+      ],
+      "part_index": 2,
+      "part_name": "silver_inline_connector",
+      "part_semantics": "compact inline connector sleeve joining the cable to the distal USB-A plug; profile=metal_connector; tuple density_kg_m3=7850, youngs_modulus_pa=200000000000, poisson_ratio=0.3, friction_coefficient=0.4",
+      "part_texture": "smooth silver metallic connector surface",
+      "poisson_ratio": 0.3,
+      "youngs_modulus_pa": 200000000000,
+      "volume_fill_mode": "solid_fill",
+      "fill_mode_rationale": "The inline connector sleeve is a compact connector body that should retain its solid contact and attachment volume.",
+      "fill_mode_evidence": [
+        "small bounded connector block is visible across multiple views",
+        "the region encloses the cable end and joins the distal plug, indicating a filled connector component"
+      ]
+    },
+    {
+      "density_kg_m3": 7850,
+      "friction_coefficient": 0.4,
+      "major_material_name": "metal",
+      "part_color_rgb": [
+        251.0,
+        128.0,
+        114.0
+      ],
+      "part_index": 3,
+      "part_name": "distal_usb_a_metal_terminal",
+      "part_semantics": "distinct distal USB-A plug and exposed terminal endpoint retained as a separate visible part after segmentation repair; profile=metal_connector; tuple density_kg_m3=7850, youngs_modulus_pa=200000000000, poisson_ratio=0.3, friction_coefficient=0.4",
+      "part_texture": "smooth silver metal USB-A plug surface with crisp connector edges",
+      "poisson_ratio": 0.3,
+      "youngs_modulus_pa": 200000000000,
+      "volume_fill_mode": "solid_fill",
+      "fill_mode_rationale": "The USB-A plug is a compact endpoint connector with structural metal/plastic mass, not a hollow decorative shell.",
+      "fill_mode_evidence": [
+        "distinct elongated plug silhouette has a bounded body across indexed views",
+        "it attaches at one end through the inline connector and must retain endpoint contact volume"
+      ]
+    }
+  ]
+}

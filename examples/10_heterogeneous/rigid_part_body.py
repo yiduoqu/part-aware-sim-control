@@ -44,8 +44,8 @@ class RigidPartSoftSpec(HeterogeneousSoftSpec):
     """A :class:`HeterogeneousSoftSpec` whose parts ``rigid_parts`` are built as rigid bodies."""
 
     entity: str = ENTITY
-    rigid_parts: tuple[int, ...] = ()
-    """The part labels simulated as rigid bodies, one body each."""
+    rigid_parts: tuple[int | tuple[int, ...], ...] = ()
+    """The part labels simulated as rigid bodies, one body each; a tuple of labels is one body."""
     attach_stiffness: float = 1.0e4
     """Each node-body attachment's stiffness [N/m]."""
     attach_damping: float = 0.0
@@ -57,7 +57,8 @@ class RigidPartSoftSpec(HeterogeneousSoftSpec):
 
     def __post_init__(self) -> None:
         super().__post_init__()
-        if not self.rigid_parts or len(set(self.rigid_parts)) != len(self.rigid_parts):
+        labels = [label for part in self.rigid_parts for label in (part if isinstance(part, tuple) else (part,))]
+        if not labels or len(set(labels)) != len(labels):
             raise ValueError("rigid_parts must name at least one part, each once")
         if self.attach_stiffness <= 0 or self.attach_damping < 0:
             raise ValueError("attachment stiffness must be positive and damping non-negative")
@@ -69,7 +70,8 @@ class RigidPartSoftSpec(HeterogeneousSoftSpec):
 class RigidPart:
     """One part built as a body: its body index and the nodes tied to it (local particle ids)."""
 
-    part: int
+    part: str
+    """Its label, or its labels joined by ``+``."""
     body: int
     nodes: np.ndarray
     seam: np.ndarray
@@ -108,7 +110,8 @@ class EntityRigidParts(EntityHeterogeneousSoft):
         n = len(self.source_vertices)
         start = int(builder.particle_count) - n
         x = np.array([[float(c) for c in p] for p in builder.particle_q[start : start + n]], dtype=np.float64)
-        rigid = np.isin(labels, spec.rigid_parts)
+        groups = [part if isinstance(part, tuple) else (part,) for part in spec.rigid_parts]
+        rigid = np.isin(labels, [label for group in groups for label in group])
         volume = np.abs(np.linalg.det(x[tets[:, 1:]] - x[tets[:, :1]])) / 6.0
 
         def nodal(per_tet: np.ndarray) -> np.ndarray:
@@ -124,8 +127,9 @@ class EntityRigidParts(EntityHeterogeneousSoft):
         scale = spec.part_stiffness_scale
         t0 = self.tet_range[0]
         self.rigid_parts = []
-        for part in spec.rigid_parts:
-            rows = labels == part
+        for group in groups:
+            part = "+".join(str(label) for label in group)
+            rows = np.isin(labels, group)
             if not rows.any():
                 raise ValueError(f"{spec.name}: no tets in part {part}")
             nodes = np.unique(tets[rows])
