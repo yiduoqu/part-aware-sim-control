@@ -57,6 +57,7 @@ __all__ = [
     "scene_kwargs",
     "set_contact",
     "solver_backend",
+    "tail_grasp",
     "toy_spec",
 ]
 
@@ -190,7 +191,9 @@ class Trajectory:
     """Everything a scene is re-rendered from, saved as ``trajectory.npz``.
 
     Per frame: ``time`` [s], ``particle_q`` [m, (F, N, 3)] the toy's particles and ``body_q``
-    [(F, B, 7), p + xyzw] every body (the arm's links and fingers, a rigid part's body). The toy:
+    [(F, B, 7), p + xyzw] every body (the arm's links and fingers, a rigid part's body), and
+    ``joint_q`` [(F, Q)] every joint coordinate, the arm's angles [rad] and fingers' slides [m],
+    named by ``joint_label`` from ``joint_q_start``. The toy:
     ``tets``, ``part_labels`` and ``surface`` (triangles over toy-local particle ids). Every
     shape: ``shape_body`` (-1: static), ``shape_transform`` (in its body's frame, or the world's
     for a static), ``shape_type`` (``newton.GeoType``), ``shape_scale``, ``shape_color``,
@@ -201,12 +204,13 @@ class Trajectory:
 
     def __init__(self, sim, entity) -> None:
         self.sim, self.entity = sim, entity
-        self.time, self.particle_q, self.body_q = [], [], []
+        self.time, self.particle_q, self.body_q, self.joint_q = [], [], [], []
 
     def add(self, time: float, particle_q: np.ndarray, body_q: np.ndarray) -> None:
         self.time.append(float(time))
         self.particle_q.append(np.asarray(particle_q, dtype=np.float32))
         self.body_q.append(np.asarray(body_q, dtype=np.float32))
+        self.joint_q.append(self.sim.pipeline.state_0.joint_q.numpy().astype(np.float32))
 
     def save(self, path: Path) -> None:
         import newton
@@ -224,6 +228,9 @@ class Trajectory:
             time=np.asarray(self.time),
             particle_q=np.stack(self.particle_q),
             body_q=np.stack(self.body_q),
+            joint_q=np.stack(self.joint_q),
+            joint_label=np.asarray([str(label) for label in model.joint_label]),
+            joint_q_start=model.joint_q_start.numpy(),
             tets=tets,
             part_labels=np.asarray(self.entity.tet_part_labels),
             surface=newton.TetMesh.compute_surface_triangles(tets.ravel()).reshape(-1, 3),
@@ -239,15 +246,34 @@ class Trajectory:
         )
 
 
-def loop_shift(entity, rest: np.ndarray, now: np.ndarray) -> np.ndarray:
-    """How far the loop's centroid moved in the bench plane since ``rest`` [m, (x, y, 0)].
+def loop_shift(entity, rest: np.ndarray, now: np.ndarray, part: int = 2) -> np.ndarray:
+    """How far a part's centroid moved in the bench plane since ``rest`` [m, (x, y, 0)].
 
-    ``rest`` and ``now`` are the toy's particle positions. The arm's pads are aimed at the
-    loop's widest band at rest; moved by this, they are on it where it settled.
+    ``rest`` and ``now`` are the toy's particle positions; ``part`` is the one grasped (2: the
+    loop, 0: the tail). The arm's pads are aimed at it at rest; moved by this, they are on
+    it where it settled.
     """
-    loop = np.unique(entity.source_tets[entity.tet_part_labels == 2])
+    loop = np.unique(entity.source_tets[entity.tet_part_labels == part])
     shift = now[loop].mean(axis=0) - rest[loop].mean(axis=0)
     return np.array((shift[0], shift[1], 0.0))
+
+
+TAIL_FROM_TIP = 0.025
+"""Where a tail grasp closes [m]: this far in from the tail's tip, on its free part where it is
+widest (42 mm); the body starts 60 mm in. At 50 mm the pads held the tail where it meets the body."""
+
+
+def tail_grasp(vertices: np.ndarray, tets: np.ndarray, labels: np.ndarray) -> tuple[np.ndarray, float]:
+    """The tail's slice ``TAIL_FROM_TIP`` in from its tip: its centre in the mesh's x-y plane, and its reach in x.
+
+    The pads close on it from the bench up, as on the loop: the tail sags before the close, and
+    pads raised onto its rest height caught only its top edge.
+    """
+    tail = vertices[np.unique(tets[labels == 0])]
+    y = float(tail[:, 1].min()) + TAIL_FROM_TIP
+    band = tail[np.abs(tail[:, 1] - y) < 0.005]
+    centre = 0.5 * float(band[:, 0].min() + band[:, 0].max())
+    return np.array((centre, y)), float(np.abs(band[:, 0] - centre).max())
 
 
 def load_toy() -> tuple[np.ndarray, np.ndarray, np.ndarray]:
@@ -547,6 +573,9 @@ def add_scene_arguments(parser: argparse.ArgumentParser, *, out: Path, steps: in
         help="one E, Poisson ratio and density (the loop/body mean) over the whole toy",
     )
     parser.add_argument(
+        "--grasp", choices=("loop", "tail"), default="loop", help="what the arm pinches (pick-drop and rod)"
+    )
+    parser.add_argument(
         "--pinch-offset",
         type=float,
         default=0.0,
@@ -588,4 +617,5 @@ def scene_kwargs(args: argparse.Namespace) -> dict:
         "body_scale": args.body_scale,
         "rigid_body_parts": tuple(args.rigid_body_parts),
         "pinch_offset": args.pinch_offset,
+        "grasp": args.grasp,
     }

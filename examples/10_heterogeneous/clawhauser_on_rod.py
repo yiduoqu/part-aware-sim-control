@@ -77,6 +77,7 @@ from clawhauser_scene import (
     loop_shift,
     physics_for,
     scene_kwargs,
+    tail_grasp,
     toy_spec,
 )
 from clawhauser_scene import REFERENCE as PHYSICS
@@ -167,6 +168,17 @@ ARM_LIFT = (1.1, 5.1)
 ARM_HANG_END = 5.9
 """The arm's lift window and the end of its hang [s]: the bottle's 4 s lift, which a soft
 loop settles into instead of sliding out of."""
+TAIL_ENGAGE = 0.070
+"""How far past the rod's free end a tail-held loop is slid [m]: at 35 mm it slid off as the toy tipped."""
+TAIL_SLIDE = (0.0, 3.0)
+"""The tail thread's one straight move [s]: the hole to the rod's height and on past its free end."""
+TAIL_BACK = -0.08
+"""How far a tail lift moves the hand in y [m], away from the rod: the held toy reaches 125 mm
+ahead of the pads, and lifted in place its head rose under the rod."""
+TAIL_HOLE_DROP = 0.135
+"""How far under the pads' centre a tail-held toy's hole hangs [m]: measured, the mean of the
+hetero (held out level) and homo (hanging) toys'; the slide trims the rest. A plumb hang
+(173 mm) overshot the rod by 130 mm."""
 ARM_TURN = (0.0, 2.0)
 """The hand's turn after the hang [s]: about the pads' midpoint, until the hole's axis lies along the rod.
 
@@ -290,6 +302,7 @@ def build_scene(
     uniform_soft: bool = False,
     body_scale: float = 1.0,
     rigid_body_parts: tuple[int, ...] = (),
+    grasp: str = "loop",
     rod_radius: float = ROD_RADIUS,
 ):
     vertices, tets, labels = load_toy()
@@ -309,6 +322,10 @@ def build_scene(
     seat_drop = ring["hole_inradius"] - rod_radius
     rod_z = seat_drop + hole_height + (CLEARANCE if claw == "claw" else ARM_CLEARANCE)
     ring["inner_ids"] = hole_surface_ids(vertices, ring)
+    # By the tail (``--grasp tail``, the arm only), its pads from the bench up.
+    if grasp == "tail" and claw == "claw":
+        raise ValueError("--grasp tail is the arm's")
+    grasp_xy, reach = (hole[:2], ring["side_reach"]) if grasp == "loop" else tail_grasp(vertices, tets, labels)
     # Where the hole's centre sits when the toy hangs on the rod, and how far
     # above that the slide runs. Both are about the hole's centre, so the lift
     # the pads make is their difference and nothing else.
@@ -320,7 +337,8 @@ def build_scene(
         "hole_centre_local": np.round(hole, 4).tolist(),
         "hole_inradius_m": ring["hole_inradius"],
         "hole_inradius_median_m": ring["hole_inradius_median"],
-        "reach_m": ring["side_reach"],
+        "reach_m": reach,
+        "grasp": grasp,
         "pad_half_thickness_m": PAD_HALF_THICKNESS,
         "grip_squeeze_m": squeeze,
         "force_cap_n": force_limit,
@@ -345,8 +363,8 @@ def build_scene(
         "thread_lift_m": THREAD_LIFT,
         "withdraw_z_m": WITHDRAW_Z,
         "grip_centre_m": [
-            SOURCE_X + float(hole[0]),
-            -GRIP_TO_BODY if claw == "claw" else 0.0,
+            SOURCE_X + float(grasp_xy[0]),
+            -GRIP_TO_BODY if claw == "claw" else float(grasp_xy[1] - hole[1]),
             float(grip_z),
         ],
     }
@@ -539,11 +557,14 @@ def arm_route(sim, geometry: dict, capacity: int, dt: float, shift=(0.0, 0.0, 0.
     reach = float(geometry["reach_m"])
     squeeze = float(geometry["grip_squeeze_m"])
     lift = geometry["rod_z_m"] + geometry["rod_radius_m"] + LIFT_ABOVE - PAD_CLEARANCE
+    if geometry["grasp"] == "tail":
+        # The hole's centre to the rod's height, short of its free end; the thread trims both.
+        lift = geometry["rod_z_m"] + TAIL_HOLE_DROP - float(geometry["grip_centre_m"][2])
+    toward = TAIL_BACK if geometry["grasp"] == "tail" else 0.0
 
     def tcp_at(time: float) -> np.ndarray:
-        return (
-            centre + np.asarray(shift) * smooth(time, *ARM_AIM) + np.array((0.0, 0.0, lift * smooth(time, *ARM_LIFT)))
-        )
+        rise = smooth(time, *ARM_LIFT)
+        return centre + np.asarray(shift) * smooth(time, *ARM_AIM) + np.array((0.0, toward * rise, lift * rise))
 
     def half_gap_at(time: float) -> float:
         return reach + squeeze - 2.0 * squeeze * smooth(time, *ARM_CLOSE)
@@ -638,7 +659,14 @@ def arm_turn_route(control, owned: np.ndarray, ring: dict, geometry: dict, dt: f
 
 
 def arm_thread_route(
-    control, sim, owned: np.ndarray, ring: dict, geometry: dict, rod_world: np.ndarray, dt: float, turn=None
+    control,
+    sim,
+    owned: np.ndarray,
+    ring: dict,
+    geometry: dict,
+    rod_world: np.ndarray,
+    dt: float,
+    turn=None,
 ):
     """Put the rod's axis through the hole's centre, slide on, lower, open and withdraw.
 
@@ -650,6 +678,10 @@ def arm_thread_route(
     down). The opened hand withdraws up, square to its pinch axis, so its fingers slide past the
     rod's sides; backing out along the fingers dragged the loop off the rod's free end.
     ``rod_world`` is the rod axis in world coordinates (x, free-end y, z).
+
+    Held by the tail the hand does not turn: its hole already faces along the rod, and it slides
+    there in one straight move over ``TAIL_SLIDE``. A separate align tipped the hetero toy off its
+    level hold and it swung 10 cm under the pinch.
     """
     turn = np.array((0.0, 0.0, 0.0, 1.0)) if turn is None else np.asarray(turn, dtype=np.float64)
     quat = arm_gripper.quat_multiply(turn, arm_gripper.GRASP_QUAT)
@@ -661,13 +693,19 @@ def arm_thread_route(
     hole = owned[ring["inner_ids"]].mean(axis=0)
     radius = float(geometry["rod_radius_m"])
     dx = float(rod_world[0]) - float(hole[0])
-    dy = float(rod_world[1]) + THREAD_ENGAGE - float(hole[1])
+    # Held by the tail, the toy tips over its loop when let go and pulls a short engagement off the end.
+    engage = TAIL_ENGAGE if geometry["grasp"] == "tail" else THREAD_ENGAGE
+    dy = float(rod_world[1]) + engage - float(hole[1])
     dz = float(rod_world[2]) - float(hole[2])
-    lower = max(0.0, pads_low - PAD_ROD_GAP - radius - float(hole[2]))
+    # Held by the tail, the pads are above the hole: no lowering, the toy drops onto its loop.
+    lower = 0.0 if geometry["grasp"] == "tail" else max(0.0, pads_low - PAD_ROD_GAP - radius - float(hole[2]))
     capacity = int(np.ceil((ARM_THREAD["withdraw"][1] + 0.5) / dt)) + 2
     held = float(geometry["reach_m"]) - float(geometry["grip_squeeze_m"])
 
     def tcp_at(time: float) -> np.ndarray:
+        if geometry["grasp"] == "tail":
+            slide = np.array((dx, dy, dz)) * smooth(time, *TAIL_SLIDE)
+            return tcp + slide + WITHDRAW_Z * smooth(time, *ARM_THREAD["withdraw"]) * withdraw
         return (
             tcp
             + np.array(
@@ -738,6 +776,7 @@ def run(
     uniform_soft: bool = False,
     body_scale: float = 1.0,
     rigid_body_parts: tuple[int, ...] = (),
+    grasp: str = "loop",
     pinch_offset: float = 0.0,
     rod_radius: float = ROD_RADIUS,
 ) -> dict:
@@ -760,6 +799,7 @@ def run(
         uniform_soft=uniform_soft,
         body_scale=body_scale,
         rigid_body_parts=rigid_body_parts,
+        grasp=grasp,
         rod_radius=rod_radius,
     )
     surface = np.asarray(rss.get_cell(CELL).surface_frame[:3], dtype=np.float64)
@@ -797,7 +837,7 @@ def run(
     quality = MeshQuality(sim, entity)
     dt = 1.0 / (CONTROL_HZ * SUBSTEPS)
     control_dt = 1.0 / CONTROL_HZ
-    arm, route, route_start = None, None, 0
+    arm, route, route_start, turn = None, None, 0, None
     if grip is None:
         arm, route = arm_route(sim, geometry, thread_frame + 2, control_dt)
         if route.worst_position_error_m > 0.025:
@@ -914,14 +954,17 @@ def run(
             trajectory.add(row["time_s"], owned, body_q)
             diagnostics.append(row)
             if arm is not None and frame + 1 == round(ARM_AIM[0] * CONTROL_HZ):
-                shift = loop_shift(entity, q0, owned) - np.array((0.0, pinch_offset, 0.0))
+                shift = loop_shift(entity, q0, owned, 0 if grasp == "tail" else 2) - np.array((0.0, pinch_offset, 0.0))
                 arm, route = arm_route(sim, geometry, thread_frame + 2, control_dt, shift)
                 print(json.dumps({"aim_shift_mm": np.round(1000.0 * shift, 1).tolist()}), flush=True)
-            if arm is not None and frame + 1 == thread_frame:
+            if arm is not None and frame + 1 == thread_frame and grasp == "loop":
                 route, turn, info = arm_turn_route(arm, owned, ring, geometry, control_dt)
                 route_start = frame + 1
                 print(json.dumps({"turn": {"frame": frame + 1, **info}}), flush=True)
-            if arm is not None and frame + 1 == thread_frame + round(ARM_TURN_SETTLE * CONTROL_HZ):
+            # Held by the tail, the hand slides straight on after the hang, without a turn.
+            if arm is not None and frame + 1 == thread_frame + (
+                round(ARM_TURN_SETTLE * CONTROL_HZ) if grasp == "loop" else 0
+            ):
                 route, info = arm_thread_route(arm, sim, owned, ring, geometry, rod_world, control_dt, turn)
                 route_start = frame + 1
                 seat_frame = frame + 1 + round(ARM_THREAD["lower"][1] * CONTROL_HZ)
