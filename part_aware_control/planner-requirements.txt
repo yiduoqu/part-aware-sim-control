@@ -1,0 +1,7 @@
+# Planner-only dependencies. Install in a separate Python >=3.10 environment.
+# Upstream itself is installed --no-deps using upstream-requirement.txt.
+numpy
+scipy
+Pillow
+python-dotenv
+# Optional Google backend: install google-genai separately.

@@ -1,0 +1,16 @@
+Judge whether this AIRBOT manipulation rollout is physically valid and clean.
+The deterministic gate separately requires measured lift, target placement,
+release and settling, ANDs its result with your answer, and cannot be overridden.
+Use the provided task context, before/after images, executed trace and measurements.
+
+Return success=true only when the intended object was manipulated, the sequence
+is plausible, the object remains on the work surface after release, no collateral
+object was displaced, and no invalid state, penetration catastrophe or fling is
+visible. Deformation of Clawhauser is expected; do not impose rigid uprightness
+on a soft body. Do not infer success solely from the robot holding the object.
+Use actual measurements when images are ambiguous and report concrete remaining
+problems for refinement. Unknown or invalid outcomes should fail.
+
+Return ONLY JSON containing "success" (a JSON boolean), "confidence" (number
+between 0 and 1), "reason" (string), and "remaining" (actionable string, empty if
+valid). Never return the strings "true" or "false" for the success field.

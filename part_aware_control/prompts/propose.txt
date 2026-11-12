@@ -1,0 +1,36 @@
+You are planning a complete AIRBOT pick-and-place in a Newton simulation.
+Return exactly 10 distinct feasible complete action sequences. Each starts from
+THE SAME supplied initial robot/object state and must physically approach, close,
+lift, transport, lower, open, withdraw, and leave the object to settle. No reset,
+teleportation, attachment, or implicit grasp/transport behavior is available.
+
+Instruction: {instruction}
+Scene image: {image_path}
+Context (known simulation state; fields label coordinate frames; metres and xyzw orientations): {context}
+Optional motion guidance: {motion_plan}
+
+All translation deltas use the fixed WORLD axes, never tool axes. Positive z is
+up. Angular deltas are radians about world z. Jaw width is TOTAL opening in metres;
+use the measured AIRBOT maximum from geometry, not a Franka 0.1 m assumption.
+Check object dimensions against the jaw opening and finger geometry before grasp.
+Changing grasp height/yaw/approach/route is allowed. Do not invent a larger gripper.
+
+Each action uses smooth interpolation for max(0.8, displacement_norm/0.06,
+largest_rotation_magnitude/0.5) seconds. Gripper-only commands take 0.8 seconds.
+This schema has no duration field. A zero-displacement PUSH is an explicit
+0.8-second hold. Use holds or incremental moves when the evidence calls for them.
+Keep each complete plan within 60 actions and 180 seconds.
+
+Only these action objects are supported (reasoning string is optional):
+PUSH: type="PUSH", delta_x, delta_y (signed, hold height)
+LIFT: type="LIFT", delta_z (positive upward distance)
+DESCEND: type="DESCEND", delta_z (positive downward distance)
+GRASP: type="GRASP", grasp_width (nonnegative total jaw opening)
+RELEASE: type="RELEASE" (open to AIRBOT maximum)
+ROTATE: type="ROTATE", delta_yaw (signed)
+FLICK: type="FLICK", delta_x, delta_y, delta_z (signed displacement)
+
+Return ONLY a JSON object with key "action_proposals", a list of EXACTLY 10
+objects. Each contains a "description" string and a nonempty "action_sequence"
+list of action objects using the type/parameters above. Each sequence is a full
+independent solution, not one waypoint or a continuation of another candidate.

@@ -1,0 +1,25 @@
+Analyze every accumulated AIRBOT rollout, including measured state, executed
+commands, final images, verifier feedback, and prior failures. Return ONE revised
+COMPLETE action sequence from the original common initial state. Improve the grasp,
+route, distances, orientation or jaw commands using all prior evidence. The worker
+performs only your commanded actions; it has no hidden successful grasp routine.
+
+Coordinates are fixed world-frame metres; +z is up. Measured quaternions are xyzw.
+Jaw widths are TOTAL opening in metres, bounded by supplied AIRBOT geometry.
+Include physical approach, closure, lift, transport, lowering, release, withdrawal.
+The task gate requires measured lift, final placement, clean release and settling.
+
+Each action uses smooth interpolation for max(0.8, displacement_norm/0.06,
+largest_rotation_magnitude/0.5) seconds. Gripper-only commands take 0.8 seconds.
+This schema has no duration field. A move with all six deltas zero is an explicit
+0.8-second hold. Use holds or incremental moves when the evidence calls for them.
+Keep each complete plan within 60 actions and 180 seconds.
+
+Return ONLY JSON with key "action_proposals", a list with EXACTLY ONE object
+containing "description" and a nonempty "action_sequence". Supported actions:
+- "type":"move", with ALL six numeric fields delta_x, delta_y, delta_z,
+  delta_roll, delta_pitch, delta_yaw. Translation deltas are signed WORLD metres;
+  angular deltas are radians; delta_roll and delta_pitch must be 0.
+- "type":"gripper_control", with numeric "width" (total jaw opening in metres).
+Optional "reasoning" strings may explain actions. Never use a 0.1 m Franka aperture
+assumption. Every refinement is an entire fresh-scene plan, not a continuation.

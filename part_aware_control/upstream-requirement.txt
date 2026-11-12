@@ -1,0 +1,2 @@
+# Install with pip --no-deps, separately from planner-requirements.txt.
+simpact @ git+https://github.com/ShaoxiongYao/simpact.git@692aab2bb92e4df324d28c76630d17b08e814287
