@@ -672,10 +672,13 @@ def run(
     uniform_soft: bool = False,
     body_scale: float = 1.0,
     rigid_body_parts: tuple[int, ...] = (),
+    grasp: str = "loop",
     pinch_offset: float = 0.0,
     bore: float = BORE_RADIUS,
     push_cap: float = PUSH_LIMIT_N,
 ) -> dict:
+    if grasp != "loop":
+        raise ValueError("the bottle scene grasps the loop only")
     out.mkdir(parents=True, exist_ok=True)
     sim, obj, grip, camera, ring, glass_shapes, glass_bodies, geometry = build_scene(
         claw=claw,

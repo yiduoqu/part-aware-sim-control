@@ -29,21 +29,20 @@ ASSET = Path(__file__).resolve().parent / "assets" / "airbot_play" / "airbot_pla
 CELL = "bench_075_airbot"
 """``bench_075``'s top, extended behind the arm's mount."""
 
-MOUNT = (-0.22, -0.22, 0.232, 0.0, 0.0, 0.0, 1.0)
+MOUNT = (-0.05, -0.42, 0.232, 0.0, 0.0, 0.0, 1.0)
 """The arm's base in the work-surface frame: on its riser, beside and behind the toy.
 
 At 0.35 m the hand could not stay vertical over the bottle. Off to -y, the hand
 can also turn its fingers along the rod to thread the loop: from (-0.30, 0) that
-pose missed by 47 mm, from here by under 1 mm, with every vertical grasp, lift and
-carry still within 14 mm. On the bench top the lifts missed by 41-90 mm. The riser
-is 236 mm tall so the hand reaches 0.45 m over the rod straight down, where a toy
-held by its tail (``--grasp tail``) brings its loop to the rod; at 136 mm that pose
-missed by 86 mm.
+pose missed by 47 mm. On the bench top the lifts missed by 41-90 mm. From
+(-0.22, -0.22) the hand reached the tail beside the riser and its fingers passed
+through it; from here every grasp, lift and carry is reached within 1 mm and the
+hand stays 195 mm or more off the riser below its top.
 """
 
 PEDESTAL_TOP = 0.236
 PEDESTAL_RADIUS = 0.065
-"""The riser's height above the bench and radius [m]; the toy's nearest point is 73 mm off its axis.
+"""The riser's height above the bench and radius [m].
 
 The base mesh starts 3.9 mm above the body origin, so this is flush with it.
 """

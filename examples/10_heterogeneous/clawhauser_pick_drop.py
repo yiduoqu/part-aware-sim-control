@@ -41,6 +41,7 @@ from clawhauser_scene import (
     loop_shift,
     physics_for,
     scene_kwargs,
+    tail_grasp,
     toy_spec,
 )
 from clawhauser_scene import REFERENCE as PHYSICS
@@ -126,6 +127,7 @@ def build_scene(
     uniform_soft: bool = False,
     body_scale: float = 1.0,
     rigid_body_parts: tuple[int, ...] = (),
+    grasp: str = "loop",
 ):
     vertices, tets, labels = load_toy()
     settings = physics_for(PHYSICS, uniform_soft, rigid_loop, body_scale)
@@ -138,8 +140,12 @@ def build_scene(
     hole = ring["hole_centre_local"]
     base = ring["base_local_y"]
     pose = (SOURCE_X, float(-hole[1]), float(-vertices[:, 2].min()) + 0.001)
+    # By the tail (``--grasp tail``, the arm only), its pads from the bench up.
+    if grasp == "tail" and claw == "claw":
+        raise ValueError("--grasp tail is the arm's")
     grip_z = float(ParallelGripperSpec.pad_half_height + PAD_CLEARANCE)
-    grip = (SOURCE_X + float(hole[0]), 0.0, grip_z)
+    grasp_xy, reach = (hole[:2], ring["side_reach"]) if grasp == "loop" else tail_grasp(vertices, tets, labels)
+    grip = (SOURCE_X + float(grasp_xy[0]), float(grasp_xy[1] - hole[1]), grip_z)
     # The pads start at the bench, not at the loop's modelled height, so the lift
     # grows by that drop and the tail still leaves the bench by the same amount.
     lift = float(LIFT_M + (pose[2] + hole[2]) - grip_z)
@@ -147,7 +153,8 @@ def build_scene(
     geometry = {
         "gripper": "claw" if claw == "claw" else "arm",
         "hole_centre_local": np.round(hole, 4).tolist(),
-        "loop_reach_m": ring["side_reach"],
+        "loop_reach_m": reach,
+        "grasp": grasp,
         "pad_half_thickness_m": PAD_HALF_THICKNESS,
         "grip_squeeze_m": squeeze,
         "grip_z_m": grip_z,
@@ -393,6 +400,7 @@ def run(
     uniform_soft: bool = False,
     body_scale: float = 1.0,
     rigid_body_parts: tuple[int, ...] = (),
+    grasp: str = "loop",
     pinch_offset: float = 0.0,
 ) -> dict:
     out.mkdir(parents=True, exist_ok=True)
@@ -414,6 +422,7 @@ def run(
         uniform_soft=uniform_soft,
         body_scale=body_scale,
         rigid_body_parts=rigid_body_parts,
+        grasp=grasp,
     )
     entity = obj.entity
     particles = entity.particles
@@ -502,7 +511,7 @@ def run(
             body_q = state.body_q.numpy()
             owned = q[particles]
             if arm is not None and frame + 1 == round(ARM_AIM[0] * CONTROL_HZ):
-                shift = loop_shift(entity, q0, owned) - np.array((0.0, pinch_offset, 0.0))
+                shift = loop_shift(entity, q0, owned, 0 if grasp == "tail" else 2) - np.array((0.0, pinch_offset, 0.0))
                 arm, route = arm_route(sim, geometry, steps, 1.0 / CONTROL_HZ, shift)
                 print(json.dumps({"aim_shift_mm": np.round(1000.0 * shift, 1).tolist()}), flush=True)
             det = np.linalg.det(owned[tets[:, 1:]] - owned[tets[:, :1]])
