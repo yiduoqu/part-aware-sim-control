@@ -45,6 +45,7 @@ Run on a CUDA node with Newton 1.8 development and RoboSimStudio on PYTHONPATH.
 from __future__ import annotations
 
 import argparse
+import dataclasses
 import json
 import subprocess
 import time
@@ -57,8 +58,10 @@ import scenery
 from clawhauser_scene import (
     ARM_AIM,
     ARM_CLOSE,
+    BODY_SHEAR_PA,
     COARSE_BUDGET,
     CONTACT_GAP,
+    DAMP_BETA,
     SELF_CONTACT_RADIUS,
     Trajectory,
     add_scene_arguments,
@@ -79,13 +82,25 @@ from parallel_gripper import PUSH_LIMIT_N, ParallelGripperSpec
 import robosimstudio as rss
 
 OUTPUT = Path(__file__).resolve().parents[2] / "outputs" / "clawhauser_stuff_into_bottle"
+SOFT_TOY = dataclasses.replace(
+    PHYSICS,
+    part_overrides=(
+        *PHYSICS.part_overrides,
+        (0, "youngs_modulus_pa", 4.0e3),
+        (1, "youngs_modulus_pa", 2.0e4),
+        (0, "damping_pa_s", DAMP_BETA * BODY_SHEAR_PA),
+        (1, "damping_pa_s", DAMP_BETA * BODY_SHEAR_PA),
+    ),
+)
+"""The heterogeneous toy here: tail 4 and body 20 kPa, a twenty-fifth of the reference's, so the
+push into the cup shows how soft they are. The loop keeps its 5 MPa. Damping follows each tet's
+shear modulus, so it fell with them, to a twenty-fifth; tail and body keep the reference body's
+86 Pa s, as the loop does, so the soft parts do not ring."""
 CONTROL_HZ = PHYSICS.control_hz
 SUBSTEPS = PHYSICS.substeps
-DURATION = 20.0
-"""Long enough for the grasp, the guarded descent that stalls on the rim, the
-release, and the press that follows the body to the container's floor, and for
-the open and withdraw to finish inside the run. With the 4 s carry the arm's last
-motion was at 15.2 s (17.3 s with the old 6 s one); 24.5 s left a still tail.
+DURATION = 22.0
+"""Long enough for the grasp, the descent onto the rim, the release, the push on the
+body and the withdraw to finish inside the run, with the toy still for the last seconds.
 """
 BORE_RADIUS = 0.050
 """Inner radius of the container: 100 mm across by default. The body is 110 mm
@@ -100,6 +115,10 @@ wall is what a slab scene can build, and the facet's chord is what the toy rides
 over on its way in.
 """
 PANELS = 24
+GLASS_MU = 0.3
+"""Toy-on-glass friction. Contact friction mixes as sqrt(toy mu * shape mu), so at the toy's
+mu 2 and the shapes' 1.5 the cup was 1.7: the body wedged in its mouth did not slide under a
+60 N push, and the pads sank 56 mm into it instead."""
 RIM_Z = 0.090
 """Height of the rim above the work surface: the depth the toy can reach."""
 FLOOR_Z = 0.004
@@ -118,7 +137,7 @@ PADS_MAX_Z = 1.11
 """Highest finger height [m, world] the arm reaches with the hand still vertical."""
 APPROACH = 0.004
 """How far it clears the rim when the descent starts."""
-DESCEND_RATE = 0.035
+DESCEND_RATE = 0.045
 """Planned descent speed [m/s]. Slower than a drop and faster than a creep: the
 tail has to find the bore, and the jam has to be a jam rather than an impact.
 """
@@ -128,6 +147,13 @@ JAM_FRAMES = round(0.27 * CONTROL_HZ)
 without it is long enough that the swing of the carried toy, which moves
 its lowest point by tens of millimetres, cannot look like one.
 """
+JAM_TRAVEL = 0.015
+"""The arm's stall: its pads went this much further down [m] and the toy got no deeper. Timed
+instead, the guard fired while the descent was still easing in -- 2 mm in its first 0.3 s --
+and the pads let go of the toy with its body 54 mm over the rim."""
+CHASE_PAST = 0.020
+"""How far below the body's measured top the arm's open pads aim when they come down on it [m];
+the first contact on the way hands over to the push."""
 DROP_CLEARANCE = 0.006
 """Above this the toy is not resting on the bench."""
 TABLE_Z = 0.75
@@ -188,8 +214,6 @@ room it has left above the container's floor stopped the pads while the toy was
 wedged in the mouth (85.3 mm deep, 47 % inside, 0.1 mm of shell penetration, no
 inverted tetrahedra); the same travel at 20 mm/s stalled at 12 mm.
 """
-ARM_PRESS_DEPTH = 0.040
-"""The arm's press depth [m]: it has no force cap, and 130 mm reached 330 N."""
 PRESS_HOLD = 0.5
 """How long the press holds at its deepest pose [s]."""
 JAM_OPEN = 0.6
@@ -224,33 +248,57 @@ PHASES = {
     "close": (0.0, 0.6),
     # The pads hold still once they are closed: the toy settles onto the pinch
     # before the lift loads it.
-    "lift": (1.1, 5.1),
-    "hang": (5.1, 6.6),
+    "lift": (1.1, 4.1),
+    "hang": (4.1, 5.1),
 }
 """The authored part of the path: close, lift, and a hang with no motion, where
 the toy comes off the bench and settles into hanging from the pinch. The hang is
-1.5 s, the still beat the rod scene takes between lift and thread: the toy is
-plumb in xy 1 s in, but its body keeps drifting under the pinch for another half
-second, and the carry is measured from that pose. Everything after the hang is
+1 s: the toy is plumb in xy by then, and what it still drifts under the pinch the
+re-aim before the descent takes out. Everything after the hang is
 measured (``carry_path``).
 """
-CARRY_TIME = 4.0
+CARRY_TIME = 3.5
 """How long the lateral carry takes [s]. The grasp is 146 mm from the bore's
 axis, measured at the end of the hang, and 2 s of that is 73 mm/s under a toy
 hanging from a free pinch: it lagged the pads by the whole 146 mm and its body
 was 152 mm short of the bore when the descent started, so it jammed on the rim.
-4 s (37 mm/s average on a minimum-jerk profile) replaced 6 s once replans started
+3.5 s (42 mm/s average on a minimum-jerk profile) replaced 6 s once replans started
 from the commanded path: the drops at the carry were its jump, not its speed.
 """
-CARRY_HOLD = 0.5
+CARRY_HOLD = 1.0
 """Still beat after the carry [s]. The pads hold still and the toy settles under
 them, so the descent starts from where the toy is rather than where the pads are.
 """
+SWING_WINDOW = round(0.8 * CONTROL_HZ)
+"""Frames the aim is averaged over, before the carry and before the descent: about one period
+of the hanging toy's swing. The uniform toy's tail swings 45 mm either side of where it hangs
+every 0.75 s, so one frame's reading put it anywhere from 7 to 116 mm off the axis."""
+ARM_PINCH_DEPTH = {"hetero": 0.050, "uniform": 0.0}
+"""How far the arm presses the placed toy down by its loop before letting go [m]. Let go on the
+rim, the heterogeneous toy folds over its soft tail within 0.4 s and pulls it out; held
+upright, it is pressed until its widest section (37 mm over the rim when placed) is in. The
+uniform toy's tail braces it in the mouth, so it is let go where it is placed."""
+ARM_PUSH_DEPTH = 0.090
+"""How far the arm's pads push the body past where they first touch it [m]: about the body's
+height over the rim, so the whole toy goes in if it can. The uniform body (2.75 MPa, 10 mm wider
+than the bore) is pushed the same, to see where it stops."""
+ARM_PUSH_LIMIT_N = 55.0
+"""The most the AIRBOT pushes down with [N]: its shoulder's 24 N m over the 0.44 m from the
+shoulder to the cup. The coupling is one-way -- the toy does not push the arm back -- so the push
+stops at this, read from the pads' smoothed load, instead of reaching 372 N."""
+ARM_PUSH_HALF_GAP = 0.020
+"""The arm's pads close to this half gap [m] as they move over the body, so they push its top
+rather than its shoulders."""
+ARM_PUSH_OFF_LOOP = 0.020
+"""How far the arm's push is aimed from the body's top centre, away from the loop [m]. The loop
+(46 mm across) lies flat on the head, and pads 40 mm apart on the centre landed around it and
+lifted the toy out by it as they rose."""
 LOWER_TIME = 0.5
 DESCENT_TIME = 2.5
 """After the hang: slide the hanging toy over the bore, lower it to the approach
-height, then descend [s]. The descent's end is not a boundary, only the ramp's
-bound; what ends it in every working run is the jam guard.
+height while re-aiming it (:func:`reaim`), then descend [s]. The descent's end is
+not a boundary, only the ramp's bound; what ends it in every working run is the jam
+guard, or for the arm the body landing on the rim.
 """
 
 
@@ -277,7 +325,7 @@ def build_scene(
     push_cap: float = PUSH_LIMIT_N,
 ):
     vertices, tets, labels = load_toy()
-    settings = physics_for(PHYSICS, uniform_soft, rigid_loop, body_scale)
+    settings = physics_for(PHYSICS if uniform_soft else SOFT_TOY, uniform_soft, rigid_loop, body_scale)
     ring = ring_geometry(vertices, tets, labels)
     ring["body_ids"] = np.unique(tets[labels == 1])
 
@@ -425,8 +473,9 @@ def build_scene(
         # midpoint between the toy's rest and the bore.
         eye, look_at, fov_y = (0.782, -0.684, 1.197), (0.60, -0.06, 0.93), 45.0
     else:
-        # Three-quarter from the arm's side, wider: reach, bore and press in frame.
-        eye, look_at, fov_y = (0.20, -1.05, 1.32), (0.55, 0.0, 0.92), 50.0
+        # Three-quarter from across the bench, facing the arm: from its side the
+        # riser hid the cup.
+        eye, look_at, fov_y = (1.15, 0.55, 1.25), (0.60, -0.08, 0.92), 50.0
     camera = rss.CameraSpec(name="overview", width=960, height=540, eye=eye, look_at=look_at, fov_y=fov_y)
     scene.add(camera)
     sim = build_sim(scene, rigid_loop=rigid_loop)
@@ -457,6 +506,13 @@ def build_scene(
     # static shape's body cannot name the cup, and its range endpoint is the next
     # entity's first shape (the source of the old 110 pad-toy hits).
     glass_shapes = np.concatenate([np.arange(*part.shapes, dtype=np.int32) for part in glass])
+    soft_mu = settings.soft_mu if mu is None else float(mu)
+    solver = arm_gripper.vbd_solver(sim.pipeline.program.solver)
+    for model in {id(sim.model): sim.model, id(solver.model): solver.model}.values():
+        shape_mu = model.shape_material_mu.numpy()
+        shape_mu[glass_shapes] = GLASS_MU**2 / soft_mu
+        model.shape_material_mu.assign(shape_mu)
+    geometry["glass_mu"] = GLASS_MU
     return sim, obj, grip, camera, ring, glass_shapes, glass_bodies, geometry
 
 
@@ -542,6 +598,19 @@ def carry_path(positions, target, dt: float, capacity: int, geometry: dict, clos
     return poses, descend_at
 
 
+def reaim(poses: np.ndarray, offset: np.ndarray, dt: float, ramp: float) -> np.ndarray:
+    """``poses`` with both pads moved by ``offset`` [m, xy], eased in over ``ramp`` [s].
+
+    The carry is aimed from the toy hanging before it; a toy that hangs canted swings to a
+    new offset under the moving pads, and the uniform one ended 30 mm off the axis and
+    landed on the rim. Measured again over the hold, the residual goes into the lower.
+    """
+    poses = np.array(poses)
+    ease = np.array([smooth(index * dt, 0.0, ramp) for index in range(len(poses))])
+    poses[:, :, :2] += (ease[:, None] * np.asarray(offset, dtype=np.float64))[:, None, :]
+    return poses
+
+
 def body_top_centre(owned: np.ndarray, ring: dict, band: float = 0.020) -> np.ndarray:
     """The body's top patch, where the two pads have to land together.
 
@@ -553,8 +622,10 @@ def body_top_centre(owned: np.ndarray, ring: dict, band: float = 0.020) -> np.nd
     return body[body[:, 2] >= body[:, 2].max() - band].mean(axis=0)
 
 
-def after_jam(positions: np.ndarray, dt: float, closed_half_gap: float) -> np.ndarray:
+def after_jam(positions: np.ndarray, dt: float, closed_half_gap: float, depth: float = 0.0) -> np.ndarray:
     """Open off the loop and hold: gravity seats the toy on the rim.
+
+    With ``depth``, the closed pads first press the toy that far down by its loop and hold.
 
     The pinch cannot push (a 12 mm pad on an 11 mm round cord loses it as soon as
     the pads descend), so the pads open to 68 mm -- outside the loop's 23 mm
@@ -564,17 +635,31 @@ def after_jam(positions: np.ndarray, dt: float, closed_half_gap: float) -> np.nd
     """
     positions = np.asarray(positions, dtype=np.float64)
     centre = 0.5 * (positions[0] + positions[1])
-    count = int(np.ceil((JAM_RELEASE + SETTLE_TIME + 0.1) / dt)) + 2
+    press = pinch_time(depth)
+    count = int(np.ceil((press + JAM_RELEASE + SETTLE_TIME + 0.1) / dt)) + 2
     poses = np.zeros((count, 2, 7), dtype=np.float32)
     poses[:, :, 3:] = (0.0, 0.0, 0.0, 1.0)
     for index in range(count):
-        gap = closed_half_gap + (RELEASE_HALF_GAP - closed_half_gap) * smooth(index * dt, 0.0, JAM_RELEASE)
-        poses[index, 0, :3] = centre + np.array([-gap, 0.0, 0.0])
-        poses[index, 1, :3] = centre + np.array([gap, 0.0, 0.0])
+        time = index * dt
+        gap = closed_half_gap + (RELEASE_HALF_GAP - closed_half_gap) * smooth(time, press, press + JAM_RELEASE)
+        drop = np.array([0.0, 0.0, -depth * smooth(time, 0.0, depth / PRESS_RATE) if depth > 0.0 else 0.0])
+        poses[index, 0, :3] = centre + drop + np.array([-gap, 0.0, 0.0])
+        poses[index, 1, :3] = centre + drop + np.array([gap, 0.0, 0.0])
     return poses
 
 
-def chase_path(positions: np.ndarray, dt: float, body_centre: np.ndarray) -> np.ndarray:
+def pinch_time(depth: float) -> float:
+    """How long :func:`after_jam`'s press by the loop takes, its hold included [s]."""
+    return depth / PRESS_RATE + PRESS_HOLD if depth > 0.0 else 0.0
+
+
+def chase_path(
+    positions: np.ndarray,
+    dt: float,
+    body_centre: np.ndarray,
+    drop: float = PUSH_RATE * PUSH_TIME,
+    half_gap: float = RELEASE_HALF_GAP,
+) -> np.ndarray:
     """From the settled pose: slide over the body's top, then chase it down.
 
     The centre is the one measured after the settle, so the pads are aimed at the
@@ -583,26 +668,32 @@ def chase_path(positions: np.ndarray, dt: float, body_centre: np.ndarray) -> np.
     a claw that descends off-centre lands one pad first and tips the toy off the
     rim. The chase ends at the first pad-particle contact, the handover to
     ``press_path``; a path that reaches its end without one claims no press.
+    ``drop`` is how far it may descend [m].
     """
     positions = np.asarray(positions, dtype=np.float64)
     body_centre = np.asarray(body_centre, dtype=np.float64)[:2]
     centre = 0.5 * (positions[0] + positions[1])
-    fallback = ALIGN_TIME + PUSH_TIME
+    fallback = ALIGN_TIME + drop / PUSH_RATE
     count = int(np.ceil((fallback + JAM_WITHDRAW + JAM_OPEN) / dt)) + 2
     poses = np.zeros((count, 2, 7), dtype=np.float32)
     poses[:, :, 3:] = (0.0, 0.0, 0.0, 1.0)
     for index in range(count):
         time = index * dt
-        gap = RELEASE_HALF_GAP + (OPENED_HALF_GAP - RELEASE_HALF_GAP) * smooth(
-            time, fallback + JAM_WITHDRAW, fallback + JAM_WITHDRAW + JAM_OPEN
-        )
         align = smooth(time, 0.0, ALIGN_TIME)
+        gap = (
+            RELEASE_HALF_GAP
+            + (half_gap - RELEASE_HALF_GAP) * align
+            + (OPENED_HALF_GAP - half_gap) * smooth(time, fallback + JAM_WITHDRAW, fallback + JAM_WITHDRAW + JAM_OPEN)
+        )
         cx = centre[0] + (body_centre[0] - centre[0]) * align
         cy = centre[1] + (body_centre[1] - centre[1]) * align
-        drop = -PUSH_RATE * PUSH_TIME * smooth(time, ALIGN_TIME, fallback)
-        rise = WITHDRAW_Z * smooth(time, fallback, fallback + JAM_WITHDRAW)
-        poses[index, 0, :3] = np.array([cx - gap, cy, centre[2] + drop + rise])
-        poses[index, 1, :3] = np.array([cx + gap, cy, centre[2] + drop + rise])
+        z = (
+            centre[2]
+            - drop * smooth(time, ALIGN_TIME, fallback)
+            + WITHDRAW_Z * smooth(time, fallback, fallback + JAM_WITHDRAW)
+        )
+        poses[index, 0, :3] = np.array([cx - gap, cy, z])
+        poses[index, 1, :3] = np.array([cx + gap, cy, z])
     return poses
 
 
@@ -634,7 +725,7 @@ def press_path(
     for index in range(count):
         time = index * dt
         gap = start_half_gap + (opened - start_half_gap) * smooth(time, hold_end, open_end)
-        drop = -depth * smooth(time, 0.0, press_s)
+        drop = -depth * smooth(time, 0.0, press_s) if depth > 0.0 else 0.0
         rise = WITHDRAW_Z * smooth(time, open_end, rise_end)
         poses[index, 0, :3] = centre + np.array([-gap, 0.0, drop + rise])
         poses[index, 1, :3] = centre + np.array([gap, 0.0, drop + rise])
@@ -836,16 +927,24 @@ def run(
     diagnostics = []
     trajectory = Trajectory(sim, entity)
     descend_frame = round(PHASES["hang"][1] * CONTROL_HZ)
+    aim_frame = None
+    lows = []
     jam_frame = None
     chase_frame = None
     press_frame = None
     shape_body = sim.model.shape_body.numpy()
-    # The arm presses shallower, and opens fully before it rises.
-    arm_press = () if grip is not None else (ARM_PRESS_DEPTH, arm_gripper.OPEN_HALF_GAP)
+    # The arm pushes the body with its pads 40 mm apart, up to its force limit, and opens
+    # fully before it rises.
+    toy = "uniform" if uniform_soft else "hetero"
+    arm_press = () if grip is not None else (ARM_PUSH_HALF_GAP, ARM_PUSH_DEPTH, arm_gripper.OPEN_HALF_GAP)
+    pinch_depth = 0.0 if grip is not None else ARM_PINCH_DEPTH[toy]
+    # The pads' load during the arm's push, averaged as the claw's slide feedback is.
+    push_load, push_capped = 0.0, False
     body_contact_seen = False
     jam_streak = 0
     depth_best = 0.0
     progress_frame = 0
+    progress_pad_z = np.inf
     started = time.perf_counter()
     videos = None
     video_error = None
@@ -991,6 +1090,8 @@ def run(
                 row["applied_carrier"] = grip.entity.applied_carrier.numpy().tolist()
             trajectory.add(row["time_s"], owned, body_q)
             diagnostics.append(row)
+            # The band that enters the cup first, where it hangs this frame.
+            lows.append(owned[owned[:, 2] < owned[:, 2].min() + 0.020, :2].mean(axis=0))
             if frame + 1 == round(PHASES["hang"][1] * CONTROL_HZ):
                 # The toy has hung still: carry the pads so the band that enters
                 # the cup first is over the bore's axis, measured from where the toy
@@ -1000,8 +1101,7 @@ def run(
                 # The part that enters first, not the body's centroid: the toy
                 # hangs canted from the pinch, so aiming the centroid put its tail
                 # 40 mm beside the bore and the body landed on the rim.
-                tail = owned[owned[:, 2] < owned[:, 2].min() + 0.020]
-                body = tail[:, :2].mean(axis=0)
+                body = np.mean(lows[-SWING_WINDOW:], axis=0)
                 target = np.array((BENCH_X + TARGET_X, 0.0)) + (pads - body)
                 # How far the toy's lowest point sits below the rim here, not the
                 # rest mesh's hole height: the toy hangs from a pinched hoop, and
@@ -1017,6 +1117,7 @@ def run(
                 paths, descend = carry_path(fingers, target, dt, capacity, hanging, closed_gap)
                 set_path(paths, start=frame + 1)
                 descend_frame = frame + 1 + round(descend * CONTROL_HZ)
+                aim_frame = descend_frame - round(LOWER_TIME * CONTROL_HZ)
                 print(
                     json.dumps(
                         {
@@ -1029,9 +1130,16 @@ def run(
                     ),
                     flush=True,
                 )
+            if frame + 1 == aim_frame:
+                # The carry's residual, averaged over the hold.
+                offset = axis - np.mean(lows[-SWING_WINDOW:], axis=0)
+                index = min((frame + 1 - path_start) * SUBSTEPS, len(path) - 1)
+                set_path(reaim(path[index:], offset, dt, LOWER_TIME), start=frame + 1)
+                print(json.dumps({"aim_frame": aim_frame, "reaim_mm": (1000.0 * offset).tolist()}), flush=True)
+            pad_z = float(commanded_pads(frame + 1)[:, 2].mean())
             if row["insertion_depth_m"] > depth_best + JAM_STEP:
                 depth_best = row["insertion_depth_m"]
-                progress_frame = frame
+                progress_frame, progress_pad_z = frame, pad_z
             elif depth_best <= 0.0:
                 # The toy is still above the rim, so there is nothing to stall yet
                 # and the progress clock has to move with the descent. Left at
@@ -1041,12 +1149,20 @@ def run(
                 # second frame, jaw contacts 0, depth 0.0 -- after which the pads
                 # held in mid-air, the toy fell when they opened, and its body was
                 # crushed against the bench (J -1.002, 20 frames inverted).
-                progress_frame = frame
+                progress_frame, progress_pad_z = frame, pad_z
             # Armed once the toy's own lowest point is under the rim: before that
             # the depth is the claw's descent and cannot stall.
             armed = depth_best > 0.0 and frame >= descend_frame
             # A toy still sliding in when the descent runs out is pressed from there.
             stalled = frame - progress_frame >= JAM_FRAMES or frame + 1 >= descend_frame + DESCENT_TIME * CONTROL_HZ
+            if grip is None:
+                # The arm places the toy: it stops as its body lands on the rim, before the descent
+                # squeezes it into the mouth, from where it springs back out once let go.
+                stalled = (
+                    progress_pad_z - pad_z >= JAM_TRAVEL
+                    or float(owned[ring["body_ids"], 2].min()) <= rim
+                    or frame + 1 >= descend_frame + DESCENT_TIME * CONTROL_HZ
+                )
             jam_streak = jam_streak + 1 if armed and stalled else 0
             if jam_frame is None and jam_streak > 0:
                 jam_frame = frame + 1
@@ -1054,22 +1170,17 @@ def run(
                 body_centre = body_top_centre(owned, ring)[:2]
                 pads = 0.5 * (fingers[0] + fingers[1])[:2]
                 over_bore = float(np.linalg.norm(pads - axis)) < bore
-                # The arm's toy hangs canted, so its pads are off the bore when the
-                # tail is in; it presses with the pinch either way.
-                if over_bore or grip is None:
+                # The arm lets go and pushes the body from above (``chase_path``).
+                if over_bore and grip is not None:
                     # Stalled over the bore with the pinch still on the loop: this
                     # is the press's cue, not the release's. Opening here drops the
                     # toy -- measured, it tipped off the rim, fell to the bench and
                     # slid 0.7 m, and the run finished with 0 % inside.
-                    held = (
-                        float(grip.entity.actual_half_gaps.numpy().mean())
-                        if grip is not None
-                        else arm.aperture() + arm_gripper.PAD_INNER_OFFSET
-                    )
-                    set_path(press_path(fingers, dt, held, *arm_press), start=frame + 1)
+                    held = float(grip.entity.actual_half_gaps.numpy().mean())
+                    set_path(press_path(fingers, dt, held), start=frame + 1)
                     press_frame = frame + 1
                 else:
-                    set_path(after_jam(fingers, dt, closed_gap), start=frame + 1)
+                    set_path(after_jam(fingers, dt, closed_gap, pinch_depth), start=frame + 1)
                 if grip is not None:
                     grip.entity.set_press(True)
                 print(
@@ -1094,12 +1205,20 @@ def run(
                 jam_frame is not None
                 and chase_frame is None
                 and press_frame is None
-                and frame + 1 >= jam_frame + round((JAM_RELEASE + SETTLE_TIME) * CONTROL_HZ)
+                and frame + 1 >= jam_frame + round((pinch_time(pinch_depth) + JAM_RELEASE + SETTLE_TIME) * CONTROL_HZ)
             ):
                 chase_frame = frame + 1
                 fingers = commanded_pads(frame + 1)
                 settled = body_top_centre(owned, ring)[:2]
-                set_path(chase_path(fingers, dt, settled), start=frame + 1)
+                if grip is None:
+                    # Down to the body's measured top, wherever the release left it, off the loop.
+                    away = settled - owned[ring["loop_ids"], :2].mean(axis=0)
+                    settled = settled + ARM_PUSH_OFF_LOOP * away / max(float(np.linalg.norm(away)), 1e-6)
+                    top = float(owned[ring["body_ids"], 2].max())
+                    reach = fingers[:, 2].mean() - ParallelGripperSpec.pad_half_height - (top - CHASE_PAST)
+                    set_path(chase_path(fingers, dt, settled, max(reach, 0.0), ARM_PUSH_HALF_GAP), start=frame + 1)
+                else:
+                    set_path(chase_path(fingers, dt, settled), start=frame + 1)
                 print(
                     json.dumps(
                         {
@@ -1119,11 +1238,15 @@ def run(
                 and not body_contact_seen
                 and frame + 1 > jam_frame + round(0.5 * CONTROL_HZ)
                 and row["body_contacts"] > 0
+                # The arm's fingers brush the body as they open; it pushes once over its top.
+                and (
+                    grip is not None or (chase_frame is not None and frame + 1 > chase_frame + ALIGN_TIME * CONTROL_HZ)
+                )
             ):
                 body_contact_seen = True
                 press_frame = frame + 1
                 fingers = commanded_pads(frame + 1)
-                set_path(press_path(fingers, dt), start=frame + 1)
+                set_path(press_path(fingers, dt, *arm_press), start=frame + 1)
                 print(
                     json.dumps({"press_contact_frame": press_frame, "depth_m": depth_best}),
                     flush=True,
@@ -1149,6 +1272,19 @@ def run(
                 row["peak_torque_nm"] = [0.0, 0.0]
                 row["peak_push_force_n"] = load
                 row["peak_push_torque_nm"] = [0.0, 0.0]
+                if press_frame is not None and not push_capped:
+                    sample = sum(load)
+                    if feedback_clamp > 0.0:
+                        sample = min(sample, feedback_clamp * ARM_PUSH_LIMIT_N)
+                    push_load += feedback_smoothing * (sample - push_load)
+                    if push_load >= ARM_PUSH_LIMIT_N:
+                        # At the arm's limit: stop where it is, hold, open and rise.
+                        push_capped = True
+                        fingers = commanded_pads(frame + 1)
+                        half = 0.5 * float(fingers[1, 0] - fingers[0, 0])
+                        set_path(press_path(fingers, dt, half, 0.0, arm_gripper.OPEN_HALF_GAP), start=frame + 1)
+                        print(json.dumps({"push_capped_frame": frame + 1, "push_load_n": push_load}), flush=True)
+                row["push_load_n"] = push_load
             if frame % 15 == 0 or frame == steps - 1:
                 print(json.dumps(row), flush=True)
             if videos is not None and frame % render_every == 0:
