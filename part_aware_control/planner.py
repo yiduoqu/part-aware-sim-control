@@ -22,6 +22,30 @@ def _write_json(path, value):
     Path(path).write_text(json.dumps(value, indent=2, allow_nan=False) + "\n")
 
 
+def rejected_rollout(error, plan, observation, out_dir):
+    """Retain a known command rejection as feedback, never as a completed run."""
+    if error.get("type") != "InvalidPlan":
+        raise ValueError("only InvalidPlan can become rejected-plan feedback")
+    snapshots = error.get("snapshots", [])
+    reference_only = not snapshots
+    if reference_only:
+        snapshots = [dict(observation["snapshots"][0], label="reference_initial_not_executed")]
+    data = {
+        "execution_status": "rejected",
+        "execution_error": {"type": error["type"], "message": error["message"]},
+        "reference_initial_only": reference_only,
+        "task": observation.get("task", {}),
+        "geometry": observation.get("geometry", {}),
+        "plan": plan.to_dict() if hasattr(plan, "to_dict") else plan,
+        "executed_actions": error.get("executed_actions", []),
+        "snapshots": snapshots,
+        "outcome": {"success": False, "valid": False, "reason": "execution rejected; no completed physical outcome"},
+    }
+    path = Path(out_dir) / "rejected.json"
+    _write_json(path, data)
+    return path
+
+
 def parse_airbot_rollout(rollout_json):
     """Read measured xyzw poses and TOTAL jaw opening, including jaw closure."""
     path = Path(rollout_json)
@@ -30,6 +54,13 @@ def parse_airbot_rollout(rollout_json):
     if not snaps:
         raise ValueError("AIRBOT rollout has no snapshots")
     lines = [f"Rollout: {path.name}; world coordinates in metres; quaternion xyzw."]
+    if data.get("evidence_source"):
+        lines.append("Evidence source: " + data["evidence_source"])
+    if data.get("execution_status") == "rejected":
+        lines.append("EXECUTION REJECTED before completion: " + json.dumps(data["execution_error"]))
+        lines.append("Requested complete plan: " + json.dumps(data.get("plan")))
+        if data.get("reference_initial_only"):
+            lines.append("Initial snapshot is reference-only; this plan executed no simulation actions.")
     verdict = data.get("verdict")
     if verdict is not None:
         lines.append(f"VERIFIER OUTCOME: {'SUCCESS' if verdict['success'] else 'FAILURE'}")
@@ -47,6 +78,8 @@ def parse_airbot_rollout(rollout_json):
         if float(width) < 0:
             raise ValueError("AIRBOT total jaw opening must be nonnegative")
         lines.append(f"Snapshot {index} ({snap.get('label', '')}): measured EE {pos}, xyzw {quat}")
+        if "commanded_width" in grip:
+            lines.append(f"Commanded total jaw opening: {grip['commanded_width']:.6f} m")
         if previous is None:
             lines.append(f"Initial total jaw opening: {width:.6f} m")
         else:
@@ -55,6 +88,8 @@ def parse_airbot_rollout(rollout_json):
             if abs(float(width) - float(previous["width"])) > 1e-6:
                 lines.append(f"gripper_control(width={width:.6f}) [measured total opening]")
         lines.append("Objects: " + json.dumps(snap.get("objects", {})))
+        if "hanging" in snap:
+            lines.append("Measured ring/rod state: " + json.dumps(snap["hanging"]))
         if "mesh_quality" in snap:
             lines.append("Cumulative mesh quality: " + json.dumps(snap["mesh_quality"]))
         previous = grip
@@ -64,12 +99,20 @@ def parse_airbot_rollout(rollout_json):
 
 
 def measured_success_gate(rollout_json):
-    outcome = json.loads(Path(rollout_json).read_text())["outcome"]
+    data = json.loads(Path(rollout_json).read_text())
+    if data.get("execution_status") == "rejected":
+        return False, "Execution rejected; no completed physical outcome: " + json.dumps(data["execution_error"])
+    outcome = data["outcome"]
     # A missing or non-boolean field is a schema error, never physical failure.
     if type(outcome.get("success")) is not bool or type(outcome.get("valid")) is not bool:
         raise ValueError("rollout outcome requires boolean success and valid measurements")
     passed = outcome["success"] and outcome["valid"]
-    return passed, "Measured lift/placement/release/settling: " + json.dumps(outcome)
+    goal = (
+        "lift/rod engagement/rod support/release/settling"
+        if data.get("task", {}).get("name") == "clawhauser_hang"
+        else "lift/placement/release/settling"
+    )
+    return passed, f"Measured {goal}: " + json.dumps(outcome)
 
 
 def _require_pinned_simpact():
@@ -104,12 +147,15 @@ def _require_pinned_simpact():
 class _RecordedGenerator:
     """Bound malformed output to two calls and retain every raw response."""
 
-    def __init__(self, generate_fn, stage, out_dir, events, proposal_class):
+    def __init__(self, generate_fn, stage, out_dir, events, proposal_class, *, allowed_types=None):
         self.generate_fn = generate_fn
         self.stage = stage
         self.out_dir = out_dir
         self.events = events
         self.proposal_class = proposal_class
+        self.allowed_types = (
+            allowed_types if allowed_types is not None else (PROPOSAL_TYPES if stage == "propose" else REFINEMENT_TYPES)
+        )
 
     def __call__(self, contents):
         from PIL import Image
@@ -141,8 +187,7 @@ class _RecordedGenerator:
                     if len(plans) != expected:
                         raise ValueError(f"{self.stage} returned {len(plans)} proposals; required {expected}")
                     proposals = self.proposal_class.from_dict(value)
-                    types = PROPOSAL_TYPES if self.stage == "propose" else REFINEMENT_TYPES
-                    errors = proposals.validate(allowed_types=types)
+                    errors = proposals.validate(allowed_types=self.allowed_types)
                     if errors:
                         raise ValueError("; ".join(errors[:5]))
                     for plan in proposals.action_proposals:
@@ -199,8 +244,10 @@ def run_planning(
         "refinement_iterations": 0,
         "planning_rollouts_attempted": 0,
         "planning_rollouts_completed": 0,
+        "planning_rollouts_rejected": 0,
         "confirmation_rollouts_attempted": 0,
         "confirmation_rollouts_completed": 0,
+        "confirmation_rollouts_rejected": 0,
         "invalid_proposals": [],
         "attempts": [],
         "privileged_initial_state": True,
@@ -210,6 +257,11 @@ def run_planning(
         observation = json.loads(observation_path.read_text())
         initial = observation["snapshots"][0]
         result["task"] = observation.get("task", {})
+        hanging = result["task"].get("name") == "clawhauser_hang"
+        profile = "clawhauser_hang" if hanging else "placement"
+        result["planner_profile"] = profile
+        proposal_types = REFINEMENT_TYPES if hanging else PROPOSAL_TYPES
+        prompt_prefix = "hang_" if hanging else ""
         result["geometry"] = observation.get("geometry", {})
         result["revisions"] = {**observation.get("revisions", {}), "simpact": SIMPACT_REVISION}
         result["initial_state"] = observation.get("initial_state", initial)
@@ -250,19 +302,26 @@ def run_planning(
             elif provider == "codex":
                 from .providers import make_codex_generate_fn
 
-                call_model = make_codex_generate_fn(model, stage)
+                call_model = make_codex_generate_fn(model, stage, profile=profile)
             else:
 
                 def call_model(contents):
                     return gemini_generate(contents, model_id=model)
 
-            return _RecordedGenerator(call_model, stage, raw_dir, events, ProposalSet)
+            return _RecordedGenerator(
+                call_model,
+                stage,
+                raw_dir,
+                events,
+                ProposalSet,
+                allowed_types=proposal_types if stage == "propose" else REFINEMENT_TYPES,
+            )
 
         proposals = VLMProposer(
-            prompt_template=str(PROMPTS / "propose.txt"),
+            prompt_template=str(PROMPTS / f"{prompt_prefix}propose.txt"),
             generate_fn=recorded("propose"),
             model_id=model,
-        ).propose(instruction, photo, context=context, retries=0, allowed_types=PROPOSAL_TYPES)
+        ).propose(instruction, photo, context=context, retries=0, allowed_types=proposal_types)
         result["actual_proposal_count"] = len(proposals.action_proposals)
         proposals.to_json(out / "proposals.json")
         memory = out / "rollouts"
@@ -288,7 +347,11 @@ def run_planning(
             data["source_rollout_path"] = str(path)
             mirror = folder / f"rollout_{index:03d}.json"
             _write_json(mirror, data)
-            result[f"{phase}_rollouts_completed"] += 1
+            if data.get("execution_status") == "rejected":
+                result[f"{phase}_rollouts_rejected"] += 1
+                result["invalid_proposals"].append({"index": index, "phase": phase, **data["execution_error"]})
+            else:
+                result[f"{phase}_rollouts_completed"] += 1
             return mirror
 
         candidates = []
@@ -300,13 +363,13 @@ def run_planning(
         if not candidates:
             raise ValueError("no initial proposal could be executed; optimization cannot start")
         verifier = TaskVerifier(
-            prompt_template=str(PROMPTS / "verify.txt"),
+            prompt_template=str(PROMPTS / f"{prompt_prefix}verify.txt"),
             generate_fn=recorded("verify"),
             model_id=model,
             success_gate=measured_success_gate,
         )
         regressor = RegressOptimizer(
-            prompt_template=str(PROMPTS / "refine.txt"),
+            prompt_template=str(PROMPTS / f"{prompt_prefix}refine.txt"),
             generate_fn=recorded("refine"),
             model_id=model,
             parse_rollout=parse_airbot_rollout,

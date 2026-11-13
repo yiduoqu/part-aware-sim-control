@@ -8,21 +8,21 @@ import shlex
 import subprocess
 from pathlib import Path
 
-from .actions import normalize_plan
+from .actions import InvalidPlan, normalize_plan
 from .tasks import Task, scripted_plan
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("command", choices=("observe", "script", "worker", "plan"))
-    parser.add_argument("--task", choices=("cube", "clawhauser"), default="cube")
+    parser.add_argument("--task", choices=("cube", "clawhauser", "clawhauser_hang"), default="cube")
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--plan", type=Path)
     parser.add_argument("--video", action="store_true", help="Record simulator execution to replay.mp4 at scene speed")
     parser.add_argument("--index", type=int, default=0, help="Rollout identifier for the worker")
     parser.add_argument("--task-config", type=Path, help="Exact Task JSON, shared with the initial observation")
     parser.add_argument("--observation", type=Path)
-    parser.add_argument("--instruction", default="Pick up the object, place it in the target, release and withdraw.")
+    parser.add_argument("--instruction")
     parser.add_argument(
         "--worker-command", help="ARM simulator Python command, e.g. /path/to/python -m part_aware_control"
     )
@@ -40,23 +40,38 @@ def main():
         cube_start=tuple(args.cube_start),
         target_half=(0.06, 0.06) if args.task == "cube" else (0.06, 0.10),
         minimum_lift=0.04 if args.task == "cube" else 0.03,
+        max_ik_error=0.002 if args.task == "clawhauser_hang" else 0.010,
     )
     if args.task_config:
         task = Task(**json.loads(args.task_config.read_text()))
+    if args.command == "script" and task.name == "clawhauser_hang":
+        parser.error("use the native Hanson reference or worker --plan with an explicit hanging sequence")
     if args.command == "plan":
         if not args.observation or not args.worker_command:
             parser.error("plan requires --observation and --worker-command")
         observation = json.loads(args.observation.read_text())
         task = Task(**observation["task"])
+        args.instruction = args.instruction or (
+            "Pick up Clawhauser, thread its ring onto the rod, release and withdraw so it remains hanging."
+            if task.name == "clawhauser_hang"
+            else "Pick up the object, place it in the target, release and withdraw."
+        )
         task_path = args.out / "task.json"
         task_path.write_text(json.dumps(task.to_dict(), indent=2) + "\n")
 
         def rollout_fn(plan, index, out_dir):
-            normalize_plan(plan)  # Preserve invalid-candidate ValueError across the process boundary.
             directory = Path(out_dir)
             directory.mkdir(parents=True, exist_ok=True)
             input_path = directory / "plan.json"
             input_path.write_text(json.dumps(plan.to_dict() if hasattr(plan, "to_dict") else plan, indent=2))
+            try:
+                normalize_plan(plan)
+            except InvalidPlan as error:
+                if task.name != "clawhauser_hang":
+                    raise
+                from .planner import rejected_rollout
+
+                return rejected_rollout({"type": "InvalidPlan", "message": str(error)}, plan, observation, directory)
             command = [
                 *shlex.split(args.worker_command),
                 "worker",
@@ -76,6 +91,10 @@ def main():
                 if error_path.exists():
                     error = json.loads(error_path.read_text())
                     if error["type"] == "InvalidPlan":
+                        if task.name == "clawhauser_hang":
+                            from .planner import rejected_rollout
+
+                            return rejected_rollout(error, plan, observation, directory)
                         raise ValueError(error["message"])
                 raise RuntimeError(f"simulator worker failed; see {directory / 'worker.log'}")
             return directory / "rollout.json"

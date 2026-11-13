@@ -1,0 +1,51 @@
+Analyze every accumulated AIRBOT hanging rollout and propose ONE revised COMPLETE
+plan from the original common initial state. Use executed actions, measured TCP
+poses/apertures, hole center/axis, rod_axis_winding,
+minimum_hole_engagement_m / maximum_hole_engagement_m, ring/rod contacts, upward rod
+support, finger contacts/squeeze, penetration, mesh quality, verdicts and images.
+Explain which stage failed and improve grasp, turn, hole alignment, insertion,
+load transfer, release or withdrawal using that evidence. The worker executes
+only your sequence and has no implicit grasp/thread/alignment/regrasp callback.
+You may change between loop and tail pickup using supplied grasp_candidates and
+matching settled_part_shifts_m. The final ring must hang on the rod regardless
+of the part held during transport. Moves/holds retain the commanded jaw opening.
+
+The goal is a toy suspended by its ring on the rod AFTER release, not table
+placement or a toy still held by the hand. Actual threading requires absolute
+measured rod_axis_winding >=0.5 around the rod axis and the ENTIRE inner contour
+inboard of the free tip: minimum_hole_engagement_m >=0.010 m and
+maximum_hole_engagement_m <=rod_length_m. These gates, actual ring/rod contact,
+at least 90% weight supported by the rod, >=0.020 m whole-toy table clearance and no finger contact must persist during final settling. Keep
+jaws >=0.060 m after release, respect force limits, keep contact penetration
+<=0.0005 m, and avoid mesh inversion/nonfinite states. Use frozen task thresholds
+and all measured failures; do not reinterpret a failed gate as success.
+
+Use the supplied rod free end/axis/radius/length and actual hole inner center,
+normal and inradius. Orient the HOLE for rod entry rather than aligning centroids.
+Use the supplied winding measurement (either sign); you need not compute it.
+The hole-center rod_engagement_m is informational and does not prove that the
+whole hole is threaded. Account for grasp slip and deformation shown in prior
+waypoints. Do not assume that rotating the hand perfectly rotates a rigid ring.
+
+All six deltas are relative to the previous commanded TCP endpoint. Translation
+is signed metres in fixed WORLD axes, +z up. Angular deltas are radians applied
+about extrinsic WORLD X then Y then Z. Nonzero roll/pitch are allowed; measured
+orientations are xyzw. Jaw width is total opening, bounded by AIRBOT geometry.
+For a pad pivot, pad_world = TCP_world + R(q)*pad_midpoint_offset_tool_m. Choose
+TCP_new = desired_pad_world - R(q_new)*pad_midpoint_offset_tool_m and supply the
+translation needed with the rotation. The downward-only TCP/pad world offset
+changes with orientation. The worker interpolates pad midpoint straight between
+these endpoints during turns but does not compute your alignment/pivot target.
+
+Each action uses smooth interpolation for max(0.8, displacement_norm/0.06,
+largest_rotation_magnitude/0.5) seconds; gripper-only commands take 0.8 seconds.
+An all-zero move is an explicit hold. There is no duration field. Keep the entire
+plan within 60 actions and 180 seconds. All grasp, lift, turn, thread, load transfer,
+release and withdrawal actions must be present; this is not a continuation.
+
+Return ONLY JSON with "action_proposals": a list of EXACTLY ONE object with
+"description" and nonempty "action_sequence" using ONLY:
+- "type":"move", ALL six numeric fields delta_x, delta_y, delta_z,
+  delta_roll, delta_pitch, delta_yaw; roll/pitch need not be zero.
+- "type":"gripper_control", numeric "width" (total opening in metres).
+An optional "reasoning" string may explain each action.

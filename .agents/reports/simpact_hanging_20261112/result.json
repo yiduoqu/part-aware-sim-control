@@ -1,0 +1,912 @@
+{
+  "status": "failure",
+  "success": false,
+  "planning_success": false,
+  "confirmation_success": null,
+  "provider": "codex",
+  "model": "gpt-6-sol",
+  "simpact_revision": "692aab2bb92e4df324d28c76630d17b08e814287",
+  "instruction": "Pick up Clawhauser using a loop OR tail grasp from the supplied candidates, lift it clear, orient the ring hole toward the horizontal rod, thread the hole beyond the rod free end, transfer the weight onto the rod, release and withdraw so the toy remains hanging. Supply every action explicitly. The current native loop-grasp reference jammed against the rod, exceeded 0.5 mm penetration, and dropped the toy after release; avoid side-loading the rod or assuming that the deformed hole follows the TCP exactly. Keep the supplied frozen physical gates.",
+  "requested_proposal_count": 10,
+  "actual_proposal_count": 10,
+  "max_refinement_iterations": 3,
+  "refinement_iterations": 3,
+  "planning_rollouts_attempted": 13,
+  "planning_rollouts_completed": 1,
+  "planning_rollouts_rejected": 12,
+  "confirmation_rollouts_attempted": 0,
+  "confirmation_rollouts_completed": 0,
+  "confirmation_rollouts_rejected": 0,
+  "invalid_proposals": [
+    {
+      "index": 0,
+      "phase": "planning",
+      "type": "InvalidPlan",
+      "message": "IK orientation misses by 51.42 degrees"
+    },
+    {
+      "index": 1,
+      "phase": "planning",
+      "type": "InvalidPlan",
+      "message": "IK orientation misses by 53.21 degrees"
+    },
+    {
+      "index": 2,
+      "phase": "planning",
+      "type": "InvalidPlan",
+      "message": "IK orientation misses by 51.41 degrees"
+    },
+    {
+      "index": 3,
+      "phase": "planning",
+      "type": "InvalidPlan",
+      "message": "IK orientation misses by 53.15 degrees"
+    },
+    {
+      "index": 4,
+      "phase": "planning",
+      "type": "InvalidPlan",
+      "message": "IK orientation misses by 52.12 degrees"
+    },
+    {
+      "index": 5,
+      "phase": "planning",
+      "type": "InvalidPlan",
+      "message": "IK orientation misses by 5.67 degrees"
+    },
+    {
+      "index": 6,
+      "phase": "planning",
+      "type": "InvalidPlan",
+      "message": "IK orientation misses by 9.22 degrees"
+    },
+    {
+      "index": 7,
+      "phase": "planning",
+      "type": "InvalidPlan",
+      "message": "IK orientation misses by 6.77 degrees"
+    },
+    {
+      "index": 8,
+      "phase": "planning",
+      "type": "InvalidPlan",
+      "message": "IK orientation misses by 7.97 degrees"
+    },
+    {
+      "index": 9,
+      "phase": "planning",
+      "type": "InvalidPlan",
+      "message": "IK orientation misses by 6.20 degrees"
+    },
+    {
+      "index": 10,
+      "phase": "planning",
+      "type": "InvalidPlan",
+      "message": "IK orientation misses by 19.34 degrees"
+    },
+    {
+      "index": 11,
+      "phase": "planning",
+      "type": "InvalidPlan",
+      "message": "IK orientation misses by 10.71 degrees"
+    }
+  ],
+  "attempts": [
+    {
+      "stage": "verify_candidate",
+      "kind": "candidate",
+      "index": 0,
+      "rollout_path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/recovery/rollouts/rollout_000.json",
+      "verdict": {
+        "success": false,
+        "confidence": 0.99,
+        "reason": "[Execution rejected; no completed physical outcome: {\"type\": \"InvalidPlan\", \"message\": \"IK orientation misses by 51.42 degrees\"}] Execution stopped after the lift because the planned turn missed the IK orientation by 51.42\u00b0. The toy remained in the gripper: rod-axis winding was approximately zero, the entire hole contour was outside the rod, and rod-loop contact and support were zero. Maximum contact penetration reached 0.000565 m, above the 0.0005 m limit. No threading, load transfer, release, or final settling occurred.",
+        "remaining": "Execution rejected; no completed physical outcome: {\"type\": \"InvalidPlan\", \"message\": \"IK orientation misses by 51.42 degrees\"}; Use a reachable turn while tracking the measured deformed hole. Align the full inner contour beyond the rod tip, advance along the rod axis without side loading, verify threading and rod support, then release, withdraw, and confirm stable clearance and compliant contact."
+      }
+    },
+    {
+      "stage": "verify_candidate",
+      "kind": "candidate",
+      "index": 1,
+      "rollout_path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/recovery/rollouts/rollout_001.json",
+      "verdict": {
+        "success": false,
+        "confidence": 0.99,
+        "reason": "[Execution rejected; no completed physical outcome: {\"type\": \"InvalidPlan\", \"message\": \"IK orientation misses by 53.21 degrees\"}] Execution stopped after the lift because the planned wrist orientation missed IK by 53.21\u00b0. The toy was still held by the jaws: rod-axis winding was approximately zero, inner-contour engagement remained negative, and there were no rod-loop contacts or rod support. The measured 0.000551 m contact penetration also exceeded the 0.0005 m limit. No release, withdrawal, or final settling was completed.",
+        "remaining": "Execution rejected; no completed physical outcome: {\"type\": \"InvalidPlan\", \"message\": \"IK orientation misses by 53.21 degrees\"}; Revise the turn to an IK-reachable orientation. Measure the deformed hole pose during the lift, align the whole ring with the rod\u2019s free tip, insert until the full inner contour is inboard, then lower it to transfer at least 90% of its weight to the rod. Keep penetration within 0.0005 m, release to at least 0.060 m jaw opening, withdraw, and verify stable ring support and whole-toy table clearance through the settling window."
+      }
+    },
+    {
+      "stage": "verify_candidate",
+      "kind": "candidate",
+      "index": 2,
+      "rollout_path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/recovery/rollouts/rollout_002.json",
+      "verdict": {
+        "success": false,
+        "confidence": 0.99,
+        "reason": "[Execution rejected; no completed physical outcome: {\"type\": \"InvalidPlan\", \"message\": \"IK orientation misses by 51.41 degrees\"}] Execution stopped after pickup because the planned wrist orientation missed IK by 51.41\u00b0. The toy was lifted clear, but the ring was never threaded: measured winding was approximately zero, the entire inner contour remained beyond the rod tip, and rod-loop contact and support were zero. The jaws still held the toy. Peak contact penetration reached 0.000564 m, above the 0.0005 m limit. There was no release or final settling outcome.",
+        "remaining": "Execution rejected; no completed physical outcome: {\"type\": \"InvalidPlan\", \"message\": \"IK orientation misses by 51.41 degrees\"}; Use a reachable wrist orientation and verify the deformed ring pose after lifting. Align the whole hole with the rod free end, advance until measured winding and full inner-contour engagement pass, then lower to transfer at least 90% of the weight to the rod without excess penetration. Open the jaws to at least 0.060 m, withdraw, and verify clearance and stability throughout settling."
+      }
+    },
+    {
+      "stage": "verify_candidate",
+      "kind": "candidate",
+      "index": 3,
+      "rollout_path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/recovery/rollouts/rollout_003.json",
+      "verdict": {
+        "success": false,
+        "confidence": 0.99,
+        "reason": "[Execution rejected; no completed physical outcome: {\"type\": \"InvalidPlan\", \"message\": \"IK orientation misses by 53.15 degrees\"}] Execution stopped after pickup because the next wrist orientation missed IK by 53.15\u00b0. The toy was lifted but remained gripped; it was never threaded, released, or settled on the rod. Measured winding was 0, the whole inner contour remained beyond the rod tip, rod contact and support were 0, and peak penetration reached 0.000559 m, above the 0.0005 m limit.",
+        "remaining": "Execution rejected; no completed physical outcome: {\"type\": \"InvalidPlan\", \"message\": \"IK orientation misses by 53.15 degrees\"}; Use a reachable wrist turn, then measure the deformed ring pose and align its full opening with the rod tip. Thread the entire inner contour at least 0.010 m inboard without excess penetration, transfer at least 90% of the weight to the rod, open the jaws to at least 0.060 m, withdraw without finger contact, and verify table clearance and stability throughout final settling."
+      }
+    },
+    {
+      "stage": "verify_candidate",
+      "kind": "candidate",
+      "index": 4,
+      "rollout_path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/recovery/rollouts/rollout_004.json",
+      "verdict": {
+        "success": false,
+        "confidence": 0.99,
+        "reason": "[Execution rejected; no completed physical outcome: {\"type\": \"InvalidPlan\", \"message\": \"IK orientation misses by 52.12 degrees\"}] Execution stopped after lifting because the planned wrist orientation missed IK by 52.12\u00b0. The toy was still held by the fingers, with no release or final settling. Measured rod-axis winding was approximately zero, the whole ring contour remained outside the rod tip (engagement \u22120.0587 to \u22120.0088 m), and rod-loop contact and support were zero. Peak contact penetration reached 0.000568 m, exceeding the 0.0005 m limit.",
+        "remaining": "Execution rejected; no completed physical outcome: {\"type\": \"InvalidPlan\", \"message\": \"IK orientation misses by 52.12 degrees\"}; Use a reachable wrist rotation, then align the measured deformed ring hole with the rod tip. Advance until the entire inner contour is 0.010\u20130.120 m along the rod and measured winding reaches |0.5| or more. Transfer at least 90% of the toy\u2019s weight to rod-loop contact, open and withdraw the jaws, and verify clearance, penetration, and stability throughout final settling."
+      }
+    },
+    {
+      "stage": "verify_candidate",
+      "kind": "candidate",
+      "index": 5,
+      "rollout_path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/recovery/rollouts/rollout_005.json",
+      "verdict": {
+        "success": false,
+        "confidence": 0.99,
+        "reason": "[Execution rejected; no completed physical outcome: {\"type\": \"InvalidPlan\", \"message\": \"IK orientation misses by 5.67 degrees\"}] Execution stopped after the lift because the planned wrist orientation missed IK tolerance by 5.67\u00b0. The toy remained gripped, with zero rod-loop contacts and support. Measured winding was near zero, and the entire ring contour remained beyond the rod tip. The tail mesh also inverted during lifting, so the rollout is physically invalid.",
+        "remaining": "Execution rejected; no completed physical outcome: {\"type\": \"InvalidPlan\", \"message\": \"IK orientation misses by 5.67 degrees\"}; Revise the tail grasp and lift to avoid mesh inversion and excessive finger force. Use an IK-feasible turn, align the measured ring hole with the rod, thread its entire inner contour inboard, verify rod load transfer, then release and withdraw. Recheck all gates throughout final settling."
+      }
+    },
+    {
+      "stage": "verify_candidate",
+      "kind": "candidate",
+      "index": 6,
+      "rollout_path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/recovery/rollouts/rollout_006.json",
+      "verdict": {
+        "success": false,
+        "confidence": 0.99,
+        "reason": "[Execution rejected; no completed physical outcome: {\"type\": \"InvalidPlan\", \"message\": \"IK orientation misses by 9.22 degrees\"}] Execution stopped after the lift because the next orientation missed IK by 9.22\u00b0. The toy remained gripped, with no ring\u2013rod contact or support. Measured winding was approximately zero and the entire hole contour was outside the rod. The grasp also exceeded the 0.5 mm penetration limit and inverted part of the mesh. No release or final settling occurred.",
+        "remaining": "Execution rejected; no completed physical outcome: {\"type\": \"InvalidPlan\", \"message\": \"IK orientation misses by 9.22 degrees\"}; Revise the tail grasp to avoid excessive squeeze and mesh inversion. Use a reachable orientation, measure the deformed hole pose, align and thread its full inner contour past the rod tip, then lower until the rod supports the weight. Release, withdraw, and verify clearance, contact, winding, engagement, mesh validity, and settling."
+      }
+    },
+    {
+      "stage": "verify_candidate",
+      "kind": "candidate",
+      "index": 7,
+      "rollout_path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/recovery/rollouts/rollout_007.json",
+      "verdict": {
+        "success": false,
+        "confidence": 0.99,
+        "reason": "[Execution rejected; no completed physical outcome: {\"type\": \"InvalidPlan\", \"message\": \"IK orientation misses by 6.77 degrees\"}] Execution stopped after the lift because the next orientation missed IK tolerance by 6.77\u00b0. The toy was never threaded or released: rod-axis winding was approximately zero, the entire inner contour remained beyond the rod tip (engagement \u22120.094 to \u22120.070 m), and rod-loop contact and support were zero. Peak contact penetration reached 0.000554 m, exceeding the 0.0005 m limit.",
+        "remaining": "Execution rejected; no completed physical outcome: {\"type\": \"InvalidPlan\", \"message\": \"IK orientation misses by 6.77 degrees\"}; Revise the turn to stay within IK tolerance, then align the measured deforming ring with the rod tip. Advance until the full inner contour is at least 0.010 m inboard, seat the ring and confirm rod support of at least 90% of the toy\u2019s weight. Release and withdraw the jaws, then verify clearance, stability, contacts, effort, and penetration throughout final settling."
+      }
+    },
+    {
+      "stage": "verify_candidate",
+      "kind": "candidate",
+      "index": 8,
+      "rollout_path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/recovery/rollouts/rollout_008.json",
+      "verdict": {
+        "success": false,
+        "confidence": 0.99,
+        "reason": "[Execution rejected; no completed physical outcome: {\"type\": \"InvalidPlan\", \"message\": \"IK orientation misses by 7.97 degrees\"}] Execution stopped after the tail lift: the requested turn missed the IK orientation limit by 7.97\u00b0. The ring was unthreaded (winding approximately 0; inner-contour engagement \u22120.111 to \u22120.089 m), rod-loop contact and support were zero, and 32 finger contacts remained. The toy was never released or left hanging.",
+        "remaining": "Execution rejected; no completed physical outcome: {\"type\": \"InvalidPlan\", \"message\": \"IK orientation misses by 7.97 degrees\"}; Use a reachable turn to orient the measured hole toward the rod. Align the deformed ring with the free tip, insert axially until the entire inner contour is 0.010\u20130.120 m inboard, lower until the rod carries at least 90% of the weight, then open the jaws, withdraw, and verify stable clearance and contact after settling."
+      }
+    },
+    {
+      "stage": "verify_candidate",
+      "kind": "candidate",
+      "index": 9,
+      "rollout_path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/recovery/rollouts/rollout_009.json",
+      "verdict": {
+        "success": false,
+        "confidence": 0.99,
+        "reason": "[Execution rejected; no completed physical outcome: {\"type\": \"InvalidPlan\", \"message\": \"IK orientation misses by 6.20 degrees\"}] Execution stopped after the tail lift because the next orientation missed IK by 6.20\u00b0, above the 5\u00b0 limit. The toy was lifted clear but remained gripped. The ring was unthreaded (winding approximately 0; inner-contour engagement \u22120.112 to \u22120.091 m), with no rod-loop contact or support. No release or final settling occurred.",
+        "remaining": "Execution rejected; no completed physical outcome: {\"type\": \"InvalidPlan\", \"message\": \"IK orientation misses by 6.20 degrees\"}; Revise the orientation move to satisfy IK. Then align the measured deformed hole with the rod tip, thread the entire inner contour at least 0.010 m inboard, lower until the ring supports at least 90% of the weight, release and withdraw the jaws, and verify clearance and stability throughout settling."
+      }
+    },
+    {
+      "stage": "verify_refined",
+      "kind": "refined",
+      "index": 10,
+      "rollout_path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/recovery/rollouts/rollout_010.json",
+      "verdict": {
+        "success": false,
+        "confidence": 0.99,
+        "reason": "[Execution rejected; no completed physical outcome: {\"type\": \"InvalidPlan\", \"message\": \"IK orientation misses by 19.34 degrees\"}] The rollout was rejected before completion. After the jaws opened, the toy fell onto the table: rod-axis winding was approximately 0, the entire hole contour was outside the rod (engagement \u22120.052 to \u22120.028 m), and rod support was 0 N. Earlier insertion side-loaded the rod, exceeded the 0.0005 m penetration limit, and inverted the toy mesh.",
+        "remaining": "Execution rejected; no completed physical outcome: {\"type\": \"InvalidPlan\", \"message\": \"IK orientation misses by 19.34 degrees\"}; Revise the turn to satisfy IK and preserve mesh quality. Align the measured hole with the rod, advance until the whole inner contour is at least 0.010 m inboard without excessive contact force, verify upward rod support of at least 90% of the toy\u2019s weight, then release, withdraw, and confirm stable clearance through settling."
+      }
+    },
+    {
+      "stage": "verify_refined",
+      "kind": "refined",
+      "index": 11,
+      "rollout_path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/recovery/rollouts/rollout_011.json",
+      "verdict": {
+        "success": false,
+        "confidence": 0.99,
+        "reason": "[Execution rejected; no completed physical outcome: {\"type\": \"InvalidPlan\", \"message\": \"IK orientation misses by 10.71 degrees\"}] The ring appears threaded and the released toy is clear of the table, but execution was rejected before completion (10.71\u00b0 IK orientation error). The final measured rod support was 0.923 N, below 90% of the 1.177 N weight. Earlier contact penetration reached 0.974 mm, and the mesh recorded an inverted element. No valid final settling window was completed.",
+        "remaining": "Execution rejected; no completed physical outcome: {\"type\": \"InvalidPlan\", \"message\": \"IK orientation misses by 10.71 degrees\"}; Revise the unreachable orientation, reduce force and penetration during insertion and seating, avoid mesh inversion, and complete a release-and-settle rollout with sustained ring support of at least 1.059 N and all frozen gates satisfied."
+      }
+    },
+    {
+      "stage": "verify_refined",
+      "kind": "refined",
+      "index": 12,
+      "rollout_path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/recovery/rollouts/rollout_012.json",
+      "verdict": {
+        "success": false,
+        "confidence": 0.99,
+        "reason": "[Measured lift/rod engagement/rod support/release/settling: {\"success\": false, \"valid\": false, \"lifted\": true, \"placed\": true, \"released\": true, \"supported\": false, \"settled\": false, \"lifted_m\": 0.1605079174041748, \"rod_loop_support_n\": 1.0142185803382628, \"rod_loop_support_fraction\": 0.8620219636775335, \"minimum_final_engagement_m\": 0.047562764286994935, \"minimum_final_hole_engagement_m\": 0.0362282407283783, \"minimum_final_absolute_winding\": 1.0, \"final_clearance_m\": 0.05749656867980957, \"final_position_world_m\": [0.4793205261230469, 0.07890456914901733, 0.9202653765678406], \"final_drift_m\": 0.008839007704301568, \"final_peak_speed_m_s\": 0.053149870215816304, \"mesh_quality\": {\"minimum_J_by_part\": [0.9042258262634277, 0.2391418218612671, 0.4914805293083191], \"inverted_tet_substeps_by_part\": [0, 0, 0], \"nonfinite_tet_substeps_by_part\": [0, 0, 0]}, \"max_contact_penetration_m\": 0.0014766063541173935, \"max_finger_squeeze_n\": 21.7990218512247, \"reason\": \"valid, supported, settled\"}] The ring is threaded and the released toy clears the table, but the rollout fails the physical gates. Final-window rod-loop support is 86.2% of weight, below 90%; drift is 8.84 mm and peak speed is 0.053 m/s. Maximum penetration is 1.48 mm, and finger squeeze reaches 21.8 N, exceeding the limits.",
+        "remaining": "Measured lift/rod engagement/rod support/release/settling: {\"success\": false, \"valid\": false, \"lifted\": true, \"placed\": true, \"released\": true, \"supported\": false, \"settled\": false, \"lifted_m\": 0.1605079174041748, \"rod_loop_support_n\": 1.0142185803382628, \"rod_loop_support_fraction\": 0.8620219636775335, \"minimum_final_engagement_m\": 0.047562764286994935, \"minimum_final_hole_engagement_m\": 0.0362282407283783, \"minimum_final_absolute_winding\": 1.0, \"final_clearance_m\": 0.05749656867980957, \"final_position_world_m\": [0.4793205261230469, 0.07890456914901733, 0.9202653765678406], \"final_drift_m\": 0.008839007704301568, \"final_peak_speed_m_s\": 0.053149870215816304, \"mesh_quality\": {\"minimum_J_by_part\": [0.9042258262634277, 0.2391418218612671, 0.4914805293083191], \"inverted_tet_substeps_by_part\": [0, 0, 0], \"nonfinite_tet_substeps_by_part\": [0, 0, 0]}, \"max_contact_penetration_m\": 0.0014766063541173935, \"max_finger_squeeze_n\": 21.7990218512247, \"reason\": \"valid, supported, settled\"}; Align the measured deformed hole before insertion, reduce side loading and squeeze, then lower gently until the rod carries at least 90% of the weight. Release, withdraw without disturbing the toy, and allow it to settle within the drift and speed limits."
+      }
+    }
+  ],
+  "privileged_initial_state": true,
+  "task": {
+    "name": "clawhauser_hang",
+    "cube_start": [
+      -0.13,
+      0.0
+    ],
+    "target_xy": [
+      0.02,
+      0.0
+    ],
+    "target_half": [
+      0.06,
+      0.1
+    ],
+    "cube_half": 0.02,
+    "minimum_lift": 0.03,
+    "settle_seconds": 2.0,
+    "initial_settle_seconds": 1.0,
+    "settle_window_seconds": 0.5,
+    "max_settled_speed": 0.01,
+    "max_settled_drift": 0.003,
+    "surface_tolerance": 0.002,
+    "max_table_penetration": 0.005,
+    "max_ik_error": 0.002,
+    "max_ik_orientation_error": 0.08726646259971647,
+    "minimum_hang_clearance": 0.02,
+    "minimum_rod_support_fraction": 0.9,
+    "minimum_rod_engagement": 0.01,
+    "max_contact_penetration": 0.0005
+  },
+  "planner_profile": "clawhauser_hang",
+  "geometry": {
+    "gripper": "arm",
+    "hole_centre_local": [
+      0.0033,
+      0.0874,
+      0.0002
+    ],
+    "hole_inradius_m": 0.014785113255838856,
+    "hole_inradius_median_m": 0.01694903175581411,
+    "reach_m": 0.02313200461977851,
+    "grasp": "loop",
+    "pad_half_thickness_m": 0.003,
+    "grip_squeeze_m": 0.016,
+    "force_cap_n": 20.0,
+    "toy_height_m": 0.22072593300927407,
+    "hole_height_m": 0.19785359491255872,
+    "grip_z_m": 0.007,
+    "loop_z_m": 0.037929598167227865,
+    "seat_drop_m": 0.008785113255838856,
+    "rod_z_m": 0.2666387081683976,
+    "rod_free_y_m": 0.03,
+    "lift_m": 0.27585359491255873,
+    "slide_m": 0.07173801839412002,
+    "engagement_m": 0.041738018394120016,
+    "rod_radius_m": 0.006,
+    "seat_z_m": 0.2578535949125587,
+    "thread_z_m": 0.2628535949125587,
+    "thread_lift_m": 0.005,
+    "withdraw_z_m": 0.06,
+    "grip_centre_m": [
+      -0.1266613155167712,
+      0.0,
+      0.007
+    ],
+    "arm": {
+      "gripper": "airbot_play_loop",
+      "finger_effort_limit_n": [
+        20.0,
+        20.0
+      ],
+      "close_travel_m": 0.016,
+      "pad_faces_open_m": 0.08,
+      "pad_faces_closed_m": 0.0,
+      "contact_matching": "sticky",
+      "coupler": "SolverOneWay",
+      "press_budget_n": 60.0
+    },
+    "friction": {
+      "soft_contact_ke": 10000.0,
+      "soft_contact_kd": 10.0,
+      "global_soft_contact_mu": 1.0,
+      "shape_mu": 1.5,
+      "pad_shape_mu": 1.4999999999999998,
+      "pad_toy_mu": 1.224744871391589
+    },
+    "global_soft_contact_mu": 1.0,
+    "physics": "clawhauser_on_rod.build_scene defaults (unchanged)",
+    "material_settings": {
+      "control_hz": 60,
+      "substeps": 20,
+      "contact_ke": 10000.0,
+      "contact_kd": 10.0,
+      "soft_mu": 1.0,
+      "particle_radius": 0.003,
+      "shape_mu": 1.5,
+      "damping_ratio": 0.0005,
+      "part_overrides": [
+        [
+          0,
+          "youngs_modulus_pa",
+          100000.0
+        ],
+        [
+          2,
+          "density_kg_m3",
+          300.0
+        ],
+        [
+          2,
+          "damping_pa_s",
+          86.20689655172414
+        ]
+      ]
+    },
+    "rod_free_end_world_m": [
+      0.4733386844832288,
+      0.03,
+      1.0166387081683976
+    ],
+    "rod_axis_world": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "rod_length_m": 0.12,
+    "rest_surface_z_world_m": 0.753,
+    "weight_n": 1.1765577016291238,
+    "finger_force_tolerance": 0.5,
+    "target_kind": "ring threaded onto rod; rod-supported after release, clear of table",
+    "pose_interpolation": "TCP endpoints in world metres; pad midpoint follows a straight line while wrist rotates",
+    "arrangement": {
+      "control_hz": 60,
+      "substeps": 20,
+      "gravity": -9.81,
+      "use_cuda_graph": false,
+      "backends": [
+        [
+          "articulated",
+          {
+            "solver": "mujoco",
+            "params": [],
+            "substeps": 1
+          }
+        ],
+        [
+          "soft",
+          {
+            "solver": "robosimstudio_materials.chebyshev_acceleration.SolverVBDChebyshev",
+            "params": [
+              [
+                "chebyshev_gamma",
+                1.0
+              ],
+              [
+                "chebyshev_rho",
+                0.95
+              ],
+              [
+                "iterations",
+                160
+              ],
+              [
+                "particle_edge_contact_buffer_size",
+                64
+              ],
+              [
+                "particle_enable_self_contact",
+                true
+              ],
+              [
+                "particle_enable_tile_solve",
+                true
+              ],
+              [
+                "particle_rest_shape_contact_exclusion_radius",
+                0.006
+              ],
+              [
+                "particle_self_contact_margin",
+                0.002
+              ],
+              [
+                "particle_self_contact_radius",
+                0.002
+              ],
+              [
+                "particle_topological_contact_filter_threshold",
+                2
+              ],
+              [
+                "particle_vertex_contact_buffer_size",
+                32
+              ],
+              [
+                "rigid_body_particle_contact_buffer_size",
+                256
+              ]
+            ],
+            "substeps": 1
+          }
+        ],
+        [
+          "rigid",
+          {
+            "solver": "robosimstudio_materials.chebyshev_acceleration.SolverVBDChebyshev",
+            "params": [
+              [
+                "chebyshev_gamma",
+                1.0
+              ],
+              [
+                "chebyshev_rho",
+                0.95
+              ],
+              [
+                "iterations",
+                160
+              ],
+              [
+                "particle_edge_contact_buffer_size",
+                64
+              ],
+              [
+                "particle_enable_self_contact",
+                true
+              ],
+              [
+                "particle_enable_tile_solve",
+                true
+              ],
+              [
+                "particle_rest_shape_contact_exclusion_radius",
+                0.006
+              ],
+              [
+                "particle_self_contact_margin",
+                0.002
+              ],
+              [
+                "particle_self_contact_radius",
+                0.002
+              ],
+              [
+                "particle_topological_contact_filter_threshold",
+                2
+              ],
+              [
+                "particle_vertex_contact_buffer_size",
+                32
+              ],
+              [
+                "rigid_body_particle_contact_buffer_size",
+                256
+              ]
+            ],
+            "substeps": 1
+          }
+        ],
+        [
+          "*",
+          {
+            "solver": "robosimstudio_materials.chebyshev_acceleration.SolverVBDChebyshev",
+            "params": [
+              [
+                "chebyshev_gamma",
+                1.0
+              ],
+              [
+                "chebyshev_rho",
+                0.95
+              ],
+              [
+                "iterations",
+                160
+              ],
+              [
+                "particle_edge_contact_buffer_size",
+                64
+              ],
+              [
+                "particle_enable_self_contact",
+                true
+              ],
+              [
+                "particle_enable_tile_solve",
+                true
+              ],
+              [
+                "particle_rest_shape_contact_exclusion_radius",
+                0.006
+              ],
+              [
+                "particle_self_contact_margin",
+                0.002
+              ],
+              [
+                "particle_self_contact_radius",
+                0.002
+              ],
+              [
+                "particle_topological_contact_filter_threshold",
+                2
+              ],
+              [
+                "particle_vertex_contact_buffer_size",
+                32
+              ],
+              [
+                "rigid_body_particle_contact_buffer_size",
+                256
+              ]
+            ],
+            "substeps": 1
+          }
+        ]
+      ],
+      "coupling": {
+        "method": "one_way",
+        "params": [
+          [
+            "contact_forces",
+            true
+          ],
+          [
+            "slide_feedback",
+            true
+          ],
+          [
+            "slide_feedback_clamp",
+            0.0
+          ],
+          [
+            "slide_feedback_smoothing",
+            1.0
+          ]
+        ]
+      },
+      "collision": {
+        "soft_contact_margin": 0.006,
+        "full_surface_contact": false,
+        "force_sdf": false,
+        "rigid_gap": null,
+        "contact_ke": 10000.0,
+        "contact_kd": 10.0,
+        "rigid_contact_max": 0,
+        "collide_every": 1,
+        "contact_matching": "sticky",
+        "broad_phase": "nxn"
+      },
+      "overrides": []
+    },
+    "max_aperture_m": 0.08,
+    "pad_size_tool_xyz_m": [
+      0.0105,
+      0.004,
+      0.04
+    ],
+    "close_axis_tool": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "finger_effort_limit_n": 20.0,
+    "quaternion_order": "xyzw",
+    "action_frame": "world",
+    "width_convention": "total jaw opening in metres",
+    "surface_origin_world_m": [
+      0.6,
+      0.0,
+      0.75
+    ],
+    "common_initial_tcp_world_m": [
+      0.47,
+      0.0,
+      1.0
+    ],
+    "common_initial_quaternion_xyzw": [
+      0.70710678,
+      0.70710678,
+      0.0,
+      0.0
+    ],
+    "grip_centre_frame": "work_surface, nominal before initial settling",
+    "nominal_grip_centre_world_m": [
+      0.4733386844832288,
+      0.0,
+      0.757
+    ],
+    "tcp_for_pads_offset_world_m": [
+      0.0,
+      0.0,
+      0.014
+    ],
+    "grasp_reference_note": "Choose a loop or tail pickup; final success still requires hanging by the loop. For a downward grasp add the selected nominal pad center, its matching settled_part_shifts_m and tcp_for_pads_offset_world_m. Moves and holds maintain the previous commanded jaw opening; only an explicit gripper_control changes it.",
+    "pad_midpoint_offset_tool_m": [
+      0.0,
+      0.0,
+      0.013999999906030238
+    ],
+    "grasp_candidates": {
+      "loop": {
+        "part_id": 2,
+        "nominal_pad_center_world_m": [
+          0.4733386844832288,
+          0.0,
+          0.757
+        ],
+        "outer_width_m": 0.04626400923955702
+      },
+      "tail": {
+        "part_id": 0,
+        "nominal_pad_center_world_m": [
+          0.47050881339749784,
+          -0.1728535949125587,
+          0.757
+        ],
+        "outer_width_m": 0.04248911476593903
+      }
+    }
+  },
+  "revisions": {
+    "controller": "3393ff5beb6b3be4350a62c655e419cf86e860a2",
+    "newton": "5cd406a10a4d9160132fa115124254005f675d8f",
+    "simpact": "692aab2bb92e4df324d28c76630d17b08e814287"
+  },
+  "initial_state": {
+    "time_s": 1.0000000000000013,
+    "gripper": {
+      "position": [
+        0.4700001427163393,
+        -8.092240144974474e-06,
+        1.0000035715107907
+      ],
+      "orientation": [
+        -0.707103431224823,
+        -0.7071115374565125,
+        2.8883753202535445e-06,
+        6.262682745727943e-06
+      ],
+      "width": 0.07999999821186066,
+      "commanded_width": 0.08
+    },
+    "objects": {
+      "clawhauser_hang": {
+        "position": [
+          0.46943655610084534,
+          -0.08751817047595978,
+          0.7855448722839355
+        ],
+        "minimum_z": 0.7529146671295166,
+        "maximum_z": 0.8253690004348755,
+        "bounds_min": [
+          0.4135533571243286,
+          -0.1951187700033188,
+          0.7529146671295166
+        ],
+        "bounds_max": [
+          0.5235201716423035,
+          0.018498297780752182,
+          0.8253690004348755
+        ],
+        "loop_center_world_m": [
+          0.4693314731121063,
+          -0.013731916435062885,
+          0.7723491191864014
+        ],
+        "hole_center_world_m": [
+          0.47070935368537903,
+          -0.002603067783638835,
+          0.7666398286819458
+        ],
+        "hole_axis_world": [
+          -0.0801868885755539,
+          0.5044497847557068,
+          0.8597095012664795
+        ],
+        "settled_loop_shift_m": [
+          -0.0015735030174255371,
+          -0.0011585569009184837,
+          0.0
+        ],
+        "settled_part_shifts_m": {
+          "loop": [
+            -0.0015735030174255371,
+            -0.0011585569009184837,
+            0.0
+          ],
+          "tail": [
+            -0.003098130226135254,
+            0.0025932341814041138,
+            0.0
+          ]
+        }
+      }
+    },
+    "hanging": {
+      "rod_axis_winding": 4.141347241488954e-18,
+      "minimum_hole_engagement_m": -0.05036877907812595,
+      "maximum_hole_engagement_m": -0.013757713809609412,
+      "loop_center_world_m": [
+        0.4693314731121063,
+        -0.013731916435062885,
+        0.7723491191864014
+      ],
+      "hole_center_world_m": [
+        0.47070935368537903,
+        -0.002603067783638835,
+        0.7666398286819458
+      ],
+      "hole_axis_world": [
+        -0.0801868885755539,
+        0.5044497847557068,
+        0.8597095012664795
+      ],
+      "rod_engagement_m": -0.032603067783638834,
+      "rod_loop_contacts": 0,
+      "rod_support_n": 0.0,
+      "rod_loop_support_n": 0.0,
+      "bench_and_rod_support_n": 1.525427222251892,
+      "finger_contacts": 0,
+      "finger_squeeze_n": [
+        0.0,
+        0.0
+      ],
+      "max_contact_penetration_m": 8.533289656043053e-05
+    },
+    "mesh_quality": {
+      "minimum_J_by_part": [
+        0.9701493382453918,
+        0.7280544638633728,
+        0.9850214719772339
+      ],
+      "inverted_tet_substeps_by_part": [
+        0,
+        0,
+        0
+      ],
+      "nonfinite_tet_substeps_by_part": [
+        0,
+        0,
+        0
+      ]
+    },
+    "label": "initial",
+    "waypoint_index": 0,
+    "action_index": null,
+    "screenshot": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/observation/000_initial.png"
+  },
+  "selected_plan_path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/recovery/selected_plan.json",
+  "wall_time_s": 5935.43302163,
+  "continuation": {
+    "operation": "continue exact original all-rejected batch with cached proposals and partial evidence",
+    "provider": "codex",
+    "model": "gpt-6-sol",
+    "profile": "clawhauser_hang",
+    "original_error_result": {
+      "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/planning/result.json",
+      "sha256": "8b308905febc1d3ab7ddaab6a18a58c5bb07889599c37be6c448e429e7bdaccd"
+    },
+    "original_raw_proposal": {
+      "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/planning/vlm/response_000_propose.txt",
+      "sha256": "9a8db5857571dd428d9fac3960515ffeec4dec9c2a64723be4e7fdccaa0ae302"
+    },
+    "original_observation": {
+      "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/observation/observation.json",
+      "sha256": "569fc42c9185f138bbc6c8fc9cec996fd40713e9221aa7ff8f51031c89955042"
+    },
+    "original_task": {
+      "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/task.json",
+      "sha256": "3e08b6e7c7a80a8cb54269d4de7846c68a7192a168eea1920780f25a862254ba"
+    },
+    "frozen_physics_sources": [
+      {
+        "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/part_aware_control/rollout.py",
+        "sha256": "c88a5300849fcc0395128e132f58f1d68dd9acf55da65bcd8217f10f2ab41649"
+      },
+      {
+        "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/part_aware_control/tasks.py",
+        "sha256": "945bcaf891b8ffe9fcca7243f135ebefd8bbbd421aa69b66edb110eb6a715b7e"
+      },
+      {
+        "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/part_aware_control/hanging.py",
+        "sha256": "b1e4685ca6b19281909ec9ef49fbd346052bbd2b2e8085f723f291b0d6c6ccd1"
+      }
+    ],
+    "current_sources": [
+      {
+        "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/part_aware_control/planner.py",
+        "sha256": "4025001b9094c01b295863d32c60d1390080bc2f29cdf270f393db31fac8904e"
+      },
+      {
+        "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/part_aware_control/providers.py",
+        "sha256": "7c4ac804dbfa377cac0c04c15d71929bef3b9888e5b3ed0f08aabff5249a1386"
+      },
+      {
+        "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/part_aware_control/__main__.py",
+        "sha256": "6651af73b93e1286ed2af0600d783a7d953ca5c88181660723855fa4787ea786"
+      },
+      {
+        "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/part_aware_control/actions.py",
+        "sha256": "c444759ec566b50db01725c8c84687bc26bf9fe24c3173a7ea161704c033104e"
+      },
+      {
+        "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/part_aware_control/rollout.py",
+        "sha256": "c88a5300849fcc0395128e132f58f1d68dd9acf55da65bcd8217f10f2ab41649"
+      },
+      {
+        "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/part_aware_control/tasks.py",
+        "sha256": "945bcaf891b8ffe9fcca7243f135ebefd8bbbd421aa69b66edb110eb6a715b7e"
+      },
+      {
+        "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/part_aware_control/hanging.py",
+        "sha256": "b1e4685ca6b19281909ec9ef49fbd346052bbd2b2e8085f723f291b0d6c6ccd1"
+      },
+      {
+        "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/part_aware_control/prompts/hang_propose.txt",
+        "sha256": "79921405dc6534370705adf8e36fc93f6913d333453d89f392b48e00565d116b"
+      },
+      {
+        "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/part_aware_control/prompts/hang_refine.txt",
+        "sha256": "be0e63b87de2f1884dfca06e772e15880e95385bf8e99b5f47730acc762824cb"
+      },
+      {
+        "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/part_aware_control/prompts/hang_verify.txt",
+        "sha256": "21715b1e7cc2d0ffdbcd6355efd8bf10d5d10224de4a918daf1f3d90f1598ae7"
+      }
+    ],
+    "revisions": {
+      "controller": "3393ff5beb6b3be4350a62c655e419cf86e860a2",
+      "newton": "5cd406a10a4d9160132fa115124254005f675d8f"
+    },
+    "controller_git_head": "3393ff5beb6b3be4350a62c655e419cf86e860a2",
+    "initial_partial_attempts_reused": 10,
+    "new_initial_executions": 0,
+    "new_initial_proposal_api_calls": 0,
+    "original_rejections_confirmed": 10,
+    "max_campaign_planning_attempts": 13,
+    "max_successful_plan_confirmations": 1,
+    "cached_initial_evidence_callbacks": 10,
+    "new_worker_calls": [
+      {
+        "index": 10,
+        "confirmation": false,
+        "directory": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/recovery/rollouts/attempt_010"
+      },
+      {
+        "index": 11,
+        "confirmation": false,
+        "directory": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/recovery/rollouts/attempt_011"
+      },
+      {
+        "index": 12,
+        "confirmation": false,
+        "directory": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/recovery/rollouts/attempt_012"
+      }
+    ],
+    "actual_campaign_vlm_calls": 17
+  }
+}

@@ -1,0 +1,37 @@
+Judge whether this AIRBOT Clawhauser HANGING rollout is physically valid and clean.
+The goal is a released deformable toy suspended by its actual ring on the rod,
+with the whole toy clear of the table. Do not require tabletop placement or rigid
+uprightness. Merely holding the toy, visually overlapping the ring and rod, or
+resting the body on the table is not a successful hanging result. Either loop or
+tail pickup is permitted; the ring must be what hangs on the rod after release.
+
+The deterministic gate separately checks actual threading with absolute measured
+rod_axis_winding >=0.5 and whole inner-contour engagement:
+minimum_hole_engagement_m >=0.010 m and maximum_hole_engagement_m <=rod_length_m.
+These and actual ring/rod contact must hold throughout the final settling window.
+It also checks rod-loop support >=90% weight, >=0.020 m whole-toy table clearance,
+released jaws >=0.060 m, no final finger contact, stability during final settling,
+mesh validity, effort limits and <=0.0005 m contact penetration. Its result is
+ANDed with your verdict and cannot be overridden by an image or a plausible plan.
+The permitted finger contact readback is finger_effort_limit_n times
+(1 + finger_force_tolerance) from geometry: the native 20 N actuator setting
+with 0.5 tolerance permits 30 N measured readback. Use this allowance when
+assessing squeeze; the actuator setting alone is not the readback threshold.
+
+Inspect before/after images, executed actions, measured hole/ring pose, rod
+axis winding, minimum/maximum inner-contour engagement, rod-loop contacts/upward
+support, finger contacts/squeeze, penetration, mesh-quality data and measured outcome. Trust measured forces/contacts over visual
+overlap. Use supplied signed winding evidence around the rod axis (either sign is
+valid at absolute value >=0.5); do not compute winding yourself. Hole-center
+rod_engagement_m alone cannot prove threading: an unthreaded drape can have
+plausible contact and a nearby center. Check the entire inner contour is inboard
+of the free tip and within the rod length. Return success=true only when the
+intended ring carries the toy on the rod after release, the behavior is plausible,
+and no collateral displacement,
+catastrophic penetration, mesh damage or fling appears. Deformation is expected;
+nonfinite states or inverted mesh are invalid. Explain concrete remaining grasp,
+turn, insertion, load-transfer, release or stability problems for refinement.
+
+Return ONLY JSON containing "success" (a JSON boolean), "confidence" (number
+0..1), "reason" (string), and "remaining" (actionable string, empty if valid).
+Never return the strings "true" or "false" as the success field.

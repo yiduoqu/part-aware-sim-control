@@ -32,19 +32,20 @@ class Rollout:
         if (out / "rollout.json").exists() or (out / "error.json").exists():
             raise FileExistsError(f"use a fresh rollout directory: {out}")
         started = time.perf_counter()
-        sim, obj, camera, geometry, hz = build_scene(self.task)
+        sim, obj, camera, geometry, hz, hanging = build_scene(self.task)
         setup_seconds = time.perf_counter() - started
         arm_module = example("arm_gripper")
         control = arm_module.ArmControl(sim)
         snapshots, samples, executed = [], [], []
         quality = None
-        if self.task.name == "clawhauser":
+        if self.task.name != "cube":
             quality = example("mesh_quality").MeshQuality(sim, obj.entity)
             q_built = sim.pipeline.state_0.particle_q.numpy()[obj.entity.particles]
         target = np.asarray(geometry["common_initial_tcp_world_m"], dtype=float)
         quat = np.asarray(geometry["common_initial_quaternion_xyzw"], dtype=float)
         width = MAX_APERTURE_M
         max_ik_error = 0.0
+        max_ik_orientation_error = 0.0
         video = None
         frame_count = 0
         if self.video:
@@ -60,6 +61,7 @@ class Rollout:
                 video.append(sim.render(camera.spec)["rgb"])
 
         def route_between(begin, end, q_begin, q_end, width_begin, width_end, duration):
+            nonlocal max_ik_orientation_error
             frames = max(2, math.ceil(duration * hz))
             if np.dot(q_begin, q_end) < 0:
                 q_end = -q_end
@@ -72,13 +74,31 @@ class Rollout:
                 q = q_begin + (q_end - q_begin) * blend(t)
                 return q / np.linalg.norm(q)
 
-            return control.plan(
+            def tcp_at(t):
+                if hanging is None:
+                    return begin + (end - begin) * blend(t)
+                offset = np.asarray(geometry["pad_midpoint_offset_tool_m"])
+                pivot_begin = begin + arm_module._rotate(q_begin, offset)
+                pivot_end = end + arm_module._rotate(q_end, offset)
+                return pivot_begin + (pivot_end - pivot_begin) * blend(t) - arm_module._rotate(orientation(t), offset)
+
+            route = control.plan(
                 quat=orientation,
                 capacity=frames,
                 dt=1 / hz,
-                tcp_at=lambda t: begin + (end - begin) * blend(t),
+                tcp_at=tcp_at,
                 half_gap_at=lambda t: (width_begin + (width_end - width_begin) * blend(t)) / 2,
             )
+            if hanging is not None:
+                full_q = sim.pipeline.state_0.joint_q.numpy().copy()
+                with control.arm.host_fk():
+                    for frame, joint_q in enumerate(route.joint_q):
+                        full_q[control.coords] = joint_q
+                        _, angular_error = control.arm.pose_errors(full_q, tcp_at(frame / hz), orientation(frame / hz))
+                        max_ik_orientation_error = max(max_ik_orientation_error, float(angular_error))
+                if max_ik_orientation_error > self.task.max_ik_orientation_error:
+                    raise InvalidPlan(f"IK orientation misses by {math.degrees(max_ik_orientation_error):.2f} degrees")
+            return route
 
         def state():
             position, orientation = control.arm.ee_pose(sim.pipeline.state_0)
@@ -90,7 +110,8 @@ class Rollout:
                 points = p + arm_module._rotate(pose[3:], signs * self.task.cube_half)
                 item = {"position": p.tolist(), "orientation": pose[3:].tolist()}
             else:
-                points = sim.pipeline.state_0.particle_q.numpy()[obj.entity.particles]
+                all_points = sim.pipeline.state_0.particle_q.numpy()
+                points = all_points[obj.entity.particles]
                 p = points.mean(axis=0)
                 item = {"position": p.tolist()}
             finite = bool(
@@ -109,15 +130,22 @@ class Rollout:
                     "bounds_max": points.max(axis=0).tolist(),
                 }
             )
-            return {
+            sample = {
                 "time_s": float(sim.time),
                 "gripper": {
                     "position": np.asarray(position).tolist(),
                     "orientation": np.asarray(orientation).tolist(),
                     "width": 2 * control.aperture(),
+                    "commanded_width": 2 * arm_module.half_gap_of(float(control.hand.command)),
                 },
                 "objects": {self.task.name: item},
             }
+            if hanging is not None:
+                sample["hanging"] = hanging.read(all_points, points)
+                item.update(
+                    {k: v for k, v in sample["hanging"].items() if k.endswith("world_m") or k == "hole_axis_world"}
+                )
+            return sample
 
         def record(label, action_index=None):
             sample = state()
@@ -150,10 +178,16 @@ class Rollout:
             initial = record("initial")
             target = np.asarray(initial["gripper"]["position"])
             quat = np.asarray(initial["gripper"]["orientation"])
-            if self.task.name == "clawhauser":
+            if self.task.name != "cube":
                 q_settled = sim.pipeline.state_0.particle_q.numpy()[obj.entity.particles]
                 shift = example("clawhauser_scene").loop_shift(obj.entity, q_built, q_settled)
-                initial["objects"]["clawhauser"]["settled_loop_shift_m"] = np.asarray(shift).tolist()
+                initial["objects"][self.task.name]["settled_loop_shift_m"] = np.asarray(shift).tolist()
+                if hanging is not None:
+                    tail_shift = example("clawhauser_scene").loop_shift(obj.entity, q_built, q_settled, part=0)
+                    initial["objects"][self.task.name]["settled_part_shifts_m"] = {
+                        "loop": np.asarray(shift).tolist(),
+                        "tail": np.asarray(tail_shift).tolist(),
+                    }
             samples.append(initial)
             execution_started = time.perf_counter()
             for index_action, action in enumerate(actions):
@@ -166,7 +200,7 @@ class Rollout:
                     end,
                     np.asarray(current["orientation"]),
                     end_quat,
-                    current["width"],
+                    width if hanging is not None else current["width"],
                     end_width,
                     action.duration,
                 )
@@ -225,6 +259,7 @@ class Rollout:
                 "snapshots": snapshots,
                 "outcome": outcome,
                 "max_ik_position_error_m": max_ik_error,
+                "max_ik_orientation_error_rad": max_ik_orientation_error,
                 "timing": {
                     "build_seconds": setup_seconds,
                     "execution_with_readback_and_images_seconds": execution_seconds,
@@ -264,6 +299,11 @@ class Rollout:
 
     def measure(self, samples, control, geometry, quality):
         import numpy as np
+
+        if self.task.name == "clawhauser_hang":
+            from .hanging import measure_hanging
+
+            return measure_hanging(self.task, samples, geometry, quality.read())
 
         name = self.task.name
         start, final = samples[0]["objects"][name], samples[-1]["objects"][name]

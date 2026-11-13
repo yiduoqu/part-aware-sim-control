@@ -70,6 +70,77 @@ land freely. Script and fresh confirmation passed the unchanged placement,
 release, settling and mesh-validity gates. This is an explicit input sequence;
 model-generated plans supply their own motions through the same executor.
 
+## Hanging Clawhauser on the rod
+
+`--task clawhauser_hang` calls Hanson's current `clawhauser_on_rod.build_scene()`
+defaults: the fully deformable toy, loop grasp geometry, horizontal 6 mm rod,
+and the current AIRBOT mount. No material, contact or solver overrides are added.
+The worker begins at the same open elevated pose in every fresh scene.
+The planner receives both native loop and tail pickup locations, their widths,
+and separately measured settling shifts. Either pickup is allowed; the final
+support must be the ring on the rod. Moves/holds retain the commanded jaw target
+so a stalled grip does not relax at each action boundary.
+
+```bash
+python -m part_aware_control observe --task clawhauser_hang \
+  --out outputs/simpact/hang_scene
+/path/to/planner/python -m part_aware_control plan \
+  --observation outputs/simpact/hang_scene/observation.json \
+  --worker-command '/path/to/newton/python -m part_aware_control --video' \
+  --provider codex --model gpt-6-sol --out outputs/simpact/hang_planning
+```
+
+Use the same Slurm setup below for ARM workers. The planner chooses the hanging
+instruction and prompts from the observation's task. Both generation stages use
+the existing six-axis `move` and `gripper_control` schema; nonzero world roll and
+pitch are allowed. Translation deltas still specify TCP endpoints. While turning,
+the virtual pad midpoint follows a straight line between those endpoints, using
+the saved tool-local offset. A turn about a fixed pad pivot therefore requires
+an explicit compensating TCP translation. IK checks position within 2 mm and
+orientation within five degrees before execution.
+
+Success requires the ring actually threaded onto and supported by the rod after
+release: upward rod-to-loop support >=90% of weight, the entire inner-hole
+contour at least 10 mm beyond the tip and within the rod span, measured contour
+winding around the rod axis, actual loop contact, no touching fingers, jaws open
+at least 60 mm, and the whole toy at least 20 mm off the table. The final half
+second must satisfy the existing 3 mm drift / 10 mm/s speed limits. Any inverted
+or nonfinite element, contact penetration over 0.5 mm, or excessive finger load
+fails validity. Hole pose, winding, engagement, contacts and support are included
+in waypoint feedback for refinement. Images alone cannot override these gates.
+
+The native Hanson demo uses measured loop aim, turn and threading corrections.
+Those callbacks remain confined to that separately labelled reference. Our
+workers execute only the supplied complete sequence. To test a static reference
+plan use `worker --plan ... --task-config ... --video`; the placement-oriented
+`script` command does not author hanging plans. The recorded-reference baseline
+and model campaign are separate in `outputs/simpact/hanging_loop_tail_20261112`.
+
+The completed campaign used main `3393ff5`, the existing Codex login and
+`gpt-6-sol`: ten initial plans and three refinements, with 17 actual model calls.
+All initial plans were rejected during IK execution. Rejected plans retain their
+partial traces for refinement; the original batch was continued from those exact
+cached artifacts without repeating proposals or simulations.
+
+The final 40-action plan executed the complete grasp, lift, turn, thread, release
+and withdrawal sequence. The toy remained threaded, with no finger contact,
+57.5 mm table clearance and zero inverted element-substeps. Full validation
+failed: peak penetration was 1.477 mm against 0.5 mm, average loop support was
+86.2% of weight against 90%, and final drift/speed exceeded settling limits.
+No fresh confirmation ran because no candidate passed every gate. The final
+21.8 N finger readback passes the native 30 N allowance; the saved VLM verdict
+incorrectly compared it with the 20 N actuator setting. The verifier prompt now
+states that distinction explicitly; saved campaign prompts and outcomes remain
+unchanged.
+
+Final artifacts are `recovery/result.json`, `recovery/selected_plan.json` and
+`recovery/rollouts/attempt_012/replay.mp4` below that campaign directory. The
+40.67-second, 30 fps video decoded all 1,220 frames. `experiment.json` records
+source hashes, common-state checks and released GPU allocations.
+The [tracked results bundle](../.agents/reports/simpact_hanging_20261112/README.md)
+contains the final video, plan, measured outcome and archived campaign evidence
+for browsing from a fresh clone.
+
 ## Planner: ten candidates, at most three refinements
 
 The user-selected default is the existing Codex login with exact `gpt-6-sol`.
@@ -154,7 +225,10 @@ budget follows a failed confirmation.
 
 ## Validated runs
 
-The saved Codex login and exact `gpt-6-sol` completed these model-planned runs:
+The saved Codex login and exact `gpt-6-sol` completed these model-planned runs.
+These placement results predate the hanging update to main `3393ff5`; their exact
+revisions remain in the saved artifacts. The hanging campaign uses the updated
+source and is reported separately.
 
 | Task | Initial candidates | Refinements | Confirmation | Result |
 | --- | ---: | ---: | ---: | --- |
@@ -192,7 +266,7 @@ made no model calls and preserve Hanson’s physics defaults.
 ```bash
 python -m unittest tests.test_simpact_actions
 # In the planner environment with pinned SIMPACT importable:
-python -m unittest tests.test_simpact_planner
+python -m unittest tests.test_simpact_planner tests.test_simpact_hanging
 ```
 
 No complete toolkit suite or model calls run inside the controller. Physical

@@ -1,0 +1,70 @@
+Plan complete AIRBOT action sequences to hang Clawhauser by its deformable ring
+on the horizontal rod. Return exactly 10 distinct feasible complete plans, each
+starting from THE SAME supplied initial robot/object state. The model must supply
+every physical approach, grasp, lift, turn, rod insertion, release and withdrawal.
+The worker has no implicit grasp, ring alignment, threading or grasp correction.
+Pickup may grasp the loop OR the tail using the supplied grasp_candidates and
+matching settled_part_shifts_m. Keep the ring hole free for threading; success
+always requires hanging by the ring after release. Consider both pickup choices
+across the ten candidates. Moves/holds retain the commanded jaw opening.
+No attachment, teleportation, prescribed object motion or automatic regrasp exists.
+
+Instruction: {instruction}
+Scene image: {image_path}
+Context (known simulation state, not a perception result): {context}
+Optional motion guidance: {motion_plan}
+
+HANGING GOAL: the released toy must remain suspended by actual ring/rod contact
+and upward rod support, with the whole toy clear of the table. Table placement,
+still holding the toy, visually overlapping the ring and rod, or resting the body
+on another surface does not satisfy the task. Use supplied task thresholds:
+final rod-loop support at least 90% of weight, actual threading with absolute
+measured rod_axis_winding >=0.5, and the ENTIRE inner hole contour at least
+0.010 m inboard of the free tip and no farther than rod_length_m. These threading
+and contour-engagement gates, plus ring/rod contact, must hold throughout the
+final half-second. Also require at least 0.020 m whole-toy table clearance,
+no final finger contact and jaws at least
+0.060 m open, stable release, valid mesh and at most 0.0005 m contact penetration.
+
+Use actual rod free end, rod axis/radius/length, ring inner center/axis/inradius,
+object shape sizes and AIRBOT geometry in context. A rod enters through the ring's
+actual HOLE, not the toy centroid. Reason about hole orientation and clearance
+before advancing inboard from the free end. The worker measures actual threading
+from the material-corresponding inner contour's signed winding around the rod
+axis; either sign is valid when its absolute value is >=0.5. Use that supplied
+measurement and minimum_hole_engagement_m / maximum_hole_engagement_m feedback;
+you do not need to calculate winding. Hole-center rod_engagement_m is only an
+informational offset and cannot establish complete threading. Ring deformation
+and slipping are physical outcomes, not perfectly rigid motion assumed by the
+adapter. Respect
+force limits and avoid squeezing or colliding through the toy/rod to force success.
+
+Coordinates and pivots:
+- All six move deltas are relative to the previous commanded TCP endpoint.
+  Translation is signed metres along fixed WORLD axes; +z is up. Rotations are
+  signed radians applied about extrinsic WORLD X, then Y, then Z; measured
+  orientations are xyzw quaternions. Nonzero roll and pitch ARE supported.
+- The command pose is TCP, not the pad midpoint or hole center. With tool-local
+  pad_midpoint_offset_tool_m, pad_world = TCP_world + R(q_xyzw)*offset_tool.
+  To turn about a chosen pad pivot, compute the desired new TCP endpoint as
+  pad_pivot_world - R(q_new)*offset_tool and command its required translation
+  along with rotation. The downward-only tcp_for_pads_offset_world_m is not a
+  constant world offset after turning. The worker interpolates the pad midpoint
+  straight between compensated endpoints during rotation; it does not align the
+  ring or choose a pivot endpoint for you.
+- Jaw width is TOTAL opening in metres, bounded by the supplied AIRBOT maximum.
+  Check feasible grasp dimensions and finger geometry. No Franka aperture values.
+
+Each action uses smooth interpolation for max(0.8, displacement_norm/0.06,
+largest_rotation_magnitude/0.5) seconds; gripper commands take 0.8 seconds.
+A move with all six deltas zero is an explicit hold. No duration field is supported.
+Keep each full plan within 60 actions and 180 seconds. Final settling follows the
+last action; explicit holds can test or allow load transfer before full withdrawal.
+
+Return ONLY JSON with key "action_proposals", a list of EXACTLY 10 objects,
+each with "description" and a nonempty "action_sequence" using ONLY:
+- "type":"move", ALL six numeric fields "delta_x", "delta_y", "delta_z",
+  "delta_roll", "delta_pitch", "delta_yaw". Roll/pitch need not be zero.
+- "type":"gripper_control", numeric "width" for total jaw opening.
+A "reasoning" string may explain each action. Each plan is an independent complete
+solution, not a waypoint or continuation of another proposal.

@@ -1,0 +1,265 @@
+{
+  "controller": "3393ff5beb6b3be4350a62c655e419cf86e860a2",
+  "newton": "5cd406a10a4d9160132fa115124254005f675d8f",
+  "simpact": "692aab2bb92e4df324d28c76630d17b08e814287",
+  "local_adapter_snapshot": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/source_snapshot",
+  "task": "clawhauser_hang",
+  "provider": "codex",
+  "model": "gpt-6-sol",
+  "initial_candidates": 10,
+  "max_refinements": 3,
+  "confirmation_on_success": 1,
+  "core_checks_passed": 13,
+  "pickup_options": [
+    "loop",
+    "tail"
+  ],
+  "physical_overrides": false,
+  "jaw_target_policy": "previous commanded width retained through moves and holds",
+  "preflight_archive": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_codex_20261112",
+  "native_reference_result": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_hanson_reference_20261112/reference/result.json",
+  "slurm_job_id": 5213853,
+  "status": "completed_without_validated_success",
+  "baseline_outcome": {
+    "success": false,
+    "valid": false,
+    "lifted": true,
+    "placed": false,
+    "released": true,
+    "supported": false,
+    "settled": false,
+    "lifted_m": 0.16082727909088135,
+    "rod_loop_support_n": 0.0,
+    "rod_loop_support_fraction": 0.0,
+    "minimum_final_engagement_m": 0.10636288046836853,
+    "minimum_final_hole_engagement_m": 0.08882846057415009,
+    "minimum_final_absolute_winding": 0.0,
+    "final_clearance_m": -7.239866256714134e-05,
+    "final_position_world_m": [
+      0.6358219385147095,
+      0.06043931841850281,
+      0.7881932258605957
+    ],
+    "final_drift_m": 0.0005497386426304166,
+    "final_peak_speed_m_s": 0.014780336013557613,
+    "mesh_quality": {
+      "minimum_J_by_part": [
+        0.7930312752723694,
+        0.07989146560430527,
+        0.6654537916183472
+      ],
+      "inverted_tet_substeps_by_part": [
+        0,
+        0,
+        0
+      ],
+      "nonfinite_tet_substeps_by_part": [
+        0,
+        0,
+        0
+      ]
+    },
+    "max_contact_penetration_m": 0.0015634425217285752,
+    "max_finger_squeeze_n": 27.677274447865297,
+    "reason": "valid, placed, supported, settled"
+  },
+  "planner_feedback_correction": "Known InvalidPlan retains partial trace and full requested plan for the existing refinement budget; no simulator/gate changes",
+  "refinement_reference_evidence": {
+    "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/baseline/rollout.json",
+    "sha256": "7e88e09d9c9b77eb3bb001270919ff55160f6e63b9ab627a0a57b2fa9da60309",
+    "source": "separately labelled explicit baseline, not counted as model candidate"
+  },
+  "planner_feedback_source_snapshot": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/source_snapshot_feedback",
+  "simulation_sources_unchanged": true,
+  "guarded_continuation": {
+    "slurm_job_id": 5214671,
+    "dependency": "afterany:5213853",
+    "status": "completed",
+    "script": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/continue_rejected_batch.py",
+    "new_initial_proposal_calls": 0,
+    "new_initial_executions": 0,
+    "requires": "exact terminal all-ten-InvalidPlan/no-executable result",
+    "guard_checks_passed": true
+  },
+  "original_batch": {
+    "slurm_job_id": 5213853,
+    "allocation_released": true,
+    "planning_attempts": 10,
+    "completed": 0,
+    "rejected": 10,
+    "terminal_status": "error",
+    "reason": "old loaded planner excluded all rejected candidates from optimization; continued with preserved evidence"
+  },
+  "refinements": [
+    {
+      "index": 1,
+      "status": "rejected",
+      "error": "IK orientation misses by 19.34 degrees",
+      "last_executed_action": 29,
+      "body_inverted_tet_substeps": 638,
+      "rod_support_after_release_n": 0.0,
+      "toy_after_release_minimum_z": 0.7528262138366699
+    },
+    {
+      "index": 2,
+      "status": "rejected",
+      "error": "IK orientation misses by 10.71 degrees",
+      "last_executed_action": 38,
+      "body_inverted_tet_substeps": 1,
+      "retained_after_release": true,
+      "last_rod_support_n": 0.9225931763648987,
+      "last_winding": 1.0,
+      "minimum_contour_engagement_m": 0.037816346883773805,
+      "finger_contacts": 0
+    },
+    {
+      "index": 3,
+      "status": "completed",
+      "outcome": {
+        "success": false,
+        "valid": false,
+        "lifted": true,
+        "placed": true,
+        "released": true,
+        "supported": false,
+        "settled": false,
+        "lifted_m": 0.1605079174041748,
+        "rod_loop_support_n": 1.0142185803382628,
+        "rod_loop_support_fraction": 0.8620219636775335,
+        "minimum_final_engagement_m": 0.047562764286994935,
+        "minimum_final_hole_engagement_m": 0.0362282407283783,
+        "minimum_final_absolute_winding": 1.0,
+        "final_clearance_m": 0.05749656867980957,
+        "final_position_world_m": [
+          0.4793205261230469,
+          0.07890456914901733,
+          0.9202653765678406
+        ],
+        "final_drift_m": 0.008839007704301568,
+        "final_peak_speed_m_s": 0.053149870215816304,
+        "mesh_quality": {
+          "minimum_J_by_part": [
+            0.9042258262634277,
+            0.2391418218612671,
+            0.4914805293083191
+          ],
+          "inverted_tet_substeps_by_part": [
+            0,
+            0,
+            0
+          ],
+          "nonfinite_tet_substeps_by_part": [
+            0,
+            0,
+            0
+          ]
+        },
+        "max_contact_penetration_m": 0.0014766063541173935,
+        "max_finger_squeeze_n": 21.7990218512247,
+        "reason": "valid, supported, settled"
+      }
+    }
+  ],
+  "verified_imports": {
+    "robosimstudio": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/robosimstudio/__init__.py",
+    "newton": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/newton/newton/__init__.py"
+  },
+  "final_result": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/recovery/result.json",
+  "final_outcome": {
+    "success": false,
+    "valid": false,
+    "lifted": true,
+    "placed": true,
+    "released": true,
+    "supported": false,
+    "settled": false,
+    "lifted_m": 0.1605079174041748,
+    "rod_loop_support_n": 1.0142185803382628,
+    "rod_loop_support_fraction": 0.8620219636775335,
+    "minimum_final_engagement_m": 0.047562764286994935,
+    "minimum_final_hole_engagement_m": 0.0362282407283783,
+    "minimum_final_absolute_winding": 1.0,
+    "final_clearance_m": 0.05749656867980957,
+    "final_position_world_m": [
+      0.4793205261230469,
+      0.07890456914901733,
+      0.9202653765678406
+    ],
+    "final_drift_m": 0.008839007704301568,
+    "final_peak_speed_m_s": 0.053149870215816304,
+    "mesh_quality": {
+      "minimum_J_by_part": [
+        0.9042258262634277,
+        0.2391418218612671,
+        0.4914805293083191
+      ],
+      "inverted_tet_substeps_by_part": [
+        0,
+        0,
+        0
+      ],
+      "nonfinite_tet_substeps_by_part": [
+        0,
+        0,
+        0
+      ]
+    },
+    "max_contact_penetration_m": 0.0014766063541173935,
+    "max_finger_squeeze_n": 21.7990218512247,
+    "reason": "valid, supported, settled"
+  },
+  "common_initial_state_audit": {
+    "physical_attempts": 13,
+    "maximum_numeric_delta": 1.1920928955078125e-07,
+    "tolerance": 1e-06
+  },
+  "selected_plan_matches_completed_execution": true,
+  "selected_action_count": 40,
+  "frozen_source_sha256": {
+    "actions.py": "c444759ec566b50db01725c8c84687bc26bf9fe24c3173a7ea161704c033104e",
+    "rollout.py": "c88a5300849fcc0395128e132f58f1d68dd9acf55da65bcd8217f10f2ab41649",
+    "tasks.py": "945bcaf891b8ffe9fcca7243f135ebefd8bbbd421aa69b66edb110eb6a715b7e",
+    "hanging.py": "b1e4685ca6b19281909ec9ef49fbd346052bbd2b2e8085f723f291b0d6c6ccd1"
+  },
+  "actual_api_calls": 17,
+  "initial_proposal_api_calls": 1,
+  "refinement_api_calls": 3,
+  "verification_api_calls": 13,
+  "confirmation_executions": 0,
+  "allocations_released": [
+    5213853,
+    5214671
+  ],
+  "final_video": {
+    "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/recovery/rollouts/attempt_012/replay.mp4",
+    "decoded_frames": 1220,
+    "fps": 30,
+    "duration_seconds": 40.666666666666664,
+    "decode_exit_code": 0
+  },
+  "execution_counts": {
+    "attempted": 13,
+    "completed": 1,
+    "rejected": 12,
+    "confirmation": 0
+  },
+  "independent_final_review": {
+    "status": "accepted_honest_budget_exhausted_failure",
+    "checks": [
+      "raw proposal cache identity",
+      "original partial execution identity",
+      "refined plan identity",
+      "all 40 executed action endpoints",
+      "frozen physical source identity",
+      "no unearned confirmation"
+    ],
+    "force_interpretation": "Measured peak 21.799 N passes the native 30 N readback allowance (20 N actuator setting with 0.5 tolerance); raw VLM force complaint is incorrect. Deterministic support, settling and penetration gates still fail."
+  },
+  "post_campaign_verifier_clarification": {
+    "path": "part_aware_control/prompts/hang_verify.txt",
+    "sha256": "4131cb21e8d155958bfe951799b7b1a2c4d6aa0ab9b0db8b9ab83f1351563a85",
+    "purpose": "Explain native actuator setting versus tolerated contact readback; no saved campaign prompts, results, physical code or acceptance gates changed.",
+    "new_model_calls": 0,
+    "new_simulations": 0
+  }
+}

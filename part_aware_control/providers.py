@@ -17,8 +17,10 @@ def _object_schema(properties):
     }
 
 
-def response_schema(stage):
-    """The same initial/refined action schemas used by the pinned SIMPACT loop."""
+def response_schema(stage, profile="placement"):
+    """Initial/refined schemas, with six-axis initial moves for hanging."""
+    if profile not in {"placement", "clawhauser_hang"}:
+        raise ValueError(f"unknown planner profile {profile!r}")
     if stage == "verify":
         return _object_schema(
             {
@@ -28,7 +30,7 @@ def response_schema(stage):
                 "remaining": {"type": "string"},
             }
         )
-    if stage == "propose":
+    if stage == "propose" and profile == "placement":
         action_fields = {
             "PUSH": ("delta_x", "delta_y"),
             "LIFT": ("delta_z",),
@@ -39,12 +41,12 @@ def response_schema(stage):
             "FLICK": ("delta_x", "delta_y", "delta_z"),
         }
         count = 10
-    elif stage == "refine":
+    elif stage in {"propose", "refine"}:
         action_fields = {
             "move": ("delta_x", "delta_y", "delta_z", "delta_roll", "delta_pitch", "delta_yaw"),
             "gripper_control": ("width",),
         }
-        count = 1
+        count = 10 if stage == "propose" else 1
     else:
         raise ValueError(f"unknown planner generation stage {stage!r}")
     actions = []
@@ -71,7 +73,7 @@ def response_schema(stage):
     )
 
 
-def make_codex_generate_fn(model, stage, *, timeout_s=300, executable="codex"):
+def make_codex_generate_fn(model, stage, *, profile="placement", timeout_s=300, executable="codex"):
     """Return SIMPACT's ``generate_fn(contents) -> str`` using an exact CLI model.
 
     Images travel through temporary PNG files, text through stdin, and the final
@@ -80,7 +82,7 @@ def make_codex_generate_fn(model, stage, *, timeout_s=300, executable="codex"):
     """
     if not model:
         raise ValueError("Codex provider requires an explicit model identifier")
-    schema = response_schema(stage)
+    schema = response_schema(stage, profile=profile)
 
     def generate(contents):
         from PIL import Image
