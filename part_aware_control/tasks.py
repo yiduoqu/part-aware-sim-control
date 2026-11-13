@@ -33,6 +33,11 @@ class Task:
     surface_tolerance: float = 0.002
     max_table_penetration: float = 0.005
     max_ik_error: float = 0.010
+    max_ik_orientation_error: float = 0.08726646259971647  # Five degrees; hanging only.
+    minimum_hang_clearance: float = 0.020
+    minimum_rod_support_fraction: float = 0.90
+    minimum_rod_engagement: float = 0.010
+    max_contact_penetration: float = 0.0005
 
     def to_dict(self):
         return asdict(self)
@@ -42,7 +47,35 @@ def build_scene(task):
     import robosimstudio as rss
 
     arm = example("arm_gripper")
-    if task.name == "clawhauser":
+    hanging = None
+    if task.name == "clawhauser_hang":
+        from .hanging import HangingState
+
+        native = example("clawhauser_on_rod")
+        sim, obj, _, camera, rod, ring, geometry = native.build_scene()
+        origin = rss.get_cell(arm.CELL).surface_frame[:3]
+        rod_origin = [
+            origin[0] + native.SOURCE_X + float(ring["hole_centre_local"][0]),
+            origin[1] + native.ROD_FREE_Y,
+            origin[2] + geometry["rod_z_m"],
+        ]
+        geometry.update(
+            {
+                "physics": "clawhauser_on_rod.build_scene defaults (unchanged)",
+                "material_settings": asdict(example("clawhauser_scene").REFERENCE),
+                "rod_free_end_world_m": rod_origin,
+                "rod_axis_world": [0.0, 1.0, 0.0],
+                "rod_length_m": native.POST_Y - native.POST_RADIUS - native.ROD_FREE_Y,
+                "rest_surface_z_world_m": native.REST_Z,
+                "weight_n": float(obj.entity.mass.sum() * 9.81),
+                "finger_force_tolerance": arm.GRIP_TOLERANCE,
+                "target_kind": "ring threaded onto rod; rod-supported after release, clear of table",
+                "pose_interpolation": "TCP endpoints in world metres; pad midpoint follows a straight line while wrist rotates",
+            }
+        )
+        hanging = HangingState(sim, obj, rod, ring, geometry)
+        hz = native.CONTROL_HZ
+    elif task.name == "clawhauser":
         sim, obj, _, camera, geometry = example("clawhauser_pick_drop").build_scene()
         geometry["physics"] = "clawhauser_pick_drop.build_scene defaults (unchanged)"
         geometry["material_settings"] = asdict(example("clawhauser_scene").REFERENCE)
@@ -97,7 +130,7 @@ def build_scene(task):
             "common_initial_quaternion_xyzw": list(arm.GRASP_QUAT),
         }
     )
-    if task.name == "clawhauser":
+    if task.name in {"clawhauser", "clawhauser_hang"}:
         geometry.update(
             {
                 "grip_centre_frame": "work_surface, nominal before initial settling",
@@ -111,12 +144,44 @@ def build_scene(task):
                 ),
             }
         )
-    return sim, obj, camera, geometry, hz
+    if hanging is not None:
+        geometry.pop("target_center_world_m")
+        geometry.pop("target_half_xy_m")
+        inverse_grasp = (*(-v for v in arm.GRASP_QUAT[:3]), arm.GRASP_QUAT[3])
+        geometry["pad_midpoint_offset_tool_m"] = arm._rotate(inverse_grasp, [0.0, 0.0, arm.PAD_RISE]).tolist()
+        vertices, tets, labels = example("clawhauser_scene").load_toy()
+        tail_xy, tail_reach = example("clawhauser_scene").tail_grasp(vertices, tets, labels)
+        geometry["grasp_candidates"] = {
+            "loop": {
+                "part_id": 2,
+                "nominal_pad_center_world_m": geometry["nominal_grip_centre_world_m"],
+                "outer_width_m": 2 * geometry["reach_m"],
+            },
+            "tail": {
+                "part_id": 0,
+                "nominal_pad_center_world_m": [
+                    origin[0] + native.SOURCE_X + float(tail_xy[0]),
+                    origin[1] + float(tail_xy[1] - ring["hole_centre_local"][1]),
+                    origin[2] + geometry["grip_z_m"],
+                ],
+                "outer_width_m": 2 * tail_reach,
+            },
+        }
+        geometry["grasp_reference_note"] = (
+            "Choose a loop or tail pickup; final success still requires hanging by the loop. "
+            "For a downward grasp add the selected nominal pad center, its matching "
+            "settled_part_shifts_m and tcp_for_pads_offset_world_m. "
+            "Moves and holds maintain the previous commanded jaw opening; only an explicit "
+            "gripper_control changes it."
+        )
+    return sim, obj, camera, geometry, hz, hanging
 
 
 def scripted_plan(observation):
     """An explicit input plan; the rollout executor never adds grasp/transport actions."""
     task, geometry = observation["task"], observation["geometry"]
+    if task["name"] == "clawhauser_hang":
+        raise ValueError("author an explicit hanging plan from the saved Hanson reference, then use worker --plan")
     initial = observation["snapshots"][0]
     position = initial["gripper"]["position"]
     if task["name"] == "cube":

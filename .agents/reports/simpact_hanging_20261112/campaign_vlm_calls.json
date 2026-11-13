@@ -1,0 +1,240 @@
+[
+  {
+    "stage": "propose",
+    "retry": 0,
+    "response_path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/planning/vlm/response_000_propose.txt",
+    "proposal_count": 10,
+    "wall_time_s": 178.81694577199232,
+    "provider": "codex",
+    "model": "gpt-6-sol",
+    "api_call": true,
+    "phase": "original_initial_batch"
+  },
+  {
+    "stage": "verify",
+    "retry": 0,
+    "response_path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/recovery/vlm/response_001_verify.txt",
+    "wall_time_s": 6.535107985007926,
+    "api_call": true,
+    "template": {
+      "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/part_aware_control/prompts/hang_verify.txt",
+      "sha256": "21715b1e7cc2d0ffdbcd6355efd8bf10d5d10224de4a918daf1f3d90f1598ae7"
+    },
+    "provider": "codex",
+    "model": "gpt-6-sol",
+    "phase": "recovery"
+  },
+  {
+    "stage": "verify",
+    "retry": 0,
+    "response_path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/recovery/vlm/response_002_verify.txt",
+    "wall_time_s": 7.453014755999902,
+    "api_call": true,
+    "template": {
+      "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/part_aware_control/prompts/hang_verify.txt",
+      "sha256": "21715b1e7cc2d0ffdbcd6355efd8bf10d5d10224de4a918daf1f3d90f1598ae7"
+    },
+    "provider": "codex",
+    "model": "gpt-6-sol",
+    "phase": "recovery"
+  },
+  {
+    "stage": "verify",
+    "retry": 0,
+    "response_path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/recovery/vlm/response_003_verify.txt",
+    "wall_time_s": 7.008837171000778,
+    "api_call": true,
+    "template": {
+      "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/part_aware_control/prompts/hang_verify.txt",
+      "sha256": "21715b1e7cc2d0ffdbcd6355efd8bf10d5d10224de4a918daf1f3d90f1598ae7"
+    },
+    "provider": "codex",
+    "model": "gpt-6-sol",
+    "phase": "recovery"
+  },
+  {
+    "stage": "verify",
+    "retry": 0,
+    "response_path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/recovery/vlm/response_004_verify.txt",
+    "wall_time_s": 7.627545091003412,
+    "api_call": true,
+    "template": {
+      "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/part_aware_control/prompts/hang_verify.txt",
+      "sha256": "21715b1e7cc2d0ffdbcd6355efd8bf10d5d10224de4a918daf1f3d90f1598ae7"
+    },
+    "provider": "codex",
+    "model": "gpt-6-sol",
+    "phase": "recovery"
+  },
+  {
+    "stage": "verify",
+    "retry": 0,
+    "response_path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/recovery/vlm/response_005_verify.txt",
+    "wall_time_s": 6.52740912300942,
+    "api_call": true,
+    "template": {
+      "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/part_aware_control/prompts/hang_verify.txt",
+      "sha256": "21715b1e7cc2d0ffdbcd6355efd8bf10d5d10224de4a918daf1f3d90f1598ae7"
+    },
+    "provider": "codex",
+    "model": "gpt-6-sol",
+    "phase": "recovery"
+  },
+  {
+    "stage": "verify",
+    "retry": 0,
+    "response_path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/recovery/vlm/response_006_verify.txt",
+    "wall_time_s": 6.512749100002111,
+    "api_call": true,
+    "template": {
+      "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/part_aware_control/prompts/hang_verify.txt",
+      "sha256": "21715b1e7cc2d0ffdbcd6355efd8bf10d5d10224de4a918daf1f3d90f1598ae7"
+    },
+    "provider": "codex",
+    "model": "gpt-6-sol",
+    "phase": "recovery"
+  },
+  {
+    "stage": "verify",
+    "retry": 0,
+    "response_path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/recovery/vlm/response_007_verify.txt",
+    "wall_time_s": 6.1807202310010325,
+    "api_call": true,
+    "template": {
+      "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/part_aware_control/prompts/hang_verify.txt",
+      "sha256": "21715b1e7cc2d0ffdbcd6355efd8bf10d5d10224de4a918daf1f3d90f1598ae7"
+    },
+    "provider": "codex",
+    "model": "gpt-6-sol",
+    "phase": "recovery"
+  },
+  {
+    "stage": "verify",
+    "retry": 0,
+    "response_path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/recovery/vlm/response_008_verify.txt",
+    "wall_time_s": 7.2973374990106095,
+    "api_call": true,
+    "template": {
+      "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/part_aware_control/prompts/hang_verify.txt",
+      "sha256": "21715b1e7cc2d0ffdbcd6355efd8bf10d5d10224de4a918daf1f3d90f1598ae7"
+    },
+    "provider": "codex",
+    "model": "gpt-6-sol",
+    "phase": "recovery"
+  },
+  {
+    "stage": "verify",
+    "retry": 0,
+    "response_path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/recovery/vlm/response_009_verify.txt",
+    "wall_time_s": 12.968236310000066,
+    "api_call": true,
+    "template": {
+      "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/part_aware_control/prompts/hang_verify.txt",
+      "sha256": "21715b1e7cc2d0ffdbcd6355efd8bf10d5d10224de4a918daf1f3d90f1598ae7"
+    },
+    "provider": "codex",
+    "model": "gpt-6-sol",
+    "phase": "recovery"
+  },
+  {
+    "stage": "verify",
+    "retry": 0,
+    "response_path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/recovery/vlm/response_010_verify.txt",
+    "wall_time_s": 6.937863297003787,
+    "api_call": true,
+    "template": {
+      "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/part_aware_control/prompts/hang_verify.txt",
+      "sha256": "21715b1e7cc2d0ffdbcd6355efd8bf10d5d10224de4a918daf1f3d90f1598ae7"
+    },
+    "provider": "codex",
+    "model": "gpt-6-sol",
+    "phase": "recovery"
+  },
+  {
+    "stage": "refine",
+    "retry": 0,
+    "response_path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/recovery/vlm/response_011_refine.txt",
+    "proposal_count": 1,
+    "wall_time_s": 72.52603328600526,
+    "api_call": true,
+    "template": {
+      "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/part_aware_control/prompts/hang_refine.txt",
+      "sha256": "be0e63b87de2f1884dfca06e772e15880e95385bf8e99b5f47730acc762824cb"
+    },
+    "provider": "codex",
+    "model": "gpt-6-sol",
+    "phase": "recovery"
+  },
+  {
+    "stage": "verify",
+    "retry": 0,
+    "response_path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/recovery/vlm/response_012_verify.txt",
+    "wall_time_s": 7.366114465999999,
+    "api_call": true,
+    "template": {
+      "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/part_aware_control/prompts/hang_verify.txt",
+      "sha256": "21715b1e7cc2d0ffdbcd6355efd8bf10d5d10224de4a918daf1f3d90f1598ae7"
+    },
+    "provider": "codex",
+    "model": "gpt-6-sol",
+    "phase": "recovery"
+  },
+  {
+    "stage": "refine",
+    "retry": 0,
+    "response_path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/recovery/vlm/response_013_refine.txt",
+    "proposal_count": 1,
+    "wall_time_s": 93.05228305900528,
+    "api_call": true,
+    "template": {
+      "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/part_aware_control/prompts/hang_refine.txt",
+      "sha256": "be0e63b87de2f1884dfca06e772e15880e95385bf8e99b5f47730acc762824cb"
+    },
+    "provider": "codex",
+    "model": "gpt-6-sol",
+    "phase": "recovery"
+  },
+  {
+    "stage": "verify",
+    "retry": 0,
+    "response_path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/recovery/vlm/response_014_verify.txt",
+    "wall_time_s": 9.993987276990083,
+    "api_call": true,
+    "template": {
+      "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/part_aware_control/prompts/hang_verify.txt",
+      "sha256": "21715b1e7cc2d0ffdbcd6355efd8bf10d5d10224de4a918daf1f3d90f1598ae7"
+    },
+    "provider": "codex",
+    "model": "gpt-6-sol",
+    "phase": "recovery"
+  },
+  {
+    "stage": "refine",
+    "retry": 0,
+    "response_path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/recovery/vlm/response_015_refine.txt",
+    "proposal_count": 1,
+    "wall_time_s": 81.12236582800688,
+    "api_call": true,
+    "template": {
+      "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/part_aware_control/prompts/hang_refine.txt",
+      "sha256": "be0e63b87de2f1884dfca06e772e15880e95385bf8e99b5f47730acc762824cb"
+    },
+    "provider": "codex",
+    "model": "gpt-6-sol",
+    "phase": "recovery"
+  },
+  {
+    "stage": "verify",
+    "retry": 0,
+    "response_path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/recovery/vlm/response_016_verify.txt",
+    "wall_time_s": 9.584800194003037,
+    "api_call": true,
+    "template": {
+      "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/part_aware_control/prompts/hang_verify.txt",
+      "sha256": "21715b1e7cc2d0ffdbcd6355efd8bf10d5d10224de4a918daf1f3d90f1598ae7"
+    },
+    "provider": "codex",
+    "model": "gpt-6-sol",
+    "phase": "recovery"
+  }
+]

@@ -1,0 +1,394 @@
+{
+  "action_proposals": [
+    {
+      "description": "Complete loop-grasp plan from the common initial state. Prior single-step turns failed IK; tail lifts caused excessive squeeze and sometimes mesh inversion. The staged loop turn brought the measured hole axis close to world +y. In rollout 011, axial entry achieved winding 1 and full-contour engagement, but contact during insertion and seating exceeded 0.5 mm, an element inverted, and support fell below the required 1.059 N after withdrawal. This revision uses a lighter grasp, keeps the staged turn, aligns the measured hole rather than the loop center, inserts with the opening 4 mm higher to reduce side loading, seats less deeply, releases, and withdraws along previously reached directions. Its physical gates require execution to verify.",
+      "action_sequence": [
+        {
+          "type": "gripper_control",
+          "width": 0.08,
+          "reasoning": "Open for the settled loop candidate."
+        },
+        {
+          "type": "move",
+          "delta_x": 0.001765,
+          "delta_y": -0.00115,
+          "delta_z": -0.16,
+          "delta_roll": 0.0,
+          "delta_pitch": 0.0,
+          "delta_yaw": 0.0,
+          "reasoning": "Approach the shifted loop grasp from above."
+        },
+        {
+          "type": "move",
+          "delta_x": 0.0,
+          "delta_y": 0.0,
+          "delta_z": -0.069,
+          "delta_roll": 0.0,
+          "delta_pitch": 0.0,
+          "delta_yaw": 0.0,
+          "reasoning": "Place the downward pad midpoint at pickup height."
+        },
+        {
+          "type": "gripper_control",
+          "width": 0.037,
+          "reasoning": "Grip the loop with less squeeze than the measured 0.035 m grasp."
+        },
+        {
+          "type": "move",
+          "delta_x": 0.0,
+          "delta_y": 0.0,
+          "delta_z": 0.15,
+          "delta_roll": 0.0,
+          "delta_pitch": 0.0,
+          "delta_yaw": 0.0,
+          "reasoning": "Lift the toy clear of the table."
+        },
+        {
+          "type": "move",
+          "delta_x": 0.0,
+          "delta_y": 0.0,
+          "delta_z": 0.15165,
+          "delta_roll": 0.0,
+          "delta_pitch": 0.0,
+          "delta_yaw": 0.0,
+          "reasoning": "Reach the height used for the staged turn."
+        },
+        {
+          "type": "move",
+          "delta_x": 0.000117,
+          "delta_y": 6e-06,
+          "delta_z": -9.6e-05,
+          "delta_roll": 0.01019,
+          "delta_pitch": -0.01065,
+          "delta_yaw": 0.01739,
+          "reasoning": "Begin the pad-compensated turn."
+        },
+        {
+          "type": "move",
+          "delta_x": -0.000629,
+          "delta_y": -0.000407,
+          "delta_z": 4.4e-05,
+          "delta_roll": 0.07283,
+          "delta_pitch": -0.08192,
+          "delta_yaw": 0.12935,
+          "reasoning": "Continue the staged wrist orientation."
+        },
+        {
+          "type": "move",
+          "delta_x": -0.001741,
+          "delta_y": -0.001779,
+          "delta_z": -4e-05,
+          "delta_roll": 0.14291,
+          "delta_pitch": -0.18662,
+          "delta_yaw": 0.27327,
+          "reasoning": "Turn while keeping the pad midpoint near its pivot."
+        },
+        {
+          "type": "move",
+          "delta_x": -0.001362,
+          "delta_y": -0.003488,
+          "delta_z": -0.001144,
+          "delta_roll": 0.18208,
+          "delta_pitch": -0.26504,
+          "delta_yaw": 0.37151,
+          "reasoning": "Continue orienting the opening toward the rod axis."
+        },
+        {
+          "type": "move",
+          "delta_x": 0.000612,
+          "delta_y": -0.003939,
+          "delta_z": -0.00273,
+          "delta_roll": 0.18528,
+          "delta_pitch": -0.27695,
+          "delta_yaw": 0.38679,
+          "reasoning": "Continue the measured reachable turn path."
+        },
+        {
+          "type": "move",
+          "delta_x": 0.001976,
+          "delta_y": -0.002616,
+          "delta_z": -0.002951,
+          "delta_roll": 0.15556,
+          "delta_pitch": -0.21518,
+          "delta_yaw": 0.31218,
+          "reasoning": "Bring the hole normal closer to world +y."
+        },
+        {
+          "type": "move",
+          "delta_x": 0.003179,
+          "delta_y": -0.000568,
+          "delta_z": -0.001769,
+          "delta_roll": 0.09061,
+          "delta_pitch": -0.12271,
+          "delta_yaw": 0.16253,
+          "reasoning": "Finish most of the orientation change."
+        },
+        {
+          "type": "move",
+          "delta_x": 0.00075,
+          "delta_y": -4.3e-05,
+          "delta_z": -0.00053,
+          "delta_roll": 0.02452,
+          "delta_pitch": -0.05076,
+          "delta_yaw": 0.04338,
+          "reasoning": "Reach the prior measured near-axial hole orientation."
+        },
+        {
+          "type": "move",
+          "delta_x": -0.0025,
+          "delta_y": 0.0,
+          "delta_z": -0.012,
+          "delta_roll": 0.0,
+          "delta_pitch": 0.0,
+          "delta_yaw": 0.0,
+          "reasoning": "Correct the measured hole x position while still outside the free tip."
+        },
+        {
+          "type": "move",
+          "delta_x": 0.0,
+          "delta_y": 0.0,
+          "delta_z": -0.012,
+          "delta_roll": 0.0,
+          "delta_pitch": 0.0,
+          "delta_yaw": 0.0,
+          "reasoning": "Lower the oriented hole outside the rod."
+        },
+        {
+          "type": "move",
+          "delta_x": 0.0,
+          "delta_y": 0.0,
+          "delta_z": -0.012,
+          "delta_roll": 0.0,
+          "delta_pitch": 0.0,
+          "delta_yaw": 0.0,
+          "reasoning": "Continue the approach without axial contact."
+        },
+        {
+          "type": "move",
+          "delta_x": 0.0,
+          "delta_y": 0.0,
+          "delta_z": -0.0027,
+          "delta_roll": 0.0,
+          "delta_pitch": 0.0,
+          "delta_yaw": 0.0,
+          "reasoning": "Aim the actual hole near rod x with its center roughly 5.5 mm above the rod axis, allowing entry clearance."
+        },
+        {
+          "type": "move",
+          "delta_x": 0.0,
+          "delta_y": 0.02,
+          "delta_z": 0.0,
+          "delta_roll": 0.0,
+          "delta_pitch": 0.0,
+          "delta_yaw": 0.0,
+          "reasoning": "Approach the free tip along world +y."
+        },
+        {
+          "type": "move",
+          "delta_x": 0.0,
+          "delta_y": 0.01,
+          "delta_z": 0.0,
+          "delta_roll": 0.0,
+          "delta_pitch": 0.0,
+          "delta_yaw": 0.0,
+          "reasoning": "Bring the opening to the free tip."
+        },
+        {
+          "type": "move",
+          "delta_x": 0.0,
+          "delta_y": 0.005,
+          "delta_z": 0.0,
+          "delta_roll": 0.0,
+          "delta_pitch": 0.0,
+          "delta_yaw": 0.0,
+          "reasoning": "Start entry while retaining the higher hole clearance."
+        },
+        {
+          "type": "move",
+          "delta_x": 0.0,
+          "delta_y": 0.004,
+          "delta_z": 0.0,
+          "delta_roll": 0.0,
+          "delta_pitch": 0.0,
+          "delta_yaw": 0.0,
+          "reasoning": "Advance the hole plane across the tip."
+        },
+        {
+          "type": "move",
+          "delta_x": 0.0,
+          "delta_y": 0.004,
+          "delta_z": 0.0,
+          "delta_roll": 0.0,
+          "delta_pitch": 0.0,
+          "delta_yaw": 0.0,
+          "reasoning": "Continue axial entry."
+        },
+        {
+          "type": "move",
+          "delta_x": 0.0,
+          "delta_y": 0.004,
+          "delta_z": 0.0,
+          "delta_roll": 0.0,
+          "delta_pitch": 0.0,
+          "delta_yaw": 0.0,
+          "reasoning": "Advance the near inner contour."
+        },
+        {
+          "type": "move",
+          "delta_x": 0.0,
+          "delta_y": 0.004,
+          "delta_z": 0.0,
+          "delta_roll": 0.0,
+          "delta_pitch": 0.0,
+          "delta_yaw": 0.0,
+          "reasoning": "Increase whole-contour engagement."
+        },
+        {
+          "type": "move",
+          "delta_x": 0.0,
+          "delta_y": 0.004,
+          "delta_z": 0.0,
+          "delta_roll": 0.0,
+          "delta_pitch": 0.0,
+          "delta_yaw": 0.0,
+          "reasoning": "Continue along the rod axis."
+        },
+        {
+          "type": "move",
+          "delta_x": 0.0,
+          "delta_y": 0.004,
+          "delta_z": 0.0,
+          "delta_roll": 0.0,
+          "delta_pitch": 0.0,
+          "delta_yaw": 0.0,
+          "reasoning": "Move beyond the prior partial-engagement region."
+        },
+        {
+          "type": "move",
+          "delta_x": 0.0,
+          "delta_y": 0.004,
+          "delta_z": 0.0,
+          "delta_roll": 0.0,
+          "delta_pitch": 0.0,
+          "delta_yaw": 0.0,
+          "reasoning": "Carry more of the contour inboard."
+        },
+        {
+          "type": "move",
+          "delta_x": 0.0,
+          "delta_y": 0.004,
+          "delta_z": 0.0,
+          "delta_roll": 0.0,
+          "delta_pitch": 0.0,
+          "delta_yaw": 0.0,
+          "reasoning": "Build engagement margin."
+        },
+        {
+          "type": "move",
+          "delta_x": 0.0,
+          "delta_y": 0.004,
+          "delta_z": 0.0,
+          "delta_roll": 0.0,
+          "delta_pitch": 0.0,
+          "delta_yaw": 0.0,
+          "reasoning": "Keep the entire contour within the 0.12 m rod length."
+        },
+        {
+          "type": "move",
+          "delta_x": 0.0,
+          "delta_y": 0.004,
+          "delta_z": 0.0,
+          "delta_roll": 0.0,
+          "delta_pitch": 0.0,
+          "delta_yaw": 0.0,
+          "reasoning": "Advance the hole well beyond the free tip."
+        },
+        {
+          "type": "move",
+          "delta_x": 0.0,
+          "delta_y": 0.004,
+          "delta_z": 0.0,
+          "delta_roll": 0.0,
+          "delta_pitch": 0.0,
+          "delta_yaw": 0.0,
+          "reasoning": "Finish axial insertion at the inboard position reached in rollout 011."
+        },
+        {
+          "type": "move",
+          "delta_x": 0.0,
+          "delta_y": 0.0,
+          "delta_z": -0.004,
+          "delta_roll": 0.0,
+          "delta_pitch": 0.0,
+          "delta_yaw": 0.0,
+          "reasoning": "Begin transferring weight after full-contour insertion."
+        },
+        {
+          "type": "move",
+          "delta_x": 0.0,
+          "delta_y": 0.0,
+          "delta_z": -0.003,
+          "delta_roll": 0.0,
+          "delta_pitch": 0.0,
+          "delta_yaw": 0.0,
+          "reasoning": "Seat gently; avoid the prior deeper compression."
+        },
+        {
+          "type": "move",
+          "delta_x": 0.0,
+          "delta_y": 0.0,
+          "delta_z": 0.0,
+          "delta_roll": 0.0,
+          "delta_pitch": 0.0,
+          "delta_yaw": 0.0,
+          "reasoning": "Allow ring and rod contact to stabilize."
+        },
+        {
+          "type": "gripper_control",
+          "width": 0.08,
+          "reasoning": "Release completely so the rod carries the toy."
+        },
+        {
+          "type": "move",
+          "delta_x": 0.0,
+          "delta_y": 0.0,
+          "delta_z": 0.02,
+          "delta_roll": 0.0,
+          "delta_pitch": 0.0,
+          "delta_yaw": 0.0,
+          "reasoning": "Lift the open fingers clear without pulling axially on the ring."
+        },
+        {
+          "type": "move",
+          "delta_x": 0.02,
+          "delta_y": -0.005,
+          "delta_z": 0.02,
+          "delta_roll": 0.0,
+          "delta_pitch": 0.0,
+          "delta_yaw": 0.0,
+          "reasoning": "Withdraw along the direction reached in rollout 011."
+        },
+        {
+          "type": "move",
+          "delta_x": 0.0,
+          "delta_y": 0.0,
+          "delta_z": 0.0,
+          "delta_roll": 0.0,
+          "delta_pitch": 0.0,
+          "delta_yaw": 0.0,
+          "reasoning": "Leave the released toy undisturbed to settle."
+        },
+        {
+          "type": "move",
+          "delta_x": 0.0,
+          "delta_y": 0.0,
+          "delta_z": 0.0,
+          "delta_roll": 0.0,
+          "delta_pitch": 0.0,
+          "delta_yaw": 0.0,
+          "reasoning": "Continue the final settling hold with jaws fully open."
+        }
+      ]
+    }
+  ]
+}

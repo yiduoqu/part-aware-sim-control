@@ -1,0 +1,89 @@
+{
+  "operation": "continue exact original all-rejected batch with cached proposals and partial evidence",
+  "provider": "codex",
+  "model": "gpt-6-sol",
+  "profile": "clawhauser_hang",
+  "original_error_result": {
+    "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/planning/result.json",
+    "sha256": "8b308905febc1d3ab7ddaab6a18a58c5bb07889599c37be6c448e429e7bdaccd"
+  },
+  "original_raw_proposal": {
+    "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/planning/vlm/response_000_propose.txt",
+    "sha256": "9a8db5857571dd428d9fac3960515ffeec4dec9c2a64723be4e7fdccaa0ae302"
+  },
+  "original_observation": {
+    "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/observation/observation.json",
+    "sha256": "569fc42c9185f138bbc6c8fc9cec996fd40713e9221aa7ff8f51031c89955042"
+  },
+  "original_task": {
+    "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/task.json",
+    "sha256": "3e08b6e7c7a80a8cb54269d4de7846c68a7192a168eea1920780f25a862254ba"
+  },
+  "frozen_physics_sources": [
+    {
+      "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/part_aware_control/rollout.py",
+      "sha256": "c88a5300849fcc0395128e132f58f1d68dd9acf55da65bcd8217f10f2ab41649"
+    },
+    {
+      "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/part_aware_control/tasks.py",
+      "sha256": "945bcaf891b8ffe9fcca7243f135ebefd8bbbd421aa69b66edb110eb6a715b7e"
+    },
+    {
+      "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/part_aware_control/hanging.py",
+      "sha256": "b1e4685ca6b19281909ec9ef49fbd346052bbd2b2e8085f723f291b0d6c6ccd1"
+    }
+  ],
+  "current_sources": [
+    {
+      "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/part_aware_control/planner.py",
+      "sha256": "4025001b9094c01b295863d32c60d1390080bc2f29cdf270f393db31fac8904e"
+    },
+    {
+      "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/part_aware_control/providers.py",
+      "sha256": "7c4ac804dbfa377cac0c04c15d71929bef3b9888e5b3ed0f08aabff5249a1386"
+    },
+    {
+      "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/part_aware_control/__main__.py",
+      "sha256": "6651af73b93e1286ed2af0600d783a7d953ca5c88181660723855fa4787ea786"
+    },
+    {
+      "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/part_aware_control/actions.py",
+      "sha256": "c444759ec566b50db01725c8c84687bc26bf9fe24c3173a7ea161704c033104e"
+    },
+    {
+      "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/part_aware_control/rollout.py",
+      "sha256": "c88a5300849fcc0395128e132f58f1d68dd9acf55da65bcd8217f10f2ab41649"
+    },
+    {
+      "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/part_aware_control/tasks.py",
+      "sha256": "945bcaf891b8ffe9fcca7243f135ebefd8bbbd421aa69b66edb110eb6a715b7e"
+    },
+    {
+      "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/part_aware_control/hanging.py",
+      "sha256": "b1e4685ca6b19281909ec9ef49fbd346052bbd2b2e8085f723f291b0d6c6ccd1"
+    },
+    {
+      "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/part_aware_control/prompts/hang_propose.txt",
+      "sha256": "79921405dc6534370705adf8e36fc93f6913d333453d89f392b48e00565d116b"
+    },
+    {
+      "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/part_aware_control/prompts/hang_refine.txt",
+      "sha256": "be0e63b87de2f1884dfca06e772e15880e95385bf8e99b5f47730acc762824cb"
+    },
+    {
+      "path": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/part_aware_control/prompts/hang_verify.txt",
+      "sha256": "21715b1e7cc2d0ffdbcd6355efd8bf10d5d10224de4a918daf1f3d90f1598ae7"
+    }
+  ],
+  "revisions": {
+    "controller": "3393ff5beb6b3be4350a62c655e419cf86e860a2",
+    "newton": "5cd406a10a4d9160132fa115124254005f675d8f"
+  },
+  "controller_git_head": "3393ff5beb6b3be4350a62c655e419cf86e860a2",
+  "initial_partial_attempts_reused": 10,
+  "new_initial_executions": 0,
+  "new_initial_proposal_api_calls": 0,
+  "original_rejections_confirmed": 10,
+  "max_campaign_planning_attempts": 13,
+  "max_successful_plan_confirmations": 1
+}

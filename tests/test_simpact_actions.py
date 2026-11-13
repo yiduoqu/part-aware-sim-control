@@ -41,6 +41,10 @@ class AirbotActions(unittest.TestCase):
         self.assertEqual((x, y), (0, 0))
         self.assertAlmostEqual(z, math.sqrt(0.5))
         self.assertAlmostEqual(w, math.sqrt(0.5))
+        roll = rotate_world((0, 0, 0, 1), (math.pi / 2, 0, 0))
+        turned = rotate_world(roll, (0, math.pi / 2, 0))
+        for index, expected in enumerate((0.5, 0.5, -0.5, 0.5)):
+            self.assertAlmostEqual(turned[index], expected)
 
     def test_invalid_numeric_action_does_not_reach_simulator(self):
         for value in (float("nan"), float("inf")):

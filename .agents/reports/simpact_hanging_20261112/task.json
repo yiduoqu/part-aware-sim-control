@@ -1,0 +1,30 @@
+{
+  "name": "clawhauser_hang",
+  "cube_start": [
+    -0.13,
+    0.0
+  ],
+  "target_xy": [
+    0.02,
+    0.0
+  ],
+  "target_half": [
+    0.06,
+    0.1
+  ],
+  "cube_half": 0.02,
+  "minimum_lift": 0.03,
+  "settle_seconds": 2.0,
+  "initial_settle_seconds": 1.0,
+  "settle_window_seconds": 0.5,
+  "max_settled_speed": 0.01,
+  "max_settled_drift": 0.003,
+  "surface_tolerance": 0.002,
+  "max_table_penetration": 0.005,
+  "max_ik_error": 0.002,
+  "max_ik_orientation_error": 0.08726646259971647,
+  "minimum_hang_clearance": 0.02,
+  "minimum_rod_support_fraction": 0.9,
+  "minimum_rod_engagement": 0.01,
+  "max_contact_penetration": 0.0005
+}

@@ -1,0 +1,587 @@
+{
+  "schema_version": 1,
+  "index": 0,
+  "timestamp": "1794520573964992575",
+  "task": {
+    "name": "clawhauser_hang",
+    "cube_start": [
+      -0.13,
+      0.0
+    ],
+    "target_xy": [
+      0.02,
+      0.0
+    ],
+    "target_half": [
+      0.06,
+      0.1
+    ],
+    "cube_half": 0.02,
+    "minimum_lift": 0.03,
+    "settle_seconds": 2.0,
+    "initial_settle_seconds": 1.0,
+    "settle_window_seconds": 0.5,
+    "max_settled_speed": 0.01,
+    "max_settled_drift": 0.003,
+    "surface_tolerance": 0.002,
+    "max_table_penetration": 0.005,
+    "max_ik_error": 0.002,
+    "max_ik_orientation_error": 0.08726646259971647,
+    "minimum_hang_clearance": 0.02,
+    "minimum_rod_support_fraction": 0.9,
+    "minimum_rod_engagement": 0.01,
+    "max_contact_penetration": 0.0005
+  },
+  "geometry": {
+    "gripper": "arm",
+    "hole_centre_local": [
+      0.0033,
+      0.0874,
+      0.0002
+    ],
+    "hole_inradius_m": 0.014785113255838856,
+    "hole_inradius_median_m": 0.01694903175581411,
+    "reach_m": 0.02313200461977851,
+    "grasp": "loop",
+    "pad_half_thickness_m": 0.003,
+    "grip_squeeze_m": 0.016,
+    "force_cap_n": 20.0,
+    "toy_height_m": 0.22072593300927407,
+    "hole_height_m": 0.19785359491255872,
+    "grip_z_m": 0.007,
+    "loop_z_m": 0.037929598167227865,
+    "seat_drop_m": 0.008785113255838856,
+    "rod_z_m": 0.2666387081683976,
+    "rod_free_y_m": 0.03,
+    "lift_m": 0.27585359491255873,
+    "slide_m": 0.07173801839412002,
+    "engagement_m": 0.041738018394120016,
+    "rod_radius_m": 0.006,
+    "seat_z_m": 0.2578535949125587,
+    "thread_z_m": 0.2628535949125587,
+    "thread_lift_m": 0.005,
+    "withdraw_z_m": 0.06,
+    "grip_centre_m": [
+      -0.1266613155167712,
+      0.0,
+      0.007
+    ],
+    "arm": {
+      "gripper": "airbot_play_loop",
+      "finger_effort_limit_n": [
+        20.0,
+        20.0
+      ],
+      "close_travel_m": 0.016,
+      "pad_faces_open_m": 0.08,
+      "pad_faces_closed_m": 0.0,
+      "contact_matching": "sticky",
+      "coupler": "SolverOneWay",
+      "press_budget_n": 60.0
+    },
+    "friction": {
+      "soft_contact_ke": 10000.0,
+      "soft_contact_kd": 10.0,
+      "global_soft_contact_mu": 1.0,
+      "shape_mu": 1.5,
+      "pad_shape_mu": 1.4999999999999998,
+      "pad_toy_mu": 1.224744871391589
+    },
+    "global_soft_contact_mu": 1.0,
+    "physics": "clawhauser_on_rod.build_scene defaults (unchanged)",
+    "material_settings": {
+      "control_hz": 60,
+      "substeps": 20,
+      "contact_ke": 10000.0,
+      "contact_kd": 10.0,
+      "soft_mu": 1.0,
+      "particle_radius": 0.003,
+      "shape_mu": 1.5,
+      "damping_ratio": 0.0005,
+      "part_overrides": [
+        [
+          0,
+          "youngs_modulus_pa",
+          100000.0
+        ],
+        [
+          2,
+          "density_kg_m3",
+          300.0
+        ],
+        [
+          2,
+          "damping_pa_s",
+          86.20689655172414
+        ]
+      ]
+    },
+    "rod_free_end_world_m": [
+      0.4733386844832288,
+      0.03,
+      1.0166387081683976
+    ],
+    "rod_axis_world": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "rod_length_m": 0.12,
+    "rest_surface_z_world_m": 0.753,
+    "weight_n": 1.1765577016291238,
+    "finger_force_tolerance": 0.5,
+    "target_kind": "ring threaded onto rod; rod-supported after release, clear of table",
+    "pose_interpolation": "TCP endpoints in world metres; pad midpoint follows a straight line while wrist rotates",
+    "arrangement": {
+      "control_hz": 60,
+      "substeps": 20,
+      "gravity": -9.81,
+      "use_cuda_graph": false,
+      "backends": [
+        [
+          "articulated",
+          {
+            "solver": "mujoco",
+            "params": [],
+            "substeps": 1
+          }
+        ],
+        [
+          "soft",
+          {
+            "solver": "robosimstudio_materials.chebyshev_acceleration.SolverVBDChebyshev",
+            "params": [
+              [
+                "chebyshev_gamma",
+                1.0
+              ],
+              [
+                "chebyshev_rho",
+                0.95
+              ],
+              [
+                "iterations",
+                160
+              ],
+              [
+                "particle_edge_contact_buffer_size",
+                64
+              ],
+              [
+                "particle_enable_self_contact",
+                true
+              ],
+              [
+                "particle_enable_tile_solve",
+                true
+              ],
+              [
+                "particle_rest_shape_contact_exclusion_radius",
+                0.006
+              ],
+              [
+                "particle_self_contact_margin",
+                0.002
+              ],
+              [
+                "particle_self_contact_radius",
+                0.002
+              ],
+              [
+                "particle_topological_contact_filter_threshold",
+                2
+              ],
+              [
+                "particle_vertex_contact_buffer_size",
+                32
+              ],
+              [
+                "rigid_body_particle_contact_buffer_size",
+                256
+              ]
+            ],
+            "substeps": 1
+          }
+        ],
+        [
+          "rigid",
+          {
+            "solver": "robosimstudio_materials.chebyshev_acceleration.SolverVBDChebyshev",
+            "params": [
+              [
+                "chebyshev_gamma",
+                1.0
+              ],
+              [
+                "chebyshev_rho",
+                0.95
+              ],
+              [
+                "iterations",
+                160
+              ],
+              [
+                "particle_edge_contact_buffer_size",
+                64
+              ],
+              [
+                "particle_enable_self_contact",
+                true
+              ],
+              [
+                "particle_enable_tile_solve",
+                true
+              ],
+              [
+                "particle_rest_shape_contact_exclusion_radius",
+                0.006
+              ],
+              [
+                "particle_self_contact_margin",
+                0.002
+              ],
+              [
+                "particle_self_contact_radius",
+                0.002
+              ],
+              [
+                "particle_topological_contact_filter_threshold",
+                2
+              ],
+              [
+                "particle_vertex_contact_buffer_size",
+                32
+              ],
+              [
+                "rigid_body_particle_contact_buffer_size",
+                256
+              ]
+            ],
+            "substeps": 1
+          }
+        ],
+        [
+          "*",
+          {
+            "solver": "robosimstudio_materials.chebyshev_acceleration.SolverVBDChebyshev",
+            "params": [
+              [
+                "chebyshev_gamma",
+                1.0
+              ],
+              [
+                "chebyshev_rho",
+                0.95
+              ],
+              [
+                "iterations",
+                160
+              ],
+              [
+                "particle_edge_contact_buffer_size",
+                64
+              ],
+              [
+                "particle_enable_self_contact",
+                true
+              ],
+              [
+                "particle_enable_tile_solve",
+                true
+              ],
+              [
+                "particle_rest_shape_contact_exclusion_radius",
+                0.006
+              ],
+              [
+                "particle_self_contact_margin",
+                0.002
+              ],
+              [
+                "particle_self_contact_radius",
+                0.002
+              ],
+              [
+                "particle_topological_contact_filter_threshold",
+                2
+              ],
+              [
+                "particle_vertex_contact_buffer_size",
+                32
+              ],
+              [
+                "rigid_body_particle_contact_buffer_size",
+                256
+              ]
+            ],
+            "substeps": 1
+          }
+        ]
+      ],
+      "coupling": {
+        "method": "one_way",
+        "params": [
+          [
+            "contact_forces",
+            true
+          ],
+          [
+            "slide_feedback",
+            true
+          ],
+          [
+            "slide_feedback_clamp",
+            0.0
+          ],
+          [
+            "slide_feedback_smoothing",
+            1.0
+          ]
+        ]
+      },
+      "collision": {
+        "soft_contact_margin": 0.006,
+        "full_surface_contact": false,
+        "force_sdf": false,
+        "rigid_gap": null,
+        "contact_ke": 10000.0,
+        "contact_kd": 10.0,
+        "rigid_contact_max": 0,
+        "collide_every": 1,
+        "contact_matching": "sticky",
+        "broad_phase": "nxn"
+      },
+      "overrides": []
+    },
+    "max_aperture_m": 0.08,
+    "pad_size_tool_xyz_m": [
+      0.0105,
+      0.004,
+      0.04
+    ],
+    "close_axis_tool": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "finger_effort_limit_n": 20.0,
+    "quaternion_order": "xyzw",
+    "action_frame": "world",
+    "width_convention": "total jaw opening in metres",
+    "surface_origin_world_m": [
+      0.6,
+      0.0,
+      0.75
+    ],
+    "common_initial_tcp_world_m": [
+      0.47,
+      0.0,
+      1.0
+    ],
+    "common_initial_quaternion_xyzw": [
+      0.70710678,
+      0.70710678,
+      0.0,
+      0.0
+    ],
+    "grip_centre_frame": "work_surface, nominal before initial settling",
+    "nominal_grip_centre_world_m": [
+      0.4733386844832288,
+      0.0,
+      0.757
+    ],
+    "tcp_for_pads_offset_world_m": [
+      0.0,
+      0.0,
+      0.014
+    ],
+    "grasp_reference_note": "Choose a loop or tail pickup; final success still requires hanging by the loop. For a downward grasp add the selected nominal pad center, its matching settled_part_shifts_m and tcp_for_pads_offset_world_m. Moves and holds maintain the previous commanded jaw opening; only an explicit gripper_control changes it.",
+    "pad_midpoint_offset_tool_m": [
+      0.0,
+      0.0,
+      0.013999999906030238
+    ],
+    "grasp_candidates": {
+      "loop": {
+        "part_id": 2,
+        "nominal_pad_center_world_m": [
+          0.4733386844832288,
+          0.0,
+          0.757
+        ],
+        "outer_width_m": 0.04626400923955702
+      },
+      "tail": {
+        "part_id": 0,
+        "nominal_pad_center_world_m": [
+          0.47050881339749784,
+          -0.1728535949125587,
+          0.757
+        ],
+        "outer_width_m": 0.04248911476593903
+      }
+    }
+  },
+  "privileged_simulation_state": true,
+  "revisions": {
+    "controller": "3393ff5beb6b3be4350a62c655e419cf86e860a2",
+    "newton": "5cd406a10a4d9160132fa115124254005f675d8f"
+  },
+  "controller_has_local_changes": true,
+  "plan": null,
+  "executed_actions": [],
+  "snapshots": [
+    {
+      "time_s": 1.0000000000000013,
+      "gripper": {
+        "position": [
+          0.4700001427163393,
+          -8.092240144974474e-06,
+          1.0000035715107907
+        ],
+        "orientation": [
+          -0.707103431224823,
+          -0.7071115374565125,
+          2.8883753202535445e-06,
+          6.262682745727943e-06
+        ],
+        "width": 0.07999999821186066,
+        "commanded_width": 0.08
+      },
+      "objects": {
+        "clawhauser_hang": {
+          "position": [
+            0.46943655610084534,
+            -0.08751817047595978,
+            0.7855448722839355
+          ],
+          "minimum_z": 0.7529146671295166,
+          "maximum_z": 0.8253690004348755,
+          "bounds_min": [
+            0.4135533571243286,
+            -0.1951187700033188,
+            0.7529146671295166
+          ],
+          "bounds_max": [
+            0.5235201716423035,
+            0.018498297780752182,
+            0.8253690004348755
+          ],
+          "loop_center_world_m": [
+            0.4693314731121063,
+            -0.013731916435062885,
+            0.7723491191864014
+          ],
+          "hole_center_world_m": [
+            0.47070935368537903,
+            -0.002603067783638835,
+            0.7666398286819458
+          ],
+          "hole_axis_world": [
+            -0.0801868885755539,
+            0.5044497847557068,
+            0.8597095012664795
+          ],
+          "settled_loop_shift_m": [
+            -0.0015735030174255371,
+            -0.0011585569009184837,
+            0.0
+          ],
+          "settled_part_shifts_m": {
+            "loop": [
+              -0.0015735030174255371,
+              -0.0011585569009184837,
+              0.0
+            ],
+            "tail": [
+              -0.003098130226135254,
+              0.0025932341814041138,
+              0.0
+            ]
+          }
+        }
+      },
+      "hanging": {
+        "rod_axis_winding": 4.141347241488954e-18,
+        "minimum_hole_engagement_m": -0.05036877907812595,
+        "maximum_hole_engagement_m": -0.013757713809609412,
+        "loop_center_world_m": [
+          0.4693314731121063,
+          -0.013731916435062885,
+          0.7723491191864014
+        ],
+        "hole_center_world_m": [
+          0.47070935368537903,
+          -0.002603067783638835,
+          0.7666398286819458
+        ],
+        "hole_axis_world": [
+          -0.0801868885755539,
+          0.5044497847557068,
+          0.8597095012664795
+        ],
+        "rod_engagement_m": -0.032603067783638834,
+        "rod_loop_contacts": 0,
+        "rod_support_n": 0.0,
+        "rod_loop_support_n": 0.0,
+        "bench_and_rod_support_n": 1.525427222251892,
+        "finger_contacts": 0,
+        "finger_squeeze_n": [
+          0.0,
+          0.0
+        ],
+        "max_contact_penetration_m": 8.533289656043053e-05
+      },
+      "mesh_quality": {
+        "minimum_J_by_part": [
+          0.9701493382453918,
+          0.7280544638633728,
+          0.9850214719772339
+        ],
+        "inverted_tet_substeps_by_part": [
+          0,
+          0,
+          0
+        ],
+        "nonfinite_tet_substeps_by_part": [
+          0,
+          0,
+          0
+        ]
+      },
+      "label": "initial",
+      "waypoint_index": 0,
+      "action_index": null,
+      "screenshot": "/nobackup/proj/disk/ehpc-dev-2026d08-170/personal/yiduo/simpact-integration-20261110/part-aware-sim-control/outputs/simpact/hanging_loop_tail_20261112/observation/000_initial.png"
+    }
+  ],
+  "outcome": {
+    "success": false,
+    "valid": true,
+    "reason": "observation only",
+    "mesh_quality": {
+      "minimum_J_by_part": [
+        0.9701493382453918,
+        0.7280544638633728,
+        0.9850214719772339
+      ],
+      "inverted_tet_substeps_by_part": [
+        0,
+        0,
+        0
+      ],
+      "nonfinite_tet_substeps_by_part": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  "max_ik_position_error_m": 0.0,
+  "max_ik_orientation_error_rad": 1.781822511062273e-05,
+  "timing": {
+    "build_seconds": 25.694583554999554,
+    "execution_with_readback_and_images_seconds": 1.4079996617510915e-06,
+    "wall_seconds": 76.09945803099254
+  }
+}
