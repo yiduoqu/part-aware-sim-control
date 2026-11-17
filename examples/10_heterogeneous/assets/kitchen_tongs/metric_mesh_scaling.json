@@ -1,0 +1,63 @@
+{
+  "metric_bounds": {
+    "extent": [
+      0.057724375277757645,
+      0.0413935761898756,
+      0.2883296310901642
+    ],
+    "max": [
+      0.02795419469475746,
+      0.01891549676656723,
+      0.14314867556095123
+    ],
+    "max_extent": 0.2883296310901642,
+    "min": [
+      -0.029770180583000183,
+      -0.022478079423308372,
+      -0.14518095552921295
+    ]
+  },
+  "note": "Mesh was scaled before voxelization and tetrahedralization.",
+  "output_mesh_path": "outputs/agentic_asset_refinement/dev20_deformable_part2_2_kitchen_tongs_guanxiong_20260805_174344/revisions/revision_0000/mesh_processing/combined_to_monolithic/dev20_deformable_part2_2_kitchen_tongs_guanxiong_20260805_174344.mesh",
+  "output_mesh_sha256": "77d486f285f24d565cf409e5e78f536d9eb6778b94f6062f6b3b5e3944553941",
+  "pre_tetrahedralization_metric_bounds": {
+    "extent": [
+      0.051899749885750024,
+      0.03860079068105554,
+      0.28
+    ],
+    "max": [
+      0.02578722318727907,
+      0.018676633397687523,
+      0.13929920257494946
+    ],
+    "max_extent": 0.28,
+    "min": [
+      -0.02611252669847096,
+      -0.019924157283368014,
+      -0.14070079742505057
+    ]
+  },
+  "scale_factor": 0.28110673565927163,
+  "scaling_mode": "pre_monolithic_target_max_dimension",
+  "schema_version": "hag4r-metric-max-dimension-scaling-v1",
+  "source_bounds": {
+    "extent": [
+      0.1846264898777008,
+      0.1373172029852867,
+      0.9960629343986511
+    ],
+    "max": [
+      0.0917346328496933,
+      0.06643965095281601,
+      0.49553847312927246
+    ],
+    "max_extent": 0.9960629343986511,
+    "min": [
+      -0.09289185702800751,
+      -0.0708775520324707,
+      -0.5005244612693787
+    ]
+  },
+  "target_max_dimension_m": 0.28
+}

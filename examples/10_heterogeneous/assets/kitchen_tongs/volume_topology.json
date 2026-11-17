@@ -1,0 +1,493 @@
+{
+  "array_hashes": {
+    "tet_E_nu_sha256": "a19feb7cb011f12c790873a1c507f4df86c175321cd396dc145fba9070ec0fe0",
+    "tet_density_sha256": "ebd3579eb6e81d7462b9db67cff55c594f8506a77f72a785d2d6b6fff447d7dc",
+    "tet_part_labels_sha256": "c1517f22583c360282fe5a73c3b6816764b82aa558c9d04336a895834ff93563"
+  },
+  "contract": "per_part_filled_hollow_volumetric_meshing",
+  "heterogeneous_params_path": "outputs/agentic_asset_refinement/dev20_deformable_part2_2_kitchen_tongs_guanxiong_20260805_174344/revisions/revision_0000/mesh_processing/assign_monolithic_mesh_params/heterogeneous_params.npz",
+  "hollow_wall_band_layers": 2,
+  "mesh_path": "outputs/agentic_asset_refinement/dev20_deformable_part2_2_kitchen_tongs_guanxiong_20260805_174344/revisions/revision_0000/mesh_processing/combined_to_monolithic/dev20_deformable_part2_2_kitchen_tongs_guanxiong_20260805_174344.mesh",
+  "metric_mesh_scaling_path": "outputs/agentic_asset_refinement/dev20_deformable_part2_2_kitchen_tongs_guanxiong_20260805_174344/revisions/revision_0000/mesh_processing/combined_to_monolithic/metric_mesh_scaling.json",
+  "owner_assignment": {
+    "boundary_fallback": "nearest_occupied_voxel_only",
+    "method": "tet_centroid_occupancy_owner",
+    "nearest_occupied_voxel_fallback_count": 223,
+    "overlap_tie_break": "nearest_source_part_surface_then_smaller_part_index",
+    "overlap_tie_break_count": 25
+  },
+  "parts": [
+    {
+      "derived_voxel_band_width_m": null,
+      "fidelity_config": {
+        "absolute_cap": 10000,
+        "keep_ratio": 0.02,
+        "longest_axis_voxels": 96
+      },
+      "fill_operation": "binary_fill_holes",
+      "input_faces": 11140,
+      "mesh_fidelity": "high",
+      "occupied_voxel_count": 5152,
+      "output_faces": 222,
+      "part_color_rgb": [
+        141.0,
+        211.0,
+        199.0
+      ],
+      "part_index": 0,
+      "retained": true,
+      "source_mesh_path": "outputs/agentic_asset_refinement/dev20_deformable_part2_2_kitchen_tongs_guanxiong_20260805_174344/revisions/revision_0000/omnipart/kitchen_tongs/part1.glb",
+      "target_faces": 223,
+      "tet_count": 2696,
+      "volume_fill_mode": "solid_fill",
+      "voxel_grid": {
+        "bounds_m": {
+          "max": [
+            0.02578722318727907,
+            0.018676633397687523,
+            0.13929920257494946
+          ],
+          "min": [
+            -0.02611252669847096,
+            -0.019924157283368014,
+            -0.14070079742505057
+          ]
+        },
+        "cell_count": 50400,
+        "dims": [
+          25,
+          21,
+          96
+        ],
+        "origin": [
+          -0.038839799425743685,
+          -0.03265143001064074,
+          -0.1534280701523233
+        ],
+        "pitch_m": 0.003181818181818182
+      }
+    },
+    {
+      "derived_voxel_band_width_m": null,
+      "fidelity_config": {
+        "absolute_cap": 10000,
+        "keep_ratio": 0.02,
+        "longest_axis_voxels": 96
+      },
+      "fill_operation": "binary_fill_holes",
+      "input_faces": 31388,
+      "mesh_fidelity": "high",
+      "occupied_voxel_count": 18450,
+      "output_faces": 628,
+      "part_color_rgb": [
+        255.0,
+        255.0,
+        179.0
+      ],
+      "part_index": 1,
+      "retained": true,
+      "source_mesh_path": "outputs/agentic_asset_refinement/dev20_deformable_part2_2_kitchen_tongs_guanxiong_20260805_174344/revisions/revision_0000/omnipart/kitchen_tongs/part2.glb",
+      "target_faces": 628,
+      "tet_count": 31,
+      "volume_fill_mode": "solid_fill",
+      "voxel_grid": {
+        "bounds_m": {
+          "max": [
+            0.015815529116674887,
+            0.008892232844596155,
+            -0.008750411551248708
+          ],
+          "min": [
+            -0.016243454450178007,
+            -0.01209924333213673,
+            -0.03268160719873297
+          ]
+        },
+        "cell_count": 468864,
+        "dims": [
+          96,
+          66,
+          74
+        ],
+        "origin": [
+          -0.017700680975944048,
+          -0.013556469857902771,
+          -0.03413883372449901
+        ],
+        "pitch_m": 0.0003643066314415102
+      }
+    }
+  ],
+  "schema_version": "hag4r-volume-topology-v3",
+  "surface_combination": {
+    "dependency_versions": {
+      "manifold3d": "3.4.1",
+      "trimesh": "4.11.5"
+    },
+    "input_count": 2,
+    "inputs": [
+      {
+        "absolute_volume_m3": 0.00014460733206607404,
+        "bounds_m": [
+          [
+            -0.029770180234296322,
+            -0.02247808007752801,
+            -0.14518095031983183
+          ],
+          [
+            0.027954194214745123,
+            0.018915497473498546,
+            0.1431486797391747
+          ]
+        ],
+        "face_count": 222,
+        "finite": true,
+        "nonempty": true,
+        "positive_volume": true,
+        "signed_volume_m3": 0.00014460733206607404,
+        "surface_shell_count": 1,
+        "surface_shells": [
+          {
+            "absolute_volume_m3": 0.00014460733206607404,
+            "bounds_m": [
+              [
+                -0.029770180234296322,
+                -0.02247808007752801,
+                -0.14518095031983183
+              ],
+              [
+                0.027954194214745123,
+                0.018915497473498546,
+                0.1431486797391747
+              ]
+            ],
+            "face_count": 222,
+            "signed_volume_m3": 0.00014460733206607404,
+            "vertex_count": 111,
+            "watertight": true,
+            "winding_consistent": true
+          }
+        ],
+        "triangular": true,
+        "valid": true,
+        "vertex_count": 111,
+        "watertight": true,
+        "winding_consistent": true
+      },
+      {
+        "absolute_volume_m3": 8.539142169185347e-07,
+        "bounds_m": [
+          [
+            -0.016692492037483065,
+            -0.012420394598814936,
+            -0.03295432327395285
+          ],
+          [
+            0.016290053759204663,
+            0.009056742063446983,
+            -0.008615015365457968
+          ]
+        ],
+        "face_count": 628,
+        "finite": true,
+        "nonempty": true,
+        "positive_volume": true,
+        "signed_volume_m3": 8.539142169185347e-07,
+        "surface_shell_count": 2,
+        "surface_shells": [
+          {
+            "absolute_volume_m3": 4.645124445049116e-07,
+            "bounds_m": [
+              [
+                -0.016692492037483065,
+                -0.012420394598814936,
+                -0.03295432327395285
+              ],
+              [
+                -0.012693706104046399,
+                0.0090328293306242,
+                -0.008615015365457968
+              ]
+            ],
+            "face_count": 312,
+            "signed_volume_m3": 4.645124445049116e-07,
+            "vertex_count": 158,
+            "watertight": true,
+            "winding_consistent": true
+          },
+          {
+            "absolute_volume_m3": 3.894017724136231e-07,
+            "bounds_m": [
+              [
+                0.01155612860727192,
+                -0.012187450576537832,
+                -0.03287795840399539
+              ],
+              [
+                0.016290053759204663,
+                0.009056742063446983,
+                -0.008888432337580276
+              ]
+            ],
+            "face_count": 316,
+            "signed_volume_m3": 3.894017724136231e-07,
+            "vertex_count": 160,
+            "watertight": true,
+            "winding_consistent": true
+          }
+        ],
+        "triangular": true,
+        "valid": true,
+        "vertex_count": 318,
+        "watertight": true,
+        "winding_consistent": true
+      }
+    ],
+    "output": {
+      "absolute_volume_m3": 0.00014460733566189554,
+      "bounds_m": [
+        [
+          -0.029770180583000183,
+          -0.022478079423308372,
+          -0.14518095552921295
+        ],
+        [
+          0.02795419469475746,
+          0.01891549676656723,
+          0.14314867556095123
+        ]
+      ],
+      "face_count": 222,
+      "finite": true,
+      "nonempty": true,
+      "positive_volume": true,
+      "signed_volume_m3": 0.00014460733566189554,
+      "surface_shell_count": 1,
+      "surface_shells": [
+        {
+          "absolute_volume_m3": 0.00014460733566189554,
+          "bounds_m": [
+            [
+              -0.029770180583000183,
+              -0.022478079423308372,
+              -0.14518095552921295
+            ],
+            [
+              0.02795419469475746,
+              0.01891549676656723,
+              0.14314867556095123
+            ]
+          ],
+          "face_count": 222,
+          "signed_volume_m3": 0.00014460733566189554,
+          "vertex_count": 111,
+          "watertight": true,
+          "winding_consistent": true
+        }
+      ],
+      "triangular": true,
+      "valid": true,
+      "vertex_count": 111,
+      "watertight": true,
+      "winding_consistent": true
+    },
+    "runtime_s": 0.13480295706540346,
+    "strategy": "manifold_union"
+  },
+  "tet_budget_limit": 40000,
+  "tet_budget_status": "within_budget",
+  "tet_count": 2727,
+  "tet_validation": {
+    "post_serialization": {
+      "absolute_determinant_min": 3.454880221989068e-10,
+      "bbox_diagonal_m": 0.29695034570713097,
+      "boundary_surface_component_count": 1,
+      "boundary_triangle_count": 1692,
+      "components": [
+        {
+          "bounds_m": [
+            [
+              -0.029770180583000183,
+              -0.022478079423308372,
+              -0.14518095552921295
+            ],
+            [
+              0.02795419469475746,
+              0.01891549676656723,
+              0.14314867556095123
+            ]
+          ],
+          "centroid_m": [
+            -2.4020305262209797e-05,
+            -0.0004491857364281919,
+            -0.009252280909162655
+          ],
+          "component_id": 0,
+          "is_main_component": true,
+          "nearest_distance_to_main_component_m": 0.0,
+          "part_label_distribution": {
+            "0": 2696,
+            "1": 31
+          },
+          "tet_count": 2727,
+          "vertex_count": 967,
+          "volume_m3": 0.00014431123333913062
+        }
+      ],
+      "determinant_max": -3.454880221989068e-10,
+      "determinant_min": -3.2626974082342766e-06,
+      "duplicate_tet_count": 0,
+      "expected_material_labels": [
+        0,
+        1
+      ],
+      "face_connected_component_count": 1,
+      "failures": [],
+      "finite_points": true,
+      "genesis_determinant_threshold": 1e-12,
+      "genesis_invalid_tet_count": 0,
+      "indices_in_range": true,
+      "material_array_length_valid": true,
+      "material_label_coverage_mode": "exact",
+      "material_label_coverage_valid": true,
+      "missing_material_labels": [],
+      "non_manifold_tet_face_count": 0,
+      "point_count": 967,
+      "present_material_labels": [
+        0,
+        1
+      ],
+      "repeated_vertex_tet_count": 0,
+      "tet_count": 2727,
+      "unexpected_material_labels": [],
+      "valid": true,
+      "warnings": [],
+      "wrong_orientation_tet_count": 0
+    },
+    "post_tetrahedralization": {
+      "absolute_determinant_min": 3.454880221989068e-10,
+      "bbox_diagonal_m": 0.29695034570713097,
+      "boundary_surface_component_count": 1,
+      "boundary_triangle_count": 1692,
+      "components": [
+        {
+          "bounds_m": [
+            [
+              -0.029770180583000183,
+              -0.022478079423308372,
+              -0.14518095552921295
+            ],
+            [
+              0.02795419469475746,
+              0.01891549676656723,
+              0.14314867556095123
+            ]
+          ],
+          "centroid_m": [
+            -2.4020305262209797e-05,
+            -0.0004491857364281919,
+            -0.009252280909162655
+          ],
+          "component_id": 0,
+          "is_main_component": true,
+          "nearest_distance_to_main_component_m": 0.0,
+          "part_label_distribution": {},
+          "tet_count": 2727,
+          "vertex_count": 967,
+          "volume_m3": 0.00014431123333913062
+        }
+      ],
+      "determinant_max": -3.454880221989068e-10,
+      "determinant_min": -3.2626974082342766e-06,
+      "duplicate_tet_count": 0,
+      "expected_material_labels": [],
+      "face_connected_component_count": 1,
+      "failures": [],
+      "finite_points": true,
+      "genesis_determinant_threshold": 1e-12,
+      "genesis_invalid_tet_count": 0,
+      "indices_in_range": true,
+      "material_array_length_valid": true,
+      "material_label_coverage_mode": "exact",
+      "material_label_coverage_valid": true,
+      "missing_material_labels": [],
+      "non_manifold_tet_face_count": 0,
+      "point_count": 967,
+      "present_material_labels": [],
+      "repeated_vertex_tet_count": 0,
+      "tet_count": 2727,
+      "unexpected_material_labels": [],
+      "valid": true,
+      "warnings": [],
+      "wrong_orientation_tet_count": 0
+    },
+    "pre_serialization": {
+      "absolute_determinant_min": 3.454880221989068e-10,
+      "bbox_diagonal_m": 0.29695034570713097,
+      "boundary_surface_component_count": 1,
+      "boundary_triangle_count": 1692,
+      "components": [
+        {
+          "bounds_m": [
+            [
+              -0.029770180583000183,
+              -0.022478079423308372,
+              -0.14518095552921295
+            ],
+            [
+              0.02795419469475746,
+              0.01891549676656723,
+              0.14314867556095123
+            ]
+          ],
+          "centroid_m": [
+            -2.4020305262209797e-05,
+            -0.0004491857364281919,
+            -0.009252280909162655
+          ],
+          "component_id": 0,
+          "is_main_component": true,
+          "nearest_distance_to_main_component_m": 0.0,
+          "part_label_distribution": {
+            "0": 2696,
+            "1": 31
+          },
+          "tet_count": 2727,
+          "vertex_count": 967,
+          "volume_m3": 0.00014431123333913062
+        }
+      ],
+      "determinant_max": -3.454880221989068e-10,
+      "determinant_min": -3.2626974082342766e-06,
+      "duplicate_tet_count": 0,
+      "expected_material_labels": [
+        0,
+        1
+      ],
+      "face_connected_component_count": 1,
+      "failures": [],
+      "finite_points": true,
+      "genesis_determinant_threshold": 1e-12,
+      "genesis_invalid_tet_count": 0,
+      "indices_in_range": true,
+      "material_array_length_valid": true,
+      "material_label_coverage_mode": "exact",
+      "material_label_coverage_valid": true,
+      "missing_material_labels": [],
+      "non_manifold_tet_face_count": 0,
+      "point_count": 967,
+      "present_material_labels": [
+        0,
+        1
+      ],
+      "repeated_vertex_tet_count": 0,
+      "tet_count": 2727,
+      "unexpected_material_labels": [],
+      "valid": true,
+      "warnings": [],
+      "wrong_orientation_tet_count": 0
+    }
+  },
+  "volume_topology": "filled",
+  "warnings": []
+}

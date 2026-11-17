@@ -1,0 +1,63 @@
+{
+  "metric_bounds": {
+    "extent": [
+      0.40695455161503746,
+      0.14490567150226935,
+      0.14630453871751095
+    ],
+    "max": [
+      0.2022889652626891,
+      0.07169696986174394,
+      0.07305782288312912
+    ],
+    "max_extent": 0.40695455161503746,
+    "min": [
+      -0.20466558635234833,
+      -0.07320870164052541,
+      -0.07324671583438183
+    ]
+  },
+  "note": "Mesh was scaled before voxelization and tetrahedralization.",
+  "output_mesh_path": "outputs/agentic_asset_refinement/ya20_diagno_and_reroute_Part2_9_toilet_plunger_yiduo_20260905_135243/revisions/revision_0001/mesh_processing/combined_to_monolithic/ya20_diagno_and_reroute_Part2_9_toilet_plunger_yiduo_20260905_135243.mesh",
+  "output_mesh_sha256": "7e7f668b3597718f2df7936b1d347512fc37f9de3b8961e5a47f6c4ca275c462",
+  "pre_tetrahedralization_metric_bounds": {
+    "extent": [
+      0.4,
+      0.14149055194082638,
+      0.14363521897046794
+    ],
+    "max": [
+      0.19973166596452932,
+      0.07043485547041382,
+      0.07181146242646133
+    ],
+    "max_extent": 0.4,
+    "min": [
+      -0.20026833403547067,
+      -0.07105569647041257,
+      -0.07182375654400659
+    ]
+  },
+  "scale_factor": 0.40050692346810374,
+  "scaling_mode": "pre_monolithic_target_max_dimension",
+  "schema_version": "hag4r-metric-max-dimension-scaling-v1",
+  "source_bounds": {
+    "extent": [
+      0.9987342953681946,
+      0.35327866673469543,
+      0.35863354802131653
+    ],
+    "max": [
+      0.4986971616744995,
+      0.17586426436901093,
+      0.1793014258146286
+    ],
+    "max_extent": 0.9987342953681946,
+    "min": [
+      -0.5000371336936951,
+      -0.1774144023656845,
+      -0.17933212220668793
+    ]
+  },
+  "target_max_dimension_m": 0.4
+}

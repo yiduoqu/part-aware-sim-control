@@ -1,0 +1,172 @@
+{
+  "binding_validation": {
+    "atlas_bilinear_padding": true,
+    "atlas_padding_pixels": 8,
+    "atlas_resolution": 1024,
+    "binding_method": "exact_xatlas_vmapping_to_final_tet_vertex",
+    "boundary_face_count": 1692,
+    "coordinate_frame": "metric_gltf_y_up",
+    "internal_face_count": 4608,
+    "max_rest_alignment_error_m": 7.450580596923828e-09,
+    "physics_vertex_count": 967,
+    "seam_duplicate_vertex_count": 321,
+    "surface_vertex_count": 846,
+    "tet_count": 2727,
+    "visual_vertex_count": 1167
+  },
+  "bundle_files": {
+    "albedo.png": {
+      "path": "albedo.png",
+      "sha256": "6367d801ec944581b9eb8e1e548725babb566578f6d9b7440c286d34977a7b82",
+      "size_bytes": 486206
+    },
+    "post_mesh_texture_request.json": {
+      "path": "post_mesh_texture_request.json",
+      "sha256": "8997e78dd9e44ed219bd557942901fe30728b72a920b28849efe3fa3156eeeb2",
+      "size_bytes": 1398
+    },
+    "qa/confidence.png": {
+      "path": "qa/confidence.png",
+      "sha256": "81dfa4e5b4a17b42ef6c4fa05f113d8ca657df5f9df06d1609f8e1071ba00800",
+      "size_bytes": 455745
+    },
+    "qa/fill_provenance.png": {
+      "path": "qa/fill_provenance.png",
+      "sha256": "288719f133f2b5724384a3d7d314093b282b5979980a702a142debb75b2982a8",
+      "size_bytes": 42715
+    },
+    "qa/observed_coverage.png": {
+      "path": "qa/observed_coverage.png",
+      "sha256": "6dbb83d72a629ecdf70b9a542b097076d63f7e8f83ee17816ed856fae10dc3f6",
+      "size_bytes": 29612
+    },
+    "qa/report.json": {
+      "path": "qa/report.json",
+      "sha256": "12b4eaaedf3576cf7f0ed5ce37ddd1e83381e8da646d03f8143e2bc97216eef2",
+      "size_bytes": 2135
+    },
+    "qa/rest_pose_render.png": {
+      "path": "qa/rest_pose_render.png",
+      "sha256": "98f31f4972b0b71ee293e3fd507fcff1e612dec455a0d095a87258c4f4066ec8",
+      "size_bytes": 57205
+    },
+    "visual_mesh.glb": {
+      "path": "visual_mesh.glb",
+      "sha256": "12c2756863ca804c16591b9120d196b1ecc8a88643c42a7be5ae45165559bf10",
+      "size_bytes": 531172
+    },
+    "visual_to_physics.npz": {
+      "path": "visual_to_physics.npz",
+      "sha256": "34bd00b18439e6be67bc2243ab905dc65a328c93ad7d8c423693f506e46cd4e1",
+      "size_bytes": 38015
+    }
+  },
+  "exact_binding": {
+    "atlas_bilinear_padding": true,
+    "atlas_fix_winding": false,
+    "atlas_padding_pixels": 8,
+    "atlas_resolution": 1024,
+    "binding_method": "exact_xatlas_vmapping_to_final_tet_vertex",
+    "boundary_face_count": 1692,
+    "coordinate_frame": "metric_gltf_y_up",
+    "internal_face_count": 4608,
+    "max_rest_alignment_error_m": 7.450580596923828e-09,
+    "physics_vertex_count": 967,
+    "seam_duplicate_vertex_count": 321,
+    "surface_vertex_count": 846,
+    "tet_count": 2727,
+    "visual_vertex_count": 1167
+  },
+  "glb": {
+    "face_count": 1692,
+    "max_rest_alignment_error_m": 7.450580596923828e-09,
+    "primitive_count": 1,
+    "texture_resolution": 1024,
+    "uv_count": 1167,
+    "vertex_count": 1167
+  },
+  "inputs": {
+    "appearance_manifest_path": {
+      "path": "outputs/agentic_asset_refinement/dev20_deformable_part2_2_kitchen_tongs_guanxiong_20260805_174344/revisions/revision_0000/omnipart/kitchen_tongs/appearance/appearance_manifest.json",
+      "sha256": "393eb1da6a17a4b00ae6634b8c8662d9360738b98c14623be842d94ed3ce4da4",
+      "size_bytes": 5115
+    },
+    "heterogeneous_params_path": {
+      "path": "outputs/agentic_asset_refinement/dev20_deformable_part2_2_kitchen_tongs_guanxiong_20260805_174344/revisions/revision_0000/mesh_processing/assign_monolithic_mesh_params/heterogeneous_params.npz",
+      "sha256": "8e74784fe9725dfb3a5efcdd4266250e6b362ccfe6308f7f3e82ee0831f59c25",
+      "size_bytes": 89480
+    },
+    "inferred_material_path": {
+      "path": "outputs/agentic_asset_refinement/dev20_deformable_part2_2_kitchen_tongs_guanxiong_20260805_174344/revisions/revision_0000/material_inference/dev20_deformable_part2_2_kitchen_tongs_guanxiong_20260805_174344.json",
+      "sha256": "d523f1c17ffd7147edb6c9cddf4dfa50ada43fa852e7ca11c07657fd8c41d5f5",
+      "size_bytes": 7173
+    },
+    "metric_mesh_scaling_path": {
+      "path": "outputs/agentic_asset_refinement/dev20_deformable_part2_2_kitchen_tongs_guanxiong_20260805_174344/revisions/revision_0000/mesh_processing/combined_to_monolithic/metric_mesh_scaling.json",
+      "sha256": "8097d89564efa3b23d5b67f4bd7ae430a6967269bd9d917565266c85024a2345",
+      "size_bytes": 1714
+    },
+    "monolithic_mesh_path": {
+      "path": "outputs/agentic_asset_refinement/dev20_deformable_part2_2_kitchen_tongs_guanxiong_20260805_174344/revisions/revision_0000/mesh_processing/combined_to_monolithic/dev20_deformable_part2_2_kitchen_tongs_guanxiong_20260805_174344.mesh",
+      "sha256": "77d486f285f24d565cf409e5e78f536d9eb6778b94f6062f6b3b5e3944553941",
+      "size_bytes": 112818
+    }
+  },
+  "pbr": {
+    "base_color_texture": "albedo.png",
+    "double_sided": true,
+    "metallic": 0.0,
+    "roughness": 1.0
+  },
+  "request": {
+    "path": "post_mesh_texture_request.json",
+    "schema_version": "hag4r-post-mesh-texture-request-v1"
+  },
+  "schema_version": "hag4r-post-mesh-texture-visual-v1",
+  "statistics": {
+    "global": {
+      "chart_interior_texel_count": 611206,
+      "gutter_fraction": 0.19035160808739665,
+      "gutter_texel_count": 143697,
+      "nearest_filled_fraction": 0.07329280144501199,
+      "nearest_filled_texel_count": 44797,
+      "observed_fraction": 0.926707198554988,
+      "observed_texel_count": 566409,
+      "part_color_filled_fraction": 0.0,
+      "part_color_filled_texel_count": 0
+    },
+    "per_part": [
+      {
+        "chart_interior_texel_count": 608298,
+        "gutter_fraction": 0.18998146392389556,
+        "gutter_texel_count": 142670,
+        "nearest_filled_fraction": 0.07187595553495162,
+        "nearest_filled_texel_count": 43722,
+        "observed_fraction": 0.9281240444650484,
+        "observed_texel_count": 564576,
+        "part_color_filled_fraction": 0.0,
+        "part_color_filled_texel_count": 0,
+        "part_id": 0
+      },
+      {
+        "chart_interior_texel_count": 2908,
+        "gutter_fraction": 0.2609911054637865,
+        "gutter_texel_count": 1027,
+        "nearest_filled_fraction": 0.36966987620357633,
+        "nearest_filled_texel_count": 1075,
+        "observed_fraction": 0.6303301237964236,
+        "observed_texel_count": 1833,
+        "part_color_filled_fraction": 0.0,
+        "part_color_filled_texel_count": 0,
+        "part_id": 1
+      }
+    ]
+  },
+  "timings_s": {
+    "bake": 42.784433133900166,
+    "boundary": 0.38681850768625736,
+    "fill": 3.9826825028285384,
+    "glb_export": 8.682375480886549,
+    "unwrap": 1.0253065382130444
+  }
+}

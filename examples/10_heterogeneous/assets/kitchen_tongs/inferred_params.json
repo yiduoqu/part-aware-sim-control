@@ -1,0 +1,163 @@
+{
+  "schema_version": "hag4r-agentic-gpt-staged-material-inference-v1",
+  "image_path": "/workspace/HAG4R-runpod/outputs/agentic_asset_refinement/dev20_deformable_part2_2_kitchen_tongs_guanxiong_20260805_174344/revisions/revision_0000/omnipart/kitchen_tongs/mesh_combined_part_labels_top.png",
+  "processed_image_path": "/workspace/HAG4R-runpod/outputs/agentic_asset_refinement/dev20_deformable_part2_2_kitchen_tongs_guanxiong_20260805_174344/revisions/revision_0000/segmentation/kitchen_tongs/kitchen_tongs_white_bg.png",
+  "part_colors_path": "/workspace/HAG4R-runpod/outputs/agentic_asset_refinement/dev20_deformable_part2_2_kitchen_tongs_guanxiong_20260805_174344/revisions/revision_0000/omnipart/kitchen_tongs/part_labels.npz",
+  "num_parts": 2,
+  "inferred_object_name": "gray one-piece kitchen tongs",
+  "geometry_inference": {
+    "inferred_object_name": "gray one-piece kitchen tongs",
+    "predictions": [
+      {
+        "attachment_pattern": "continuous body that encloses and surrounds the tiny detail patch in shared views; no mechanical hinge or separate joint is visible",
+        "geometric_category": "continuous elongated tong body",
+        "geometry_description": "Dominant connected U-shaped kitchen tong body visible in all six indexed views; long slender arms joined by a rounded bend with rounded tips and softly rectangular cross sections.",
+        "part_color_rgb": [
+          141.0,
+          211.0,
+          199.0
+        ],
+        "part_index": 0,
+        "relative_size": "dominant large component, over 99 percent of visible segmented pixels"
+      },
+      {
+        "attachment_pattern": "embedded or enclosed within the main tong body in all shared views, consistent with a small grip/perforation/reconstruction detail rather than a separate free part",
+        "geometric_category": "tiny enclosed surface/detail patch",
+        "geometry_description": "Very small irregular patch visible in five views and absent from the front view; bounding boxes are tiny relative to the main body and are contained inside the main component across shared views.",
+        "part_color_rgb": [
+          255.0,
+          255.0,
+          179.0
+        ],
+        "part_index": 1,
+        "relative_size": "minute detail component, roughly 400 total visible pixels compared with about 200184 for the main body"
+      }
+    ]
+  },
+  "fill_mode_decision": {
+    "schema_version": "hag4r-material-fill-mode-decision-v1",
+    "inferred_object_name": "gray one-piece kitchen tongs",
+    "predictions": [
+      {
+        "fill_mode_evidence": [
+          "dominant connected component visible in all views",
+          "object description states one continuous U-shaped silicone or plastic body",
+          "no hollow interior or thin shell boundary is visible"
+        ],
+        "fill_mode_rationale": "The main tong is a continuous one-piece flexible body with no evidence of an open hollow shell; filled volumetric material best preserves its compliant arm behavior and rounded cross sections.",
+        "part_color_rgb": [
+          141.0,
+          211.0,
+          199.0
+        ],
+        "part_index": 0,
+        "volume_fill_mode": "solid_fill"
+      },
+      {
+        "fill_mode_evidence": [
+          "part 0 encloses part 1 in every shared view",
+          "part 1 is extremely small and embedded",
+          "source object is one continuous solid flexible utensil"
+        ],
+        "fill_mode_rationale": "The tiny enclosed patch is a surface/detail split inside the tong body, not an intentional hollow cavity; filling it avoids creating a fragile artificial shell in a minute region.",
+        "part_color_rgb": [
+          255.0,
+          255.0,
+          179.0
+        ],
+        "part_index": 1,
+        "volume_fill_mode": "solid_fill"
+      }
+    ]
+  },
+  "geometry_stage_notes": [
+    "Recovered after removing disallowed schema_version top-level field from payload."
+  ],
+  "fill_mode_stage_notes": [
+    "Recovered after restoring the required fill-mode schema_version."
+  ],
+  "semantics_stage_notes": [
+    "Both indexed parts use the rubber_flexible profile because the cleaned source and description indicate silicone/soft plastic compliance."
+  ],
+  "stage_attempts": {
+    "geometry": [
+      {
+        "attempt_index": 1,
+        "error": "",
+        "stage": "part_geometry",
+        "status": "success"
+      }
+    ],
+    "fill_mode": [
+      {
+        "attempt_index": 1,
+        "error": "",
+        "stage": "fill_mode",
+        "status": "success"
+      }
+    ],
+    "semantics": [
+      {
+        "attempt_index": 1,
+        "error": "",
+        "stage": "constitutive_parameters",
+        "status": "success"
+      }
+    ],
+    "repair": [
+      {
+        "error": "",
+        "stage": "material_validation",
+        "status": "success"
+      }
+    ]
+  },
+  "predictions": [
+    {
+      "density_kg_m3": 1100,
+      "friction_coefficient": 0.9,
+      "major_material_name": "silicone rubber",
+      "part_color_rgb": [
+        141.0,
+        211.0,
+        199.0
+      ],
+      "part_index": 0,
+      "part_name": "continuous_flexible_tong_body",
+      "part_semantics": "main U-shaped compliant tong body that bends and contacts food or fixtures during grasping; profile=rubber_flexible; tuple density_kg_m3=1100, youngs_modulus_pa=5000000, poisson_ratio=0.49, friction_coefficient=0.9",
+      "part_texture": "matte medium gray silicone or soft plastic with smooth rounded surfaces",
+      "poisson_ratio": 0.49,
+      "youngs_modulus_pa": 5000000,
+      "volume_fill_mode": "solid_fill",
+      "fill_mode_rationale": "The main tong is a continuous one-piece flexible body with no evidence of an open hollow shell; filled volumetric material best preserves its compliant arm behavior and rounded cross sections.",
+      "fill_mode_evidence": [
+        "dominant connected component visible in all views",
+        "object description states one continuous U-shaped silicone or plastic body",
+        "no hollow interior or thin shell boundary is visible"
+      ]
+    },
+    {
+      "density_kg_m3": 1100,
+      "friction_coefficient": 0.9,
+      "major_material_name": "silicone rubber",
+      "part_color_rgb": [
+        255.0,
+        255.0,
+        179.0
+      ],
+      "part_index": 1,
+      "part_name": "embedded_grip_detail_patch",
+      "part_semantics": "tiny embedded grip or recessed detail belonging to the same flexible tong material; profile=rubber_flexible; tuple density_kg_m3=1100, youngs_modulus_pa=5000000, poisson_ratio=0.49, friction_coefficient=0.9",
+      "part_texture": "same matte gray silicone surface detail represented as a tiny indexed patch",
+      "poisson_ratio": 0.49,
+      "youngs_modulus_pa": 5000000,
+      "volume_fill_mode": "solid_fill",
+      "fill_mode_rationale": "The tiny enclosed patch is a surface/detail split inside the tong body, not an intentional hollow cavity; filling it avoids creating a fragile artificial shell in a minute region.",
+      "fill_mode_evidence": [
+        "part 0 encloses part 1 in every shared view",
+        "part 1 is extremely small and embedded",
+        "source object is one continuous solid flexible utensil"
+      ]
+    }
+  ]
+}

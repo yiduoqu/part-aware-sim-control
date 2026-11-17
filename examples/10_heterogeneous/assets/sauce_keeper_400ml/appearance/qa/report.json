@@ -1,0 +1,79 @@
+{
+  "confidence_normalization": "round(255*clip(confidence/max_confidence,0,1)); all black when max_confidence=0",
+  "degenerate_projected_triangle_count": 91,
+  "fill_provenance_palette_rgb": {
+    "gutter": [
+      220,
+      0,
+      220
+    ],
+    "nearest": [
+      0,
+      96,
+      255
+    ],
+    "observed": [
+      0,
+      200,
+      0
+    ],
+    "part_color": [
+      255,
+      160,
+      0
+    ],
+    "unmapped": [
+      0,
+      0,
+      0
+    ]
+  },
+  "images": {
+    "confidence": "confidence.png",
+    "fill_provenance": "fill_provenance.png",
+    "observed_coverage": "observed_coverage.png",
+    "rest_pose_render": "rest_pose_render.png"
+  },
+  "max_confidence": 9.33768081665039,
+  "observed_texel_count": 630756,
+  "schema_version": "hag4r-post-mesh-texture-qa-v1",
+  "statistics": {
+    "global": {
+      "chart_interior_texel_count": 664283,
+      "gutter_fraction": 0.1971527986763499,
+      "gutter_texel_count": 163126,
+      "nearest_filled_fraction": 0.050470958913595564,
+      "nearest_filled_texel_count": 33527,
+      "observed_fraction": 0.9495290410864045,
+      "observed_texel_count": 630756,
+      "part_color_filled_fraction": 0.0,
+      "part_color_filled_texel_count": 0
+    },
+    "per_part": [
+      {
+        "chart_interior_texel_count": 643776,
+        "gutter_fraction": 0.1939813023734492,
+        "gutter_texel_count": 154935,
+        "nearest_filled_fraction": 0.03679851376876429,
+        "nearest_filled_texel_count": 23690,
+        "observed_fraction": 0.9632014862312357,
+        "observed_texel_count": 620086,
+        "part_color_filled_fraction": 0.0,
+        "part_color_filled_texel_count": 0,
+        "part_id": 0
+      },
+      {
+        "chart_interior_texel_count": 20507,
+        "gutter_fraction": 0.2854205868004739,
+        "gutter_texel_count": 8191,
+        "nearest_filled_fraction": 0.479689861998342,
+        "nearest_filled_texel_count": 9837,
+        "observed_fraction": 0.5203101380016579,
+        "observed_texel_count": 10670,
+        "part_color_filled_fraction": 0.0,
+        "part_color_filled_texel_count": 0,
+        "part_id": 1
+      }
+    ]
+  }
+}

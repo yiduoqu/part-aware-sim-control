@@ -1,0 +1,63 @@
+{
+  "metric_bounds": {
+    "extent": [
+      0.12151170149445534,
+      0.030592313036322594,
+      0.11662539839744568
+    ],
+    "max": [
+      0.0603073388338089,
+      0.015848642215132713,
+      0.058205243200063705
+    ],
+    "max_extent": 0.12151170149445534,
+    "min": [
+      -0.06120436266064644,
+      -0.01474367082118988,
+      -0.05842015519738197
+    ]
+  },
+  "note": "Mesh was scaled before voxelization and tetrahedralization.",
+  "output_mesh_path": "outputs/agentic_asset_refinement/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415/revisions/revision_0001/mesh_processing/combined_to_monolithic/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415.mesh",
+  "output_mesh_sha256": "9d552c60706c3cf491cbd36a1ff99bff759dafaafcdf7268421ac272a2a75d89",
+  "pre_tetrahedralization_metric_bounds": {
+    "extent": [
+      0.12,
+      0.027166786845901188,
+      0.11481279600958755
+    ],
+    "max": [
+      0.05973200884155408,
+      0.014362665428971877,
+      0.05728957836689437
+    ],
+    "max_extent": 0.12,
+    "min": [
+      -0.060267991158445916,
+      -0.012804121416929312,
+      -0.05752321764269317
+    ]
+  },
+  "scale_factor": 0.17326687867038118,
+  "scaling_mode": "pre_monolithic_target_max_dimension",
+  "schema_version": "hag4r-metric-max-dimension-scaling-v1",
+  "source_bounds": {
+    "extent": [
+      0.692573219537735,
+      0.1567915752530098,
+      0.6626355648040771
+    ],
+    "max": [
+      0.3447399139404297,
+      0.08289331197738647,
+      0.33064356446266174
+    ],
+    "max_extent": 0.692573219537735,
+    "min": [
+      -0.3478333055973053,
+      -0.07389826327562332,
+      -0.3319920003414154
+    ]
+  },
+  "target_max_dimension_m": 0.12
+}

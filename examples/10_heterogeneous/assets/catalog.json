@@ -1,0 +1,808 @@
+{
+  "schema_version": 1,
+  "verified_on": "2026-11-17",
+  "source_repository": "https://github.com/ericchen321/HAG4R-MPC",
+  "source_commit": "3624989aea2925f26166c33f1d09b109ed63aa80",
+  "loader_commit": "36112215d9c17b2a0b3c80526fb8fba7f41c8d39",
+  "scope": "Static source, mesh, material, texture and rest-pose binding checks. No Newton stepping, contact, task-success or real-world validation was performed.",
+  "objects": [
+    {
+      "id": "clawhauser",
+      "path": "clawhauser",
+      "source_path": "assets/objects/clawhauser",
+      "source_url": "https://github.com/ericchen321/HAG4R-MPC/tree/3624989aea2925f26166c33f1d09b109ed63aa80/assets/objects/clawhauser",
+      "vertices": 1840,
+      "tetrahedra": 6850,
+      "visual_vertices": 1685,
+      "visual_faces": 2356,
+      "bounds_m": [
+        [
+          -0.053833119571208954,
+          -0.11047035455703735,
+          -0.036685723811388016
+        ],
+        [
+          0.05609363317489624,
+          0.11025557845223673,
+          0.03586788848042488
+        ]
+      ],
+      "extent_m": [
+        0.1099267527461052,
+        0.22072593300927407,
+        0.0725536122918129
+      ],
+      "source_mass_kg": 0.12506550861549387,
+      "source_stiffness_ratio": 10.0,
+      "parts": [
+        {
+          "id": 0,
+          "name": "stuffed_plush_tail",
+          "tetrahedra": 2335,
+          "youngs_modulus_pa": 500000,
+          "poisson_ratio": 0.45,
+          "density_kg_m3": 300
+        },
+        {
+          "id": 1,
+          "name": "stuffed_plush_character_body",
+          "tetrahedra": 2713,
+          "youngs_modulus_pa": 500000,
+          "poisson_ratio": 0.45,
+          "density_kg_m3": 300
+        },
+        {
+          "id": 2,
+          "name": "flexible_hanging_loop_and_clasp",
+          "tetrahedra": 1802,
+          "youngs_modulus_pa": 5000000,
+          "poisson_ratio": 0.49,
+          "density_kg_m3": 1100
+        }
+      ],
+      "checks": {
+        "source_files_unchanged": true,
+        "labelled_tet_loader_passed": true,
+        "no_duplicate_tetrahedra": true,
+        "material_json_matches_arrays": true,
+        "appearance_manifest_hashes_passed": true,
+        "images_decode": true,
+        "rest_binding_max_error_m": 3.8680731611876166e-09,
+        "glb_binding_max_error_m": 0.0
+      },
+      "files": {
+        "final_mesh.mesh": {
+          "sha256": "df3d1505d96d36fbfa76291e7ab94269a30500ba5e4b87516d0bf8f57f0c6458",
+          "size_bytes": 259591
+        },
+        "heterogeneous_params.npz": {
+          "sha256": "7cfc8ca3cc7c08d261aa90b08832230801fec1ac62848d0e9239d9e2f318e8c6",
+          "size_bytes": 221480
+        },
+        "inferred_params.json": {
+          "sha256": "45aacd698f2b38a6fd8bf13b46cc9c33497fc90c6c1bdf088ed12d915ec3d992",
+          "size_bytes": 8169
+        },
+        "volume_topology.json": {
+          "sha256": "d27cbaffa4c561c0536535e30b418954c406bbb6be14a43d74594e597692df38",
+          "size_bytes": 16383
+        },
+        "metric_mesh_scaling.json": {
+          "sha256": "b352e97f8852971381df511fc497409eae218f14db7bc14d9eaeb7602a6532c4",
+          "size_bytes": 1674
+        },
+        "final_export_manifest.json": {
+          "sha256": "6f24cc15d06840198532536df776e284785b446d7ea62b3b37bcd2dc69fc88a6",
+          "size_bytes": 27684
+        },
+        "appearance/albedo.png": {
+          "sha256": "8f466236b9d885d1c27266f66b0b417caaeeec0a360ae8078c4127f807718fc5",
+          "size_bytes": 545518
+        },
+        "appearance/post_mesh_texture_request.json": {
+          "sha256": "c0e35c2fd33305ec7ca97dcb435e915478046889bb5d0102095b39e5b693f0e9",
+          "size_bytes": 1147
+        },
+        "appearance/qa/confidence.png": {
+          "sha256": "0bfdc2b60e48055ce7435e2ceffabcedff7fa3a8f386b83b43f40d40fc7653cd",
+          "size_bytes": 724643
+        },
+        "appearance/qa/fill_provenance.png": {
+          "sha256": "d33253dbdca898bc2bdb3c9d569118bc15b47ce0ac90d2df308aff5dc59a4d42",
+          "size_bytes": 57980
+        },
+        "appearance/qa/observed_coverage.png": {
+          "sha256": "76e1df26d639fb13f1c113cfc64b8c47319c99e4bc517c8dd83e131a2b0036ec",
+          "size_bytes": 36022
+        },
+        "appearance/qa/report.json": {
+          "sha256": "3c10cd2ab4677a493924f1c3d6dba0dcb1668903c77478ad1d8e8c5341edb9b0",
+          "size_bytes": 2582
+        },
+        "appearance/qa/rest_pose_render.png": {
+          "sha256": "bd55adce6da40a0078856d2a8a9bec340233a94ab06531c3a44388d062824270",
+          "size_bytes": 63911
+        },
+        "appearance/visual_manifest.json": {
+          "sha256": "9f3ac483c2156805a8c95adc6ea85ff291fdf8e8b73e4825230ddfd1a1a86db3",
+          "size_bytes": 6891
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "284a63756a7609f737997ee4b863a6cd7975dfd87e87db3f16ecccbe8842c180",
+          "size_bytes": 608812
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "4b015d1141794211e4e2c6e2b39fadef6762a73ffe2d76b921e47d5676f3d6c4",
+          "size_bytes": 53805
+        }
+      },
+      "import_status": "existing",
+      "suggested_task": "Pick/place and hanging",
+      "limitations": "Existing scenes override source material/contact settings.",
+      "newton_task_run_during_import": false,
+      "source_license": "No separate asset license declared in the source snapshot; retain source attribution. The target software license is not asserted to cover this data.",
+      "readme": "SOURCE.md"
+    },
+    {
+      "id": "usb_hub",
+      "path": "usb_hub",
+      "source_path": "assets/objects/usb_hub_revised",
+      "source_url": "https://github.com/ericchen321/HAG4R-MPC/tree/3624989aea2925f26166c33f1d09b109ed63aa80/assets/objects/usb_hub_revised",
+      "vertices": 3022,
+      "tetrahedra": 9652,
+      "visual_vertices": 3985,
+      "visual_faces": 5282,
+      "bounds_m": [
+        [
+          -0.12556388974189758,
+          -0.010108010843396187,
+          -0.09305117271806072
+        ],
+        [
+          0.12539710593658016,
+          0.009355701506137848,
+          0.08859949207814807
+        ]
+      ],
+      "extent_m": [
+        0.25096099567847774,
+        0.019463712349534035,
+        0.18165066479620878
+      ],
+      "source_mass_kg": 0.23092463487526127,
+      "source_stiffness_ratio": 40000.0,
+      "parts": [
+        {
+          "id": 0,
+          "name": "pale_mint_usb_hub_housing",
+          "tetrahedra": 2480,
+          "youngs_modulus_pa": 2200000000,
+          "poisson_ratio": 0.37,
+          "density_kg_m3": 1100
+        },
+        {
+          "id": 1,
+          "name": "black_flexible_usb_cable",
+          "tetrahedra": 1968,
+          "youngs_modulus_pa": 5000000,
+          "poisson_ratio": 0.49,
+          "density_kg_m3": 1100
+        },
+        {
+          "id": 2,
+          "name": "silver_inline_connector",
+          "tetrahedra": 1754,
+          "youngs_modulus_pa": 200000000000,
+          "poisson_ratio": 0.3,
+          "density_kg_m3": 7850
+        },
+        {
+          "id": 3,
+          "name": "distal_usb_a_metal_terminal",
+          "tetrahedra": 3450,
+          "youngs_modulus_pa": 200000000000,
+          "poisson_ratio": 0.3,
+          "density_kg_m3": 7850
+        }
+      ],
+      "checks": {
+        "source_files_unchanged": true,
+        "labelled_tet_loader_passed": true,
+        "no_duplicate_tetrahedra": true,
+        "material_json_matches_arrays": true,
+        "appearance_manifest_hashes_passed": true,
+        "images_decode": true,
+        "rest_binding_max_error_m": 7.450580596923828e-09,
+        "glb_binding_max_error_m": 0.0
+      },
+      "files": {
+        "final_mesh.mesh": {
+          "sha256": "12614f42f0da9bb66ef34405e04c555d0b29bfb1540bb828fb54606a5676240c",
+          "size_bytes": 400650
+        },
+        "heterogeneous_params.npz": {
+          "sha256": "673d52126a6ee06ca0488e48a7a31cdf103da97dfa2542dddede5c4c13a7403d",
+          "size_bytes": 311208
+        },
+        "inferred_params.json": {
+          "sha256": "d1efc934ca5514b35eba3b8b01d080e9fb9bfc28a621513c19260631ad27b7db",
+          "size_bytes": 11044
+        },
+        "metric_mesh_scaling.json": {
+          "sha256": "b45d5591aa928995701d6e614accce367dc044e0dea353794be4bb8b769379a2",
+          "size_bytes": 1768
+        },
+        "volume_topology.json": {
+          "sha256": "25f96377e1d2a7b537deb5911ab36012745eb267e3a1a2e39d7dffb8f1c22866",
+          "size_bytes": 20403
+        },
+        "final_export_manifest.json": {
+          "sha256": "6bfc2ae2c6ce458a40b597da2d5dd05826aee67372553705179416da3b33714d",
+          "size_bytes": 3318
+        },
+        "appearance/albedo.png": {
+          "sha256": "d043ab69f8951de41cb94f23ffea5e5ff1a2b68f9cf173690b16aedea2a0c5ad",
+          "size_bytes": 587013
+        },
+        "appearance/post_mesh_texture_request.json": {
+          "sha256": "ef26932ba2fbb27d663513754c884dd3418353d85eddc429b936d00345306516",
+          "size_bytes": 1604
+        },
+        "appearance/qa/confidence.png": {
+          "sha256": "7fece7848ddb7ac9c912feadbf199c195bf6bc4a9b73c57e61aba849cefe69dd",
+          "size_bytes": 409651
+        },
+        "appearance/qa/fill_provenance.png": {
+          "sha256": "aed84e43e44f26f8c4ebeede108a8e16cd6e4f63132b7d185fc3d20a944970dc",
+          "size_bytes": 74411
+        },
+        "appearance/qa/observed_coverage.png": {
+          "sha256": "7b8586349a4ff1ad76b5f600f92831feced2c847908b77df467b9b76f2a2891f",
+          "size_bytes": 39011
+        },
+        "appearance/qa/report.json": {
+          "sha256": "b48d4065e1e6324da9e2b8b0a08650a6b3155d8ef80dbf7cafe78cd634c4494b",
+          "size_bytes": 3024
+        },
+        "appearance/qa/rest_pose_render.png": {
+          "sha256": "c76953d50b589f50eb778177f90844559a02c7042d2d7a1488f0b471f76b3f08",
+          "size_bytes": 37584
+        },
+        "appearance/visual_manifest.json": {
+          "sha256": "5c15ab0dff1614a57617348f897e497f0f73da6c489dd5827ef7c1fff977c978",
+          "size_bytes": 7732
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "4c8743cda4a6b11454ec58d941157ca666d14cb94a5945f6fa17c4c1e9740936",
+          "size_bytes": 731424
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "2c7d0347211dc73808d096d01e058bda34a06384628d37f5786263620cdc4c3f",
+          "size_bytes": 123451
+        }
+      },
+      "import_status": "existing",
+      "suggested_task": "Cable placement, hanging and retrieval",
+      "limitations": "Source E ratio is 40000; existing scene uses rigid groups and tuned cable/mass settings.",
+      "newton_task_run_during_import": false,
+      "source_license": "No separate asset license declared in the source snapshot; retain source attribution. The target software license is not asserted to cover this data.",
+      "readme": "SOURCE.md"
+    },
+    {
+      "id": "kitchen_tongs",
+      "path": "kitchen_tongs",
+      "source_path": "assets/objects/kitchen_tongs",
+      "source_url": "https://github.com/ericchen321/HAG4R-MPC/tree/3624989aea2925f26166c33f1d09b109ed63aa80/assets/objects/kitchen_tongs",
+      "vertices": 967,
+      "tetrahedra": 2727,
+      "visual_vertices": 1167,
+      "visual_faces": 1692,
+      "bounds_m": [
+        [
+          -0.029770180583000183,
+          -0.022478079423308372,
+          -0.14518095552921295
+        ],
+        [
+          0.02795419469475746,
+          0.01891549676656723,
+          0.14314867556095123
+        ]
+      ],
+      "extent_m": [
+        0.057724375277757645,
+        0.0413935761898756,
+        0.2883296310901642
+      ],
+      "source_mass_kg": 0.1587423566730437,
+      "source_stiffness_ratio": 1.0,
+      "parts": [
+        {
+          "id": 0,
+          "name": "continuous_flexible_tong_body",
+          "tetrahedra": 2696,
+          "youngs_modulus_pa": 5000000,
+          "poisson_ratio": 0.49,
+          "density_kg_m3": 1100
+        },
+        {
+          "id": 1,
+          "name": "embedded_grip_detail_patch",
+          "tetrahedra": 31,
+          "youngs_modulus_pa": 5000000,
+          "poisson_ratio": 0.49,
+          "density_kg_m3": 1100
+        }
+      ],
+      "checks": {
+        "source_files_unchanged": true,
+        "labelled_tet_loader_passed": true,
+        "no_duplicate_tetrahedra": true,
+        "material_json_matches_arrays": true,
+        "appearance_manifest_hashes_passed": true,
+        "images_decode": true,
+        "rest_binding_max_error_m": 7.454217687985916e-09,
+        "glb_binding_max_error_m": 0.0
+      },
+      "files": {
+        "final_mesh.mesh": {
+          "sha256": "77d486f285f24d565cf409e5e78f536d9eb6778b94f6062f6b3b5e3944553941",
+          "size_bytes": 112818
+        },
+        "heterogeneous_params.npz": {
+          "sha256": "8e74784fe9725dfb3a5efcdd4266250e6b362ccfe6308f7f3e82ee0831f59c25",
+          "size_bytes": 89480
+        },
+        "inferred_params.json": {
+          "sha256": "d523f1c17ffd7147edb6c9cddf4dfa50ada43fa852e7ca11c07657fd8c41d5f5",
+          "size_bytes": 7173
+        },
+        "volume_topology.json": {
+          "sha256": "211b18251e8ef16da14840f0e3006bbd9f4ee64d08c397497862a936ea6732c5",
+          "size_bytes": 14808
+        },
+        "metric_mesh_scaling.json": {
+          "sha256": "8097d89564efa3b23d5b67f4bd7ae430a6967269bd9d917565266c85024a2345",
+          "size_bytes": 1714
+        },
+        "final_export_manifest.json": {
+          "sha256": "debbf7079372ad4a0f70ab4a5985d893a2b47b6fa69b70d6810ea4580a495288",
+          "size_bytes": 27288
+        },
+        "appearance/albedo.png": {
+          "sha256": "6367d801ec944581b9eb8e1e548725babb566578f6d9b7440c286d34977a7b82",
+          "size_bytes": 486206
+        },
+        "appearance/post_mesh_texture_request.json": {
+          "sha256": "8997e78dd9e44ed219bd557942901fe30728b72a920b28849efe3fa3156eeeb2",
+          "size_bytes": 1398
+        },
+        "appearance/qa/confidence.png": {
+          "sha256": "81dfa4e5b4a17b42ef6c4fa05f113d8ca657df5f9df06d1609f8e1071ba00800",
+          "size_bytes": 455745
+        },
+        "appearance/qa/fill_provenance.png": {
+          "sha256": "288719f133f2b5724384a3d7d314093b282b5979980a702a142debb75b2982a8",
+          "size_bytes": 42715
+        },
+        "appearance/qa/observed_coverage.png": {
+          "sha256": "6dbb83d72a629ecdf70b9a542b097076d63f7e8f83ee17816ed856fae10dc3f6",
+          "size_bytes": 29612
+        },
+        "appearance/qa/report.json": {
+          "sha256": "12b4eaaedf3576cf7f0ed5ce37ddd1e83381e8da646d03f8143e2bc97216eef2",
+          "size_bytes": 2135
+        },
+        "appearance/qa/rest_pose_render.png": {
+          "sha256": "98f31f4972b0b71ee293e3fd507fcff1e612dec455a0d095a87258c4f4066ec8",
+          "size_bytes": 57205
+        },
+        "appearance/visual_manifest.json": {
+          "sha256": "277bc4e608d77a34e8cbdc165ec7b5ec3de1e7e9f6e62025acccdf987b663262",
+          "size_bytes": 6656
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "12c2756863ca804c16591b9120d196b1ecc8a88643c42a7be5ae45165559bf10",
+          "size_bytes": 531172
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "34bd00b18439e6be67bc2243ab905dc65a328c93ad7d8c423693f506e46cd4e1",
+          "size_bytes": 38015
+        }
+      },
+      "import_status": "new",
+      "suggested_task": "Compliant tongs grasp and place",
+      "limitations": "Two semantic labels share one 5 MPa material. Newton task not run.",
+      "newton_task_run_during_import": false,
+      "source_license": "No separate asset license declared in the source snapshot; retain source attribution. The target software license is not asserted to cover this data.",
+      "readme": "SOURCE.md"
+    },
+    {
+      "id": "cookie",
+      "path": "cookie",
+      "source_path": "assets/objects/cookie",
+      "source_url": "https://github.com/ericchen321/HAG4R-MPC/tree/3624989aea2925f26166c33f1d09b109ed63aa80/assets/objects/cookie",
+      "vertices": 2811,
+      "tetrahedra": 11920,
+      "visual_vertices": 1666,
+      "visual_faces": 2792,
+      "bounds_m": [
+        [
+          -0.06120436266064644,
+          -0.01474367082118988,
+          -0.05842015519738197
+        ],
+        [
+          0.0603073388338089,
+          0.015848642215132713,
+          0.058205243200063705
+        ]
+      ],
+      "extent_m": [
+        0.12151170149445534,
+        0.030592313036322594,
+        0.11662539839744568
+      ],
+      "source_mass_kg": 0.15598211801777884,
+      "source_stiffness_ratio": 1.0,
+      "parts": [
+        {
+          "id": 0,
+          "name": "baked_cookie_body",
+          "tetrahedra": 11870,
+          "youngs_modulus_pa": 3000000000,
+          "poisson_ratio": 0.3,
+          "density_kg_m3": 700
+        },
+        {
+          "id": 1,
+          "name": "cookie_edge_crumb",
+          "tetrahedra": 50,
+          "youngs_modulus_pa": 3000000000,
+          "poisson_ratio": 0.3,
+          "density_kg_m3": 700
+        }
+      ],
+      "checks": {
+        "source_files_unchanged": true,
+        "labelled_tet_loader_passed": true,
+        "no_duplicate_tetrahedra": true,
+        "material_json_matches_arrays": true,
+        "appearance_manifest_hashes_passed": true,
+        "images_decode": true,
+        "rest_binding_max_error_m": 2.634178031930877e-09,
+        "glb_binding_max_error_m": 0.0
+      },
+      "files": {
+        "final_mesh.mesh": {
+          "sha256": "9d552c60706c3cf491cbd36a1ff99bff759dafaafcdf7268421ac272a2a75d89",
+          "size_bytes": 431392
+        },
+        "heterogeneous_params.npz": {
+          "sha256": "e267fac60628ddaff721ae37a96259fb5828e4fce75c7034ec837897a17a6a87",
+          "size_bytes": 383656
+        },
+        "inferred_params.json": {
+          "sha256": "f1d8f429aa812c58c729d5ecd6fe499e5948d3e08b7336b33f0e456d1f70fdcb",
+          "size_bytes": 8093
+        },
+        "volume_topology.json": {
+          "sha256": "5dac73000c02db624ec5fe0e78fc928378eab850773a75b68915a61c235ed00c",
+          "size_bytes": 14201
+        },
+        "metric_mesh_scaling.json": {
+          "sha256": "af65c2bececccc21121bbc05d401faa58037afc5257362fb13b2bfb73af02a32",
+          "size_bytes": 1715
+        },
+        "final_export_manifest.json": {
+          "sha256": "bd7dadb5fadbeecd29ef7cd2a1bf622a83b62f156570a17d91f392b169fb070d",
+          "size_bytes": 29520
+        },
+        "appearance/albedo.png": {
+          "sha256": "40851e972542b393e43e77100ddeee8475ae798d7c35526facdde5f966c24c0a",
+          "size_bytes": 445122
+        },
+        "appearance/post_mesh_texture_request.json": {
+          "sha256": "2f4ea4ea4965e755a5bdf87b56280474212ba4c6b9316de9e1cc4f43496fa3e3",
+          "size_bytes": 1391
+        },
+        "appearance/qa/confidence.png": {
+          "sha256": "fc5b33f95b5c6be49fee802636246aa55485148a941b1e5fcff44d17a3004344",
+          "size_bytes": 633201
+        },
+        "appearance/qa/fill_provenance.png": {
+          "sha256": "4a7f330469d79770dd735ef713420927524ecd016a50aac56e34e315f44a4aad",
+          "size_bytes": 41793
+        },
+        "appearance/qa/observed_coverage.png": {
+          "sha256": "86287b0ed01ad5a4b978ce5accb23b1f2fd79439d34b71e363f922e4dd54c753",
+          "size_bytes": 28821
+        },
+        "appearance/qa/report.json": {
+          "sha256": "20c5a2d70098a8ba95bed6b7ecb4a42280ecfafdb21ca6c24967b2f40ecd04d7",
+          "size_bytes": 2099
+        },
+        "appearance/qa/rest_pose_render.png": {
+          "sha256": "8a397c6f2a3ff546cafe5950bfd40fd70cb85bed4dfe2274071bbd1ae898279d",
+          "size_bytes": 63246
+        },
+        "appearance/visual_manifest.json": {
+          "sha256": "e3a244df6b5d5c40ccccebabd51c61f244a1a43e7c20588f160c5aebc8788281",
+          "size_bytes": 6621
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "ff46dd490b944b26dcace24e9b905712cf91f76ead0b02d46914705bb711d3e6",
+          "size_bytes": 513268
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "82a9f9eef807be7928f56d3b8397fd4389189811302797186564a9d7476eb0c8",
+          "size_bytes": 58603
+        }
+      },
+      "import_status": "new",
+      "suggested_task": "Companion object for tongs",
+      "limitations": "3 GPa proxy; no fracture or crumbling model. Newton task not run.",
+      "newton_task_run_during_import": false,
+      "source_license": "No separate asset license declared in the source snapshot; retain source attribution. The target software license is not asserted to cover this data.",
+      "readme": "SOURCE.md"
+    },
+    {
+      "id": "sauce_keeper_400ml",
+      "path": "sauce_keeper_400ml",
+      "source_path": "assets/objects/sauce_keeper_400ml",
+      "source_url": "https://github.com/ericchen321/HAG4R-MPC/tree/3624989aea2925f26166c33f1d09b109ed63aa80/assets/objects/sauce_keeper_400ml",
+      "vertices": 13031,
+      "tetrahedra": 65623,
+      "visual_vertices": 3867,
+      "visual_faces": 6446,
+      "bounds_m": [
+        [
+          -0.036309708553154935,
+          -0.10212686657905579,
+          -0.03193107159275354
+        ],
+        [
+          0.038148296554342924,
+          0.10152593827634225,
+          0.032362315518106186
+        ]
+      ],
+      "extent_m": [
+        0.07445800510749787,
+        0.20365280485539805,
+        0.06429338711085972
+      ],
+      "source_mass_kg": 0.5515858816792298,
+      "source_stiffness_ratio": 1.1,
+      "parts": [
+        {
+          "id": 0,
+          "name": "cloudy_translucent_squeeze_bottle_body",
+          "tetrahedra": 33511,
+          "youngs_modulus_pa": 2000000000,
+          "poisson_ratio": 0.38,
+          "density_kg_m3": 1050
+        },
+        {
+          "id": 1,
+          "name": "orange_ribbed_cap_nozzle_and_tether",
+          "tetrahedra": 32112,
+          "youngs_modulus_pa": 2200000000,
+          "poisson_ratio": 0.37,
+          "density_kg_m3": 1100
+        }
+      ],
+      "checks": {
+        "source_files_unchanged": true,
+        "labelled_tet_loader_passed": true,
+        "no_duplicate_tetrahedra": true,
+        "material_json_matches_arrays": true,
+        "appearance_manifest_hashes_passed": true,
+        "images_decode": true,
+        "rest_binding_max_error_m": 4.165916232510366e-09,
+        "glb_binding_max_error_m": 0.0
+      },
+      "files": {
+        "final_mesh.mesh": {
+          "sha256": "e1bbeda5aa14edd5aa5a2877424cef17ff11ed32bab70647983404c2bb08bab3",
+          "size_bytes": 2346599
+        },
+        "heterogeneous_params.npz": {
+          "sha256": "d0cda2ec075dea3f414ff72c94464eec50f6ff41b7bb83a7053a97f051e4d614",
+          "size_bytes": 2102152
+        },
+        "inferred_params.json": {
+          "sha256": "9572f8e510fcea16e45f36abe250a1b8f8dd587b49a60112ed6b3234db606772",
+          "size_bytes": 8771
+        },
+        "volume_topology.json": {
+          "sha256": "823699976be293c7bed72d7653f36d4a524d7b287fdb737891e010420c9fe560",
+          "size_bytes": 16639
+        },
+        "metric_mesh_scaling.json": {
+          "sha256": "c8cd9ad38ff49cd94e15a545fb2a7376661f279b3c6fcae16b6946ebfc914ad1",
+          "size_bytes": 1711
+        },
+        "final_export_manifest.json": {
+          "sha256": "0f5c04ab090c558525274d64a2131d944336a95f4f668c77174be2f18efae82a",
+          "size_bytes": 30688
+        },
+        "appearance/albedo.png": {
+          "sha256": "d3e0fde7c9f3e09c050a0da18c43b8c8564719f1a43cdaccaae9ac9fb052f249",
+          "size_bytes": 453494
+        },
+        "appearance/post_mesh_texture_request.json": {
+          "sha256": "d154f40304d2e388c4e1decce5907e43d04e43bcff762389c6eeab4e3ee035fc",
+          "size_bytes": 1403
+        },
+        "appearance/qa/confidence.png": {
+          "sha256": "37b809af37ee87f80f2f3549fd054ed8020a6866998c142c9556bd7a6fb72db7",
+          "size_bytes": 524272
+        },
+        "appearance/qa/fill_provenance.png": {
+          "sha256": "a2172ba0cdbf903363824cce38253c49a983b40c74e1bcd0bcc5822781b3b170",
+          "size_bytes": 56950
+        },
+        "appearance/qa/observed_coverage.png": {
+          "sha256": "687b69c833590ffec972c6230c6e82de678c99e7bdc9e851946eafdf84b8e718",
+          "size_bytes": 36579
+        },
+        "appearance/qa/report.json": {
+          "sha256": "7ec40f9e9e590e14527385217d1ea9ad842f67c5a2d42246bf49686c4953ee37",
+          "size_bytes": 2134
+        },
+        "appearance/qa/rest_pose_render.png": {
+          "sha256": "8295c15a61e94b374b0ba72e59d30de43804c5c370a991060b84cd8b4c4ba5cb",
+          "size_bytes": 51867
+        },
+        "appearance/visual_manifest.json": {
+          "sha256": "fb21e540ae386f9bc42a128874180cc073f665fda146be3301a4dcd97efc1651",
+          "size_bytes": 6672
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "f7ef5114d511e73d3823d28a26c70deb2fcb22abdc289e6b087f842b6c3c2c20",
+          "size_bytes": 609508
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "c2ada5ef530f952d9ea68fac87dffcdb9d4f7c60d3ad9fad8868d369e269de49",
+          "size_bytes": 136485
+        }
+      },
+      "import_status": "new",
+      "suggested_task": "Bottle compression",
+      "limitations": "High absolute stiffness; tune effective scene parameters. No liquid or verified fluid cavity. Newton task not run.",
+      "newton_task_run_during_import": false,
+      "source_license": "No separate asset license declared in the source snapshot; retain source attribution. The target software license is not asserted to cover this data.",
+      "readme": "SOURCE.md"
+    },
+    {
+      "id": "toilet_plunger",
+      "path": "toilet_plunger",
+      "source_path": "assets/objects/toilet_plunger",
+      "source_url": "https://github.com/ericchen321/HAG4R-MPC/tree/3624989aea2925f26166c33f1d09b109ed63aa80/assets/objects/toilet_plunger",
+      "vertices": 3899,
+      "tetrahedra": 17728,
+      "visual_vertices": 2120,
+      "visual_faces": 3210,
+      "bounds_m": [
+        [
+          -0.20466558635234833,
+          -0.07320870164052541,
+          -0.07324671583438183
+        ],
+        [
+          0.2022889652626891,
+          0.07169696986174394,
+          0.07305782288312912
+        ]
+      ],
+      "extent_m": [
+        0.40695455161503746,
+        0.14490567150226935,
+        0.14630453871751095
+      ],
+      "source_mass_kg": 0.7113397723248208,
+      "source_stiffness_ratio": 20000.0,
+      "parts": [
+        {
+          "id": 0,
+          "name": "soft_rubber_suction_cup",
+          "tetrahedra": 12397,
+          "youngs_modulus_pa": 1000000,
+          "poisson_ratio": 0.48,
+          "density_kg_m3": 1100
+        },
+        {
+          "id": 1,
+          "name": "rigid_wooden_handle",
+          "tetrahedra": 5331,
+          "youngs_modulus_pa": 20000000000,
+          "poisson_ratio": 0.35,
+          "density_kg_m3": 700
+        }
+      ],
+      "checks": {
+        "source_files_unchanged": true,
+        "labelled_tet_loader_passed": true,
+        "no_duplicate_tetrahedra": true,
+        "material_json_matches_arrays": true,
+        "appearance_manifest_hashes_passed": true,
+        "images_decode": true,
+        "rest_binding_max_error_m": 8.33000234328132e-09,
+        "glb_binding_max_error_m": 0.0
+      },
+      "files": {
+        "final_mesh.mesh": {
+          "sha256": "7e7f668b3597718f2df7936b1d347512fc37f9de3b8961e5a47f6c4ca275c462",
+          "size_bytes": 625052
+        },
+        "heterogeneous_params.npz": {
+          "sha256": "70de8303872f159b03140306a7f91fc3e50bc58a7430be443a480e2df0ffd2a1",
+          "size_bytes": 569512
+        },
+        "inferred_params.json": {
+          "sha256": "ed4204964d76a3e23aa6e607260b57bbf0f2391541271594175c033d894f04d3",
+          "size_bytes": 7109
+        },
+        "volume_topology.json": {
+          "sha256": "3d90bbbd2c08e5b31b3144efbffbf74265a057078041bb78e92a873f7277131e",
+          "size_bytes": 15937
+        },
+        "metric_mesh_scaling.json": {
+          "sha256": "71c88494fe49eca13aa78ac6268d675c85434e42f54355f369f77942d8b1638a",
+          "size_bytes": 1716
+        },
+        "final_export_manifest.json": {
+          "sha256": "1624dce023988966167c9669ca7be72043410f421364968a3bc83e31bb405d18",
+          "size_bytes": 30422
+        },
+        "appearance/albedo.png": {
+          "sha256": "48cea9a3333a48f50a49be380b36169494f6743e07504136568b73b45ded475e",
+          "size_bytes": 403342
+        },
+        "appearance/post_mesh_texture_request.json": {
+          "sha256": "e04e38c1eb82313e3e44dbe17698115869ceb88a38410bdb75f0387a5690a2cf",
+          "size_bytes": 1431
+        },
+        "appearance/qa/confidence.png": {
+          "sha256": "2b71b650ce84c566fc957b6448ab3040f373e71b8d394954f32884872db20573",
+          "size_bytes": 564317
+        },
+        "appearance/qa/fill_provenance.png": {
+          "sha256": "4b0c717315c31c6f317641cea5529961085a7669838d124fa6481bb70fd82d6d",
+          "size_bytes": 45596
+        },
+        "appearance/qa/observed_coverage.png": {
+          "sha256": "2a97177d186484eec596c3647bfe141f5e084cfc9c909748a58725be3d125b28",
+          "size_bytes": 27975
+        },
+        "appearance/qa/report.json": {
+          "sha256": "3b159f83e51dfc625a7d6831f00d13ae3f64b8b067552e597dce5b11a741c559",
+          "size_bytes": 2140
+        },
+        "appearance/qa/rest_pose_render.png": {
+          "sha256": "6ce4b8f365cd1aa34fa2e2ae8474914e9a99dd8a094f56d7a1d004cc78604a99",
+          "size_bytes": 39891
+        },
+        "appearance/visual_manifest.json": {
+          "sha256": "16f01530a3365ad53e03cbf88a4f75ae9fc7f17083d3c19f65b532ad6ef69f91",
+          "size_bytes": 6699
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "ab09af9f14da8a2462867bd9a6fd4fba2f64528405be53cade3410713ecd7a97",
+          "size_bytes": 485584
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "7670b3110479ed9de40236f81a0ef9d73d53de885749036e45ed24f4ef9b3557",
+          "size_bytes": 70668
+        }
+      },
+      "import_status": "new",
+      "suggested_task": "Cup compression against a surface",
+      "limitations": "Source E ratio is 20000; scene override needed for <=100 effective contrast. No suction model. Newton task not run.",
+      "newton_task_run_during_import": false,
+      "source_license": "No separate asset license declared in the source snapshot; retain source attribution. The target software license is not asserted to cover this data.",
+      "readme": "SOURCE.md"
+    }
+  ]
+}

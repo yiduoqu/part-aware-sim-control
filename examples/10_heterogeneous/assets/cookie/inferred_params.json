@@ -1,0 +1,162 @@
+{
+  "fill_mode_decision": {
+    "inferred_object_name": "cookie",
+    "predictions": [
+      {
+        "fill_mode_evidence": [
+          "Part 0 spans all six views and presents a broad disk from top/bottom with a continuous thick side strip in front/back/left/right views.",
+          "The geometry summary shows one contiguous broad panel and provides no shell opening or empty interior evidence."
+        ],
+        "fill_mode_rationale": "The primary cookie is a compact, thickened disk with no visible cavity or open interior in the indexed views; a filled volume best preserves its broad rigid baked-body behavior.",
+        "part_color_rgb": [
+          141.0,
+          211.0,
+          199.0
+        ],
+        "part_index": 0,
+        "volume_fill_mode": "solid_fill"
+      },
+      {
+        "fill_mode_evidence": [
+          "Part 1 is visible as a compact solid feature or thin irregular patch in four views and occupies only a tiny localized extent.",
+          "Its indexed geometry shows no ring, wall band, opening, or interior void that would support hollow_wall."
+        ],
+        "fill_mode_rationale": "The tiny perimeter-localized feature is a compact patch with no evidence of a cavity or shell; solid fill is the most stable volumetric interpretation for this small attached/embedded feature.",
+        "part_color_rgb": [
+          255.0,
+          255.0,
+          179.0
+        ],
+        "part_index": 1,
+        "volume_fill_mode": "solid_fill"
+      }
+    ],
+    "schema_version": "hag4r-material-fill-mode-decision-v1"
+  },
+  "fill_mode_stage_notes": [
+    "Both indexed parts are assigned solid_fill because the cookie disk and tiny attached feature show no cavity evidence.",
+    "The decision is topology-only; material values are deferred to the semantics phase."
+  ],
+  "geometry_inference": {
+    "inferred_object_name": "cookie",
+    "predictions": [
+      {
+        "attachment_pattern": "single contiguous body with a continuous perimeter; no separate articulated attachment is visible",
+        "geometric_category": "flattened circular disk",
+        "geometry_description": "Large broad, slightly uneven round panel with a shallow three-dimensional thickness; it occupies nearly the entire reconstructed object and appears as a wide horizontal strip in side views and a broad disk in top and bottom views.",
+        "part_color_rgb": [
+          141.0,
+          211.0,
+          199.0
+        ],
+        "part_index": 0,
+        "relative_size": "dominant primary body; approximately 99.9% of the visible indexed pixels and much larger than part 1"
+      },
+      {
+        "attachment_pattern": "localized feature on or immediately attached to the outer surface/perimeter of part 0 rather than a separate large body",
+        "geometric_category": "small compact surface patch",
+        "geometry_description": "Very small compact irregular patch localized near the perimeter of the disk, visible in the bottom, front, left, and top views; its reconstructed extent is tiny relative to the main disk.",
+        "part_color_rgb": [
+          255.0,
+          255.0,
+          179.0
+        ],
+        "part_index": 1,
+        "relative_size": "minor feature; under 0.1% of the visible indexed pixels and much smaller than part 0"
+      }
+    ]
+  },
+  "geometry_stage_notes": [
+    "Geometry judgments are based on the six indexed OmniPart views and their visibility summaries.",
+    "Part 0 is the broad disk; part 1 is the tiny perimeter-localized patch."
+  ],
+  "image_path": "/workspace/HAG4R-runpod/outputs/agentic_asset_refinement/ya20_deformable_part1_1_cookie_guanxiong_20260904_051957/revisions/revision_0000/omnipart/cookie/mesh_combined_part_labels_top.png",
+  "inferred_object_name": "cookie",
+  "num_parts": 2,
+  "part_colors_path": "/workspace/HAG4R-runpod/outputs/agentic_asset_refinement/ya20_deformable_part1_1_cookie_guanxiong_20260904_051957/revisions/revision_0000/omnipart/cookie/part_labels.npz",
+  "predictions": [
+    {
+      "density_kg_m3": 700,
+      "fill_mode_evidence": [
+        "Part 0 spans all six views and presents a broad disk from top/bottom with a continuous thick side strip in front/back/left/right views.",
+        "The geometry summary shows one contiguous broad panel and provides no shell opening or empty interior evidence."
+      ],
+      "fill_mode_rationale": "The primary cookie is a compact, thickened disk with no visible cavity or open interior in the indexed views; a filled volume best preserves its broad rigid baked-body behavior.",
+      "friction_coefficient": 0.55,
+      "major_material_name": "baked cookie crumb",
+      "part_color_rgb": [
+        141.0,
+        211.0,
+        199.0
+      ],
+      "part_index": 0,
+      "part_name": "baked_cookie_body",
+      "part_semantics": "dominant thick flattened disk forming the baked cookie body; the slightly uneven circular outline and visible toasted edge indicate a dense, brittle baked crumb rather than an articulated or hollow component; paper_cardboard_sheet is used as the closest practical proxy profile for the low-density rigid sheet-like baked body; profile=paper_cardboard_sheet; tuple density_kg_m3=700, youngs_modulus_pa=3000000000, poisson_ratio=0.3, friction_coefficient=0.55",
+      "part_texture": "matte porous golden-brown baked surface with a lightly toasted darker rim and subtle fine crumbs",
+      "poisson_ratio": 0.3,
+      "volume_fill_mode": "solid_fill",
+      "youngs_modulus_pa": 3000000000
+    },
+    {
+      "density_kg_m3": 700,
+      "fill_mode_evidence": [
+        "Part 1 is visible as a compact solid feature or thin irregular patch in four views and occupies only a tiny localized extent.",
+        "Its indexed geometry shows no ring, wall band, opening, or interior void that would support hollow_wall."
+      ],
+      "fill_mode_rationale": "The tiny perimeter-localized feature is a compact patch with no evidence of a cavity or shell; solid fill is the most stable volumetric interpretation for this small attached/embedded feature.",
+      "friction_coefficient": 0.55,
+      "major_material_name": "baked cookie crumb",
+      "part_color_rgb": [
+        255.0,
+        255.0,
+        179.0
+      ],
+      "part_index": 1,
+      "part_name": "cookie_edge_crumb",
+      "part_semantics": "tiny compact irregular feature attached to or embedded at the cookie perimeter, consistent with a small baked crumb fragment sharing the cookie body behavior; the same low-density rigid proxy is used because no distinct soft or hollow structure is visible; profile=paper_cardboard_sheet; tuple density_kg_m3=700, youngs_modulus_pa=3000000000, poisson_ratio=0.3, friction_coefficient=0.55",
+      "part_texture": "small matte pale-golden crumb fragment with a slightly rough baked texture",
+      "poisson_ratio": 0.3,
+      "volume_fill_mode": "solid_fill",
+      "youngs_modulus_pa": 3000000000
+    }
+  ],
+  "processed_image_path": "/workspace/HAG4R-runpod/outputs/agentic_asset_refinement/ya20_deformable_part1_1_cookie_guanxiong_20260904_051957/revisions/revision_0000/segmentation/cookie/cookie_white_bg.png",
+  "schema_version": "hag4r-agentic-gpt-staged-material-inference-v1",
+  "semantics_stage_notes": [
+    "Both parts are visually baked cookie material; paper_cardboard_sheet is the closest available low-density rigid proxy profile in the required profile bank.",
+    "All numeric values are final candidates and are bound exactly in each part_semantics profile tuple."
+  ],
+  "stage_attempts": {
+    "fill_mode": [
+      {
+        "attempt_index": 1,
+        "error": "",
+        "stage": "fill_mode",
+        "status": "success"
+      }
+    ],
+    "geometry": [
+      {
+        "attempt_index": 1,
+        "error": "",
+        "stage": "part_geometry",
+        "status": "success"
+      }
+    ],
+    "repair": [
+      {
+        "error": "",
+        "stage": "material_validation",
+        "status": "success"
+      }
+    ],
+    "semantics": [
+      {
+        "attempt_index": 1,
+        "error": "",
+        "stage": "constitutive_parameters",
+        "status": "success"
+      }
+    ]
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "schema_version": "hag4r-staged-object-package-v1",
+  "object_name": "usb_hub",
+  "variant": "revised",
+  "asset_key": "class_685_usb_hub_instance_5b08a25c",
+  "run_id": "dev20_diagno_and_reroute_Part2_10_class_685_usb_hub_instance_5b08a25c_yiduo_20260817_091507",
+  "accepted_revision": "revision_0001",
+  "source_revision_root": "/workspace/HAG4R-runpod/outputs/agentic_asset_refinement/dev20_diagno_and_reroute_Part2_10_class_685_usb_hub_instance_5b08a25c_yiduo_20260817_091507/revisions/revision_0001",
+  "topology": {
+    "physics_vertex_count": 3022,
+    "tetrahedron_count": 9652,
+    "visual_vertex_count": 3985,
+    "visual_face_count": 5282
+  },
+  "canonical_files": [
+    "final_mesh.mesh",
+    "heterogeneous_params.npz",
+    "inferred_params.json",
+    "metric_mesh_scaling.json",
+    "volume_topology.json",
+    "final_export_manifest.json",
+    "appearance/albedo.png",
+    "appearance/post_mesh_texture_request.json",
+    "appearance/qa/confidence.png",
+    "appearance/qa/fill_provenance.png",
+    "appearance/qa/observed_coverage.png",
+    "appearance/qa/report.json",
+    "appearance/qa/rest_pose_render.png",
+    "appearance/visual_manifest.json",
+    "appearance/visual_mesh.glb",
+    "appearance/visual_to_physics.npz"
+  ],
+  "artifacts": {
+    "appearance/albedo.png": {"sha256": "d043ab69f8951de41cb94f23ffea5e5ff1a2b68f9cf173690b16aedea2a0c5ad", "size_bytes": 587013},
+    "appearance/post_mesh_texture_request.json": {"sha256": "ef26932ba2fbb27d663513754c884dd3418353d85eddc429b936d00345306516", "size_bytes": 1604},
+    "appearance/qa/confidence.png": {"sha256": "7fece7848ddb7ac9c912feadbf199c195bf6bc4a9b73c57e61aba849cefe69dd", "size_bytes": 409651},
+    "appearance/qa/fill_provenance.png": {"sha256": "aed84e43e44f26f8c4ebeede108a8e16cd6e4f63132b7d185fc3d20a944970dc", "size_bytes": 74411},
+    "appearance/qa/observed_coverage.png": {"sha256": "7b8586349a4ff1ad76b5f600f92831feced2c847908b77df467b9b76f2a2891f", "size_bytes": 39011},
+    "appearance/qa/report.json": {"sha256": "b48d4065e1e6324da9e2b8b0a08650a6b3155d8ef80dbf7cafe78cd634c4494b", "size_bytes": 3024},
+    "appearance/qa/rest_pose_render.png": {"sha256": "c76953d50b589f50eb778177f90844559a02c7042d2d7a1488f0b471f76b3f08", "size_bytes": 37584},
+    "appearance/visual_manifest.json": {"sha256": "5c15ab0dff1614a57617348f897e497f0f73da6c489dd5827ef7c1fff977c978", "size_bytes": 7732},
+    "appearance/visual_mesh.glb": {"sha256": "4c8743cda4a6b11454ec58d941157ca666d14cb94a5945f6fa17c4c1e9740936", "size_bytes": 731424},
+    "appearance/visual_to_physics.npz": {"sha256": "2c7d0347211dc73808d096d01e058bda34a06384628d37f5786263620cdc4c3f", "size_bytes": 123451},
+    "final_mesh.mesh": {"sha256": "12614f42f0da9bb66ef34405e04c555d0b29bfb1540bb828fb54606a5676240c", "size_bytes": 400650},
+    "heterogeneous_params.npz": {"sha256": "673d52126a6ee06ca0488e48a7a31cdf103da97dfa2542dddede5c4c13a7403d", "size_bytes": 311208},
+    "inferred_params.json": {"sha256": "d1efc934ca5514b35eba3b8b01d080e9fb9bfc28a621513c19260631ad27b7db", "size_bytes": 11044},
+    "metric_mesh_scaling.json": {"sha256": "b45d5591aa928995701d6e614accce367dc044e0dea353794be4bb8b769379a2", "size_bytes": 1768},
+    "volume_topology.json": {"sha256": "25f96377e1d2a7b537deb5911ab36012745eb267e3a1a2e39d7dffb8f1c22866", "size_bytes": 20403}
+  }
+}

@@ -1,5 +1,9 @@
 # Clawhauser loop pick and place
 
+The shared [object asset catalog](assets/README.md) contains Clawhauser, the USB
+hub, kitchen tongs, a cookie, a squeeze bottle and a toilet plunger, with source
+previews, material notes and static validation records for building new tasks.
+
 `clawhauser_pick_place.py` builds an RSS scene with one labelled tetrahedral
 Clawhauser, a bench, and two scripted kinematic fingers. The fingers pinch its
 loop by Newton contact, lift it, move it 180 mm across the table, lower it,

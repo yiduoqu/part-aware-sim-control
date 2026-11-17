@@ -1,0 +1,9 @@
+{
+  "appearance_manifest_path": "outputs/agentic_asset_refinement/dev20_deformable_part2_2_kitchen_tongs_guanxiong_20260805_174344/revisions/revision_0000/omnipart/kitchen_tongs/appearance/appearance_manifest.json",
+  "heterogeneous_params_path": "outputs/agentic_asset_refinement/dev20_deformable_part2_2_kitchen_tongs_guanxiong_20260805_174344/revisions/revision_0000/mesh_processing/assign_monolithic_mesh_params/heterogeneous_params.npz",
+  "inferred_material_path": "outputs/agentic_asset_refinement/dev20_deformable_part2_2_kitchen_tongs_guanxiong_20260805_174344/revisions/revision_0000/material_inference/dev20_deformable_part2_2_kitchen_tongs_guanxiong_20260805_174344.json",
+  "metric_mesh_scaling_path": "outputs/agentic_asset_refinement/dev20_deformable_part2_2_kitchen_tongs_guanxiong_20260805_174344/revisions/revision_0000/mesh_processing/combined_to_monolithic/metric_mesh_scaling.json",
+  "monolithic_mesh_path": "outputs/agentic_asset_refinement/dev20_deformable_part2_2_kitchen_tongs_guanxiong_20260805_174344/revisions/revision_0000/mesh_processing/combined_to_monolithic/dev20_deformable_part2_2_kitchen_tongs_guanxiong_20260805_174344.mesh",
+  "output_dir": "outputs/agentic_asset_refinement/dev20_deformable_part2_2_kitchen_tongs_guanxiong_20260805_174344/revisions/revision_0000/mesh_processing/post_mesh_texture",
+  "schema_version": "hag4r-post-mesh-texture-request-v1"
+}

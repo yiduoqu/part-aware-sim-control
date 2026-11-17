@@ -1,0 +1,79 @@
+{
+  "confidence_normalization": "round(255*clip(confidence/max_confidence,0,1)); all black when max_confidence=0",
+  "degenerate_projected_triangle_count": 1,
+  "fill_provenance_palette_rgb": {
+    "gutter": [
+      220,
+      0,
+      220
+    ],
+    "nearest": [
+      0,
+      96,
+      255
+    ],
+    "observed": [
+      0,
+      200,
+      0
+    ],
+    "part_color": [
+      255,
+      160,
+      0
+    ],
+    "unmapped": [
+      0,
+      0,
+      0
+    ]
+  },
+  "images": {
+    "confidence": "confidence.png",
+    "fill_provenance": "fill_provenance.png",
+    "observed_coverage": "observed_coverage.png",
+    "rest_pose_render": "rest_pose_render.png"
+  },
+  "max_confidence": 10.607854843139648,
+  "observed_texel_count": 620994,
+  "schema_version": "hag4r-post-mesh-texture-qa-v1",
+  "statistics": {
+    "global": {
+      "chart_interior_texel_count": 629896,
+      "gutter_fraction": 0.1335573617830207,
+      "gutter_texel_count": 97095,
+      "nearest_filled_fraction": 0.014132491712917687,
+      "nearest_filled_texel_count": 8902,
+      "observed_fraction": 0.9858675082870824,
+      "observed_texel_count": 620994,
+      "part_color_filled_fraction": 0.0,
+      "part_color_filled_texel_count": 0
+    },
+    "per_part": [
+      {
+        "chart_interior_texel_count": 629536,
+        "gutter_fraction": 0.13327881356165552,
+        "gutter_texel_count": 96806,
+        "nearest_filled_fraction": 0.013997610938850201,
+        "nearest_filled_texel_count": 8812,
+        "observed_fraction": 0.9860023890611498,
+        "observed_texel_count": 620724,
+        "part_color_filled_fraction": 0.0,
+        "part_color_filled_texel_count": 0,
+        "part_id": 0
+      },
+      {
+        "chart_interior_texel_count": 360,
+        "gutter_fraction": 0.4453004622496148,
+        "gutter_texel_count": 289,
+        "nearest_filled_fraction": 0.25,
+        "nearest_filled_texel_count": 90,
+        "observed_fraction": 0.75,
+        "observed_texel_count": 270,
+        "part_color_filled_fraction": 0.0,
+        "part_color_filled_texel_count": 0,
+        "part_id": 1
+      }
+    ]
+  }
+}

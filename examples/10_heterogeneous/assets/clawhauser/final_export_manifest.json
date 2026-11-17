@@ -1,0 +1,795 @@
+{
+  "accepted_revision": "revision_0000",
+  "asset_refinement_source_dir": "/media/eric/data/HAG4R/outputs/agentic_asset_refinement/mesh_fidelity_clawhauser_20260802/revisions/revision_0000",
+  "auxiliary_source_artifacts": {
+    "cleaned_image.png": {
+      "path": "/media/eric/data/HAG4R/outputs/agentic_asset_refinement/mesh_fidelity_clawhauser_20260802/revisions/revision_0000/image_cleanup/clawhauser.png",
+      "sha256": "060542be3a5aa07b8cf34622b905ac7ad89d0158e4b858cbc824073fee51461d",
+      "size_bytes": 1304304
+    },
+    "image_cleanup.json": {
+      "path": "/media/eric/data/HAG4R/outputs/agentic_asset_refinement/mesh_fidelity_clawhauser_20260802/revisions/revision_0000/image_cleanup/clawhauser_image_cleanup.json",
+      "sha256": "3491f285ab6e7a7f18f44dc49d42fc1d0f950550b854da93aeb27b5991ea2f2c",
+      "size_bytes": 8249
+    }
+  },
+  "canonical_files": [
+    "final_mesh.mesh",
+    "heterogeneous_params.npz",
+    "inferred_params.json",
+    "volume_topology.json",
+    "metric_mesh_scaling.json",
+    "final_export_manifest.json",
+    "appearance/albedo.png",
+    "appearance/post_mesh_texture_request.json",
+    "appearance/qa/confidence.png",
+    "appearance/qa/fill_provenance.png",
+    "appearance/qa/observed_coverage.png",
+    "appearance/qa/report.json",
+    "appearance/qa/rest_pose_render.png",
+    "appearance/visual_manifest.json",
+    "appearance/visual_mesh.glb",
+    "appearance/visual_to_physics.npz"
+  ],
+  "export_revision": "revision_0000",
+  "exported_artifacts": {
+    "appearance/albedo.png": {
+      "path": "/media/eric/data/HAG4R/outputs/run_pipeline/mesh_fidelity_clawhauser_20260802/appearance/albedo.png",
+      "sha256": "8f466236b9d885d1c27266f66b0b417caaeeec0a360ae8078c4127f807718fc5",
+      "size_bytes": 545518
+    },
+    "appearance/post_mesh_texture_request.json": {
+      "path": "/media/eric/data/HAG4R/outputs/run_pipeline/mesh_fidelity_clawhauser_20260802/appearance/post_mesh_texture_request.json",
+      "sha256": "c0e35c2fd33305ec7ca97dcb435e915478046889bb5d0102095b39e5b693f0e9",
+      "size_bytes": 1147
+    },
+    "appearance/qa/confidence.png": {
+      "path": "/media/eric/data/HAG4R/outputs/run_pipeline/mesh_fidelity_clawhauser_20260802/appearance/qa/confidence.png",
+      "sha256": "0bfdc2b60e48055ce7435e2ceffabcedff7fa3a8f386b83b43f40d40fc7653cd",
+      "size_bytes": 724643
+    },
+    "appearance/qa/fill_provenance.png": {
+      "path": "/media/eric/data/HAG4R/outputs/run_pipeline/mesh_fidelity_clawhauser_20260802/appearance/qa/fill_provenance.png",
+      "sha256": "d33253dbdca898bc2bdb3c9d569118bc15b47ce0ac90d2df308aff5dc59a4d42",
+      "size_bytes": 57980
+    },
+    "appearance/qa/observed_coverage.png": {
+      "path": "/media/eric/data/HAG4R/outputs/run_pipeline/mesh_fidelity_clawhauser_20260802/appearance/qa/observed_coverage.png",
+      "sha256": "76e1df26d639fb13f1c113cfc64b8c47319c99e4bc517c8dd83e131a2b0036ec",
+      "size_bytes": 36022
+    },
+    "appearance/qa/report.json": {
+      "path": "/media/eric/data/HAG4R/outputs/run_pipeline/mesh_fidelity_clawhauser_20260802/appearance/qa/report.json",
+      "sha256": "3c10cd2ab4677a493924f1c3d6dba0dcb1668903c77478ad1d8e8c5341edb9b0",
+      "size_bytes": 2582
+    },
+    "appearance/qa/rest_pose_render.png": {
+      "path": "/media/eric/data/HAG4R/outputs/run_pipeline/mesh_fidelity_clawhauser_20260802/appearance/qa/rest_pose_render.png",
+      "sha256": "bd55adce6da40a0078856d2a8a9bec340233a94ab06531c3a44388d062824270",
+      "size_bytes": 63911
+    },
+    "appearance/visual_manifest.json": {
+      "path": "/media/eric/data/HAG4R/outputs/run_pipeline/mesh_fidelity_clawhauser_20260802/appearance/visual_manifest.json",
+      "sha256": "9f3ac483c2156805a8c95adc6ea85ff291fdf8e8b73e4825230ddfd1a1a86db3",
+      "size_bytes": 6891
+    },
+    "appearance/visual_mesh.glb": {
+      "path": "/media/eric/data/HAG4R/outputs/run_pipeline/mesh_fidelity_clawhauser_20260802/appearance/visual_mesh.glb",
+      "sha256": "284a63756a7609f737997ee4b863a6cd7975dfd87e87db3f16ecccbe8842c180",
+      "size_bytes": 608812
+    },
+    "appearance/visual_to_physics.npz": {
+      "path": "/media/eric/data/HAG4R/outputs/run_pipeline/mesh_fidelity_clawhauser_20260802/appearance/visual_to_physics.npz",
+      "sha256": "4b015d1141794211e4e2c6e2b39fadef6762a73ffe2d76b921e47d5676f3d6c4",
+      "size_bytes": 53805
+    },
+    "final_mesh.mesh": {
+      "path": "/media/eric/data/HAG4R/outputs/run_pipeline/mesh_fidelity_clawhauser_20260802/final_mesh.mesh",
+      "sha256": "df3d1505d96d36fbfa76291e7ab94269a30500ba5e4b87516d0bf8f57f0c6458",
+      "size_bytes": 259591
+    },
+    "heterogeneous_params.npz": {
+      "path": "/media/eric/data/HAG4R/outputs/run_pipeline/mesh_fidelity_clawhauser_20260802/heterogeneous_params.npz",
+      "sha256": "7cfc8ca3cc7c08d261aa90b08832230801fec1ac62848d0e9239d9e2f318e8c6",
+      "size_bytes": 221480
+    },
+    "inferred_params.json": {
+      "path": "/media/eric/data/HAG4R/outputs/run_pipeline/mesh_fidelity_clawhauser_20260802/inferred_params.json",
+      "sha256": "45aacd698f2b38a6fd8bf13b46cc9c33497fc90c6c1bdf088ed12d915ec3d992",
+      "size_bytes": 8169
+    },
+    "metric_mesh_scaling.json": {
+      "path": "/media/eric/data/HAG4R/outputs/run_pipeline/mesh_fidelity_clawhauser_20260802/metric_mesh_scaling.json",
+      "sha256": "b352e97f8852971381df511fc497409eae218f14db7bc14d9eaeb7602a6532c4",
+      "size_bytes": 1674
+    },
+    "volume_topology.json": {
+      "path": "/media/eric/data/HAG4R/outputs/run_pipeline/mesh_fidelity_clawhauser_20260802/volume_topology.json",
+      "sha256": "d27cbaffa4c561c0536535e30b418954c406bbb6be14a43d74594e597692df38",
+      "size_bytes": 16383
+    }
+  },
+  "metric_mesh_scaling": {
+    "metric_bounds": {
+      "extent": [
+        0.1099267527461052,
+        0.22072593300927407,
+        0.0725536122918129
+      ],
+      "max": [
+        0.05609363317489624,
+        0.11025557845223673,
+        0.03586788848042488
+      ],
+      "max_extent": 0.22072593300927407,
+      "min": [
+        -0.053833119571208954,
+        -0.11047035455703735,
+        -0.036685723811388016
+      ]
+    },
+    "note": "Mesh was scaled before voxelization and tetrahedralization.",
+    "output_mesh_path": "/media/eric/data/HAG4R/outputs/agentic_asset_refinement/mesh_fidelity_clawhauser_20260802/revisions/revision_0000/mesh_processing/combined_to_monolithic/mesh_fidelity_clawhauser_20260802.mesh",
+    "output_mesh_sha256": "df3d1505d96d36fbfa76291e7ab94269a30500ba5e4b87516d0bf8f57f0c6458",
+    "pre_tetrahedralization_metric_bounds": {
+      "extent": [
+        0.10883458671692707,
+        0.22,
+        0.07458623065319298
+      ],
+      "max": [
+        0.054473012514063376,
+        0.10998120475501415,
+        0.03710093574818195
+      ],
+      "max_extent": 0.22,
+      "min": [
+        -0.054361574202863694,
+        -0.11001879524498585,
+        -0.03748529490501103
+      ]
+    },
+    "scale_factor": 0.21982006615587957,
+    "scaling_mode": "pre_monolithic_target_max_dimension",
+    "schema_version": "hag4r-metric-max-dimension-scaling-v1",
+    "source_bounds": {
+      "extent": [
+        0.49510760605335236,
+        1.0008185505867004,
+        0.3393058329820633
+      ],
+      "max": [
+        0.24780727922916412,
+        0.5003237724304199,
+        0.168778657913208
+      ],
+      "max_extent": 1.0008185505867004,
+      "min": [
+        -0.24730032682418823,
+        -0.5004947781562805,
+        -0.17052717506885529
+      ]
+    },
+    "target_max_dimension_m": 0.22
+  },
+  "run_id": "mesh_fidelity_clawhauser_20260802",
+  "source_artifacts": {
+    "final_mesh.mesh": {
+      "path": "/media/eric/data/HAG4R/outputs/agentic_asset_refinement/mesh_fidelity_clawhauser_20260802/revisions/revision_0000/mesh_processing/combined_to_monolithic/mesh_fidelity_clawhauser_20260802.mesh",
+      "sha256": "df3d1505d96d36fbfa76291e7ab94269a30500ba5e4b87516d0bf8f57f0c6458",
+      "size_bytes": 259591
+    },
+    "heterogeneous_params.npz": {
+      "path": "/media/eric/data/HAG4R/outputs/agentic_asset_refinement/mesh_fidelity_clawhauser_20260802/revisions/revision_0000/mesh_processing/assign_monolithic_mesh_params/heterogeneous_params.npz",
+      "sha256": "7cfc8ca3cc7c08d261aa90b08832230801fec1ac62848d0e9239d9e2f318e8c6",
+      "size_bytes": 221480
+    },
+    "inferred_params.json": {
+      "path": "/media/eric/data/HAG4R/outputs/agentic_asset_refinement/mesh_fidelity_clawhauser_20260802/revisions/revision_0000/material_inference/mesh_fidelity_clawhauser_20260802.json",
+      "sha256": "45aacd698f2b38a6fd8bf13b46cc9c33497fc90c6c1bdf088ed12d915ec3d992",
+      "size_bytes": 8169
+    },
+    "metric_mesh_scaling.json": {
+      "path": "/media/eric/data/HAG4R/outputs/agentic_asset_refinement/mesh_fidelity_clawhauser_20260802/revisions/revision_0000/mesh_processing/combined_to_monolithic/metric_mesh_scaling.json",
+      "sha256": "b352e97f8852971381df511fc497409eae218f14db7bc14d9eaeb7602a6532c4",
+      "size_bytes": 1674
+    },
+    "volume_topology.json": {
+      "path": "/media/eric/data/HAG4R/outputs/agentic_asset_refinement/mesh_fidelity_clawhauser_20260802/revisions/revision_0000/mesh_processing/combined_to_monolithic/volume_topology.json",
+      "sha256": "d27cbaffa4c561c0536535e30b418954c406bbb6be14a43d74594e597692df38",
+      "size_bytes": 16383
+    }
+  },
+  "source_directories": {
+    "asset_refinement": "/media/eric/data/HAG4R/outputs/agentic_asset_refinement/mesh_fidelity_clawhauser_20260802/revisions/revision_0000"
+  },
+  "validation": {
+    "metric_mesh_scaling": {
+      "scale_factor": 0.21982006615587957,
+      "schema_version": "hag4r-metric-max-dimension-scaling-v1",
+      "target_max_dimension_m": 0.22
+    },
+    "params": {
+      "keys": [
+        "part_E_nu",
+        "part_colors",
+        "part_density",
+        "part_indices",
+        "part_volume_fill_mode_codes",
+        "tet_E_nu",
+        "tet_density",
+        "tet_part_labels"
+      ],
+      "tet_count": 6850
+    },
+    "volume_topology": {
+      "schema_version": "hag4r-volume-topology-v2",
+      "tet_budget_status": "within_budget",
+      "tet_count": 6850,
+      "volume_topology": "filled",
+      "warnings": []
+    }
+  },
+  "volume_topology": {
+    "array_hashes": {
+      "tet_E_nu_sha256": "dccbd1421466fd9e40c377162c89ccf0853a874ce7f4e77c04885dc283bbda31",
+      "tet_density_sha256": "cead5ced164080a711d80d8bf9a3c41b3305e68fc799b8fccad5139a2c5b7d1b",
+      "tet_part_labels_sha256": "9878a0b390f6d0f1a769de838e0da08575a5f4c1f7b226cfd53af294c54a7273"
+    },
+    "contract": "per_part_filled_hollow_volumetric_meshing",
+    "heterogeneous_params_path": "/media/eric/data/HAG4R/outputs/agentic_asset_refinement/mesh_fidelity_clawhauser_20260802/revisions/revision_0000/mesh_processing/assign_monolithic_mesh_params/heterogeneous_params.npz",
+    "hollow_wall_band_layers": 2,
+    "mesh_path": "/media/eric/data/HAG4R/outputs/agentic_asset_refinement/mesh_fidelity_clawhauser_20260802/revisions/revision_0000/mesh_processing/combined_to_monolithic/mesh_fidelity_clawhauser_20260802.mesh",
+    "metric_mesh_scaling_path": "/media/eric/data/HAG4R/outputs/agentic_asset_refinement/mesh_fidelity_clawhauser_20260802/revisions/revision_0000/mesh_processing/combined_to_monolithic/metric_mesh_scaling.json",
+    "owner_assignment": {
+      "boundary_fallback": "nearest_occupied_voxel_only",
+      "method": "tet_centroid_occupancy_owner",
+      "nearest_occupied_voxel_fallback_count": 99,
+      "overlap_tie_break": "nearest_source_part_surface_then_smaller_part_index",
+      "overlap_tie_break_count": 359
+    },
+    "parts": [
+      {
+        "derived_voxel_band_width_m": null,
+        "fidelity_config": {
+          "absolute_cap": 10000,
+          "keep_ratio": 0.02,
+          "longest_axis_voxels": 96
+        },
+        "fill_operation": "binary_fill_holes",
+        "input_faces": 30052,
+        "mesh_fidelity": "high",
+        "occupied_voxel_count": 78252,
+        "output_faces": 602,
+        "part_color_rgb": [
+          141.0,
+          211.0,
+          199.0
+        ],
+        "part_index": 0,
+        "source_mesh_path": "/media/eric/data/HAG4R/outputs/agentic_asset_refinement/mesh_fidelity_clawhauser_20260802/revisions/revision_0000/omnipart/clawhauser/part1.glb",
+        "target_faces": 602,
+        "tet_count": 2335,
+        "volume_fill_mode": "solid_fill",
+        "voxel_grid": {
+          "bounds_m": {
+            "max": [
+              0.022552433456858215,
+              -0.028681114748189632,
+              0.017388243362540138
+            ],
+            "min": [
+              -0.022971721699589463,
+              -0.11001879524498585,
+              -0.017266369071813628
+            ]
+          },
+          "cell_count": 256128,
+          "dims": [
+            58,
+            96,
+            46
+          ],
+          "origin": [
+            -0.02666888899489838,
+            -0.11371596254029477,
+            -0.020963536367122546
+          ],
+          "pitch_m": 0.0009242918238272298
+        }
+      },
+      {
+        "derived_voxel_band_width_m": null,
+        "fidelity_config": {
+          "absolute_cap": 5000,
+          "keep_ratio": 0.005,
+          "longest_axis_voxels": 96
+        },
+        "fill_operation": "binary_fill_holes",
+        "input_faces": 54308,
+        "mesh_fidelity": "medium",
+        "occupied_voxel_count": 185059,
+        "output_faces": 272,
+        "part_color_rgb": [
+          255.0,
+          255.0,
+          179.0
+        ],
+        "part_index": 1,
+        "source_mesh_path": "/media/eric/data/HAG4R/outputs/agentic_asset_refinement/mesh_fidelity_clawhauser_20260802/revisions/revision_0000/omnipart/clawhauser/part2.glb",
+        "target_faces": 272,
+        "tet_count": 2713,
+        "volume_fill_mode": "solid_fill",
+        "voxel_grid": {
+          "bounds_m": {
+            "max": [
+              0.054473012514063376,
+              0.05533554654951307,
+              0.03710093574818195
+            ],
+            "min": [
+              -0.054361574202863694,
+              -0.04721453980951285,
+              -0.03748529490501103
+            ]
+          },
+          "cell_count": 602784,
+          "dims": [
+            96,
+            91,
+            69
+          ],
+          "origin": [
+            -0.05930860087181492,
+            -0.05216156647846408,
+            -0.042432321573962255
+          ],
+          "pitch_m": 0.0012367566672378076
+        }
+      },
+      {
+        "derived_voxel_band_width_m": null,
+        "fidelity_config": {
+          "absolute_cap": 10000,
+          "keep_ratio": 0.02,
+          "longest_axis_voxels": 96
+        },
+        "fill_operation": "binary_fill_holes",
+        "input_faces": 22884,
+        "mesh_fidelity": "high",
+        "occupied_voxel_count": 22441,
+        "output_faces": 458,
+        "part_color_rgb": [
+          190.0,
+          186.0,
+          218.0
+        ],
+        "part_index": 2,
+        "source_mesh_path": "/media/eric/data/HAG4R/outputs/agentic_asset_refinement/mesh_fidelity_clawhauser_20260802/revisions/revision_0000/omnipart/clawhauser/part3.glb",
+        "target_faces": 458,
+        "tet_count": 1802,
+        "volume_fill_mode": "solid_fill",
+        "voxel_grid": {
+          "bounds_m": {
+            "max": [
+              0.026199893466414555,
+              0.10998120475501415,
+              0.005082408422835421
+            ],
+            "min": [
+              -0.018342282202155457,
+              0.050510540529900956,
+              -0.005040338994538069
+            ]
+          },
+          "cell_count": 163392,
+          "dims": [
+            74,
+            96,
+            23
+          ],
+          "origin": [
+            -0.021045494212387876,
+            0.04780732851966854,
+            -0.007743551004770487
+          ],
+          "pitch_m": 0.0006758030025581044
+        }
+      }
+    ],
+    "schema_version": "hag4r-volume-topology-v2",
+    "surface_combination": {
+      "dependency_versions": {
+        "manifold3d": "3.4.1",
+        "trimesh": "4.11.2"
+      },
+      "input_count": 3,
+      "inputs": [
+        {
+          "absolute_volume_m3": 6.097926638764417e-05,
+          "bounds_m": [
+            [
+              -0.023614824815709784,
+              -0.11047035766273351,
+              -0.018201050842485036
+            ],
+            [
+              0.023304845302408173,
+              -0.02804156966866846,
+              0.01793059079698366
+            ]
+          ],
+          "face_count": 602,
+          "finite": true,
+          "nonempty": true,
+          "positive_volume": true,
+          "signed_volume_m3": 6.097926638764417e-05,
+          "surface_shell_count": 1,
+          "surface_shells": [
+            {
+              "absolute_volume_m3": 6.097926638764417e-05,
+              "bounds_m": [
+                [
+                  -0.023614824815709784,
+                  -0.11047035766273351,
+                  -0.018201050842485036
+                ],
+                [
+                  0.023304845302408173,
+                  -0.02804156966866846,
+                  0.01793059079698366
+                ]
+              ],
+              "face_count": 602,
+              "signed_volume_m3": 6.097926638764417e-05,
+              "vertex_count": 303,
+              "watertight": true,
+              "winding_consistent": true
+            }
+          ],
+          "triangular": true,
+          "valid": true,
+          "vertex_count": 303,
+          "watertight": true,
+          "winding_consistent": true
+        },
+        {
+          "absolute_volume_m3": 0.0003391909850278178,
+          "bounds_m": [
+            [
+              -0.05383311845906989,
+              -0.046722501993958304,
+              -0.036685723042265854
+            ],
+            [
+              0.05609363334016882,
+              0.05510576342884117,
+              0.03586788841152403
+            ]
+          ],
+          "face_count": 272,
+          "finite": true,
+          "nonempty": true,
+          "positive_volume": true,
+          "signed_volume_m3": 0.0003391909850278178,
+          "surface_shell_count": 1,
+          "surface_shells": [
+            {
+              "absolute_volume_m3": 0.0003391909850278178,
+              "bounds_m": [
+                [
+                  -0.05383311845906989,
+                  -0.046722501993958304,
+                  -0.036685723042265854
+                ],
+                [
+                  0.05609363334016882,
+                  0.05510576342884117,
+                  0.03586788841152403
+                ]
+              ],
+              "face_count": 272,
+              "signed_volume_m3": 0.0003391909850278178,
+              "vertex_count": 136,
+              "watertight": true,
+              "winding_consistent": true
+            }
+          ],
+          "triangular": true,
+          "valid": true,
+          "vertex_count": 136,
+          "watertight": true,
+          "winding_consistent": true
+        },
+        {
+          "absolute_volume_m3": 6.589431925797249e-06,
+          "bounds_m": [
+            [
+              -0.018770691687548774,
+              0.049957031948939835,
+              -0.005829974336283079
+            ],
+            [
+              0.02647068858917654,
+              0.11026608643769253,
+              0.005549428274171247
+            ]
+          ],
+          "face_count": 458,
+          "finite": true,
+          "nonempty": true,
+          "positive_volume": true,
+          "signed_volume_m3": 6.589431925797249e-06,
+          "surface_shell_count": 1,
+          "surface_shells": [
+            {
+              "absolute_volume_m3": 6.589431925797249e-06,
+              "bounds_m": [
+                [
+                  -0.018770691687548774,
+                  0.049957031948939835,
+                  -0.005829974336283079
+                ],
+                [
+                  0.02647068858917654,
+                  0.11026608643769253,
+                  0.005549428274171247
+                ]
+              ],
+              "face_count": 458,
+              "signed_volume_m3": 6.589431925797249e-06,
+              "vertex_count": 229,
+              "watertight": true,
+              "winding_consistent": true
+            }
+          ],
+          "triangular": true,
+          "valid": true,
+          "vertex_count": 229,
+          "watertight": true,
+          "winding_consistent": true
+        }
+      ],
+      "output": {
+        "absolute_volume_m3": 0.00040008308439224175,
+        "bounds_m": [
+          [
+            -0.053833119571208954,
+            -0.11047035455703735,
+            -0.036685723811388016
+          ],
+          [
+            0.05609363317489624,
+            0.11026608943939209,
+            0.03586788848042488
+          ]
+        ],
+        "face_count": 1406,
+        "finite": true,
+        "nonempty": true,
+        "positive_volume": true,
+        "signed_volume_m3": 0.00040008308439224175,
+        "surface_shell_count": 1,
+        "surface_shells": [
+          {
+            "absolute_volume_m3": 0.00040008308439224175,
+            "bounds_m": [
+              [
+                -0.053833119571208954,
+                -0.11047035455703735,
+                -0.036685723811388016
+              ],
+              [
+                0.05609363317489624,
+                0.11026608943939209,
+                0.03586788848042488
+              ]
+            ],
+            "face_count": 1406,
+            "signed_volume_m3": 0.00040008308439224175,
+            "vertex_count": 701,
+            "watertight": true,
+            "winding_consistent": true
+          }
+        ],
+        "triangular": true,
+        "valid": true,
+        "vertex_count": 701,
+        "watertight": true,
+        "winding_consistent": true
+      },
+      "runtime_s": 0.019979090022388846,
+      "strategy": "manifold_union"
+    },
+    "tet_budget_limit": 40000,
+    "tet_budget_status": "within_budget",
+    "tet_count": 6850,
+    "tet_validation": {
+      "post_serialization": {
+        "absolute_determinant_min": 2.931615283944289e-10,
+        "bbox_diagonal_m": 0.25703668051215683,
+        "boundary_surface_component_count": 1,
+        "boundary_triangle_count": 2356,
+        "components": [
+          {
+            "bounds_m": [
+              [
+                -0.053833119571208954,
+                -0.11047035455703735,
+                -0.036685723811388016
+              ],
+              [
+                0.05609363317489624,
+                0.11025557845223673,
+                0.03586788848042488
+              ]
+            ],
+            "centroid_m": [
+              0.0003848852687448314,
+              -0.01634470905751375,
+              -0.0003338199729062396
+            ],
+            "component_id": 0,
+            "is_main_component": true,
+            "nearest_distance_to_main_component_m": 0.0,
+            "part_label_distribution": {
+              "0": 2335,
+              "1": 2713,
+              "2": 1802
+            },
+            "tet_count": 6850,
+            "vertex_count": 1840,
+            "volume_m3": 0.0003997817538665048
+          }
+        ],
+        "determinant_max": -2.931615283944289e-10,
+        "determinant_min": -3.3018460001978176e-06,
+        "duplicate_tet_count": 0,
+        "expected_material_labels": [
+          0,
+          1,
+          2
+        ],
+        "face_connected_component_count": 1,
+        "failures": [],
+        "finite_points": true,
+        "genesis_determinant_threshold": 1e-12,
+        "genesis_invalid_tet_count": 0,
+        "indices_in_range": true,
+        "material_array_length_valid": true,
+        "material_label_coverage_valid": true,
+        "non_manifold_tet_face_count": 0,
+        "point_count": 1840,
+        "present_material_labels": [
+          0,
+          1,
+          2
+        ],
+        "repeated_vertex_tet_count": 0,
+        "tet_count": 6850,
+        "valid": true,
+        "wrong_orientation_tet_count": 0
+      },
+      "post_tetrahedralization": {
+        "absolute_determinant_min": 2.931615283944289e-10,
+        "bbox_diagonal_m": 0.25703668051215683,
+        "boundary_surface_component_count": 1,
+        "boundary_triangle_count": 2356,
+        "components": [
+          {
+            "bounds_m": [
+              [
+                -0.053833119571208954,
+                -0.11047035455703735,
+                -0.036685723811388016
+              ],
+              [
+                0.05609363317489624,
+                0.11025557845223673,
+                0.03586788848042488
+              ]
+            ],
+            "centroid_m": [
+              0.0003848852687448314,
+              -0.01634470905751375,
+              -0.0003338199729062396
+            ],
+            "component_id": 0,
+            "is_main_component": true,
+            "nearest_distance_to_main_component_m": 0.0,
+            "part_label_distribution": {},
+            "tet_count": 6850,
+            "vertex_count": 1840,
+            "volume_m3": 0.0003997817538665048
+          }
+        ],
+        "determinant_max": -2.931615283944289e-10,
+        "determinant_min": -3.3018460001978176e-06,
+        "duplicate_tet_count": 0,
+        "expected_material_labels": [],
+        "face_connected_component_count": 1,
+        "failures": [],
+        "finite_points": true,
+        "genesis_determinant_threshold": 1e-12,
+        "genesis_invalid_tet_count": 0,
+        "indices_in_range": true,
+        "material_array_length_valid": true,
+        "material_label_coverage_valid": true,
+        "non_manifold_tet_face_count": 0,
+        "point_count": 1840,
+        "present_material_labels": [],
+        "repeated_vertex_tet_count": 0,
+        "tet_count": 6850,
+        "valid": true,
+        "wrong_orientation_tet_count": 0
+      },
+      "pre_serialization": {
+        "absolute_determinant_min": 2.931615283944289e-10,
+        "bbox_diagonal_m": 0.25703668051215683,
+        "boundary_surface_component_count": 1,
+        "boundary_triangle_count": 2356,
+        "components": [
+          {
+            "bounds_m": [
+              [
+                -0.053833119571208954,
+                -0.11047035455703735,
+                -0.036685723811388016
+              ],
+              [
+                0.05609363317489624,
+                0.11025557845223673,
+                0.03586788848042488
+              ]
+            ],
+            "centroid_m": [
+              0.0003848852687448314,
+              -0.01634470905751375,
+              -0.0003338199729062396
+            ],
+            "component_id": 0,
+            "is_main_component": true,
+            "nearest_distance_to_main_component_m": 0.0,
+            "part_label_distribution": {
+              "0": 2335,
+              "1": 2713,
+              "2": 1802
+            },
+            "tet_count": 6850,
+            "vertex_count": 1840,
+            "volume_m3": 0.0003997817538665048
+          }
+        ],
+        "determinant_max": -2.931615283944289e-10,
+        "determinant_min": -3.3018460001978176e-06,
+        "duplicate_tet_count": 0,
+        "expected_material_labels": [
+          0,
+          1,
+          2
+        ],
+        "face_connected_component_count": 1,
+        "failures": [],
+        "finite_points": true,
+        "genesis_determinant_threshold": 1e-12,
+        "genesis_invalid_tet_count": 0,
+        "indices_in_range": true,
+        "material_array_length_valid": true,
+        "material_label_coverage_valid": true,
+        "non_manifold_tet_face_count": 0,
+        "point_count": 1840,
+        "present_material_labels": [
+          0,
+          1,
+          2
+        ],
+        "repeated_vertex_tet_count": 0,
+        "tet_count": 6850,
+        "valid": true,
+        "wrong_orientation_tet_count": 0
+      }
+    },
+    "volume_topology": "filled",
+    "warnings": []
+  }
+}
