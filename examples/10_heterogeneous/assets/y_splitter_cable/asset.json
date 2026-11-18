@@ -1,0 +1,45 @@
+{
+  "name": "y_splitter_cable",
+  "description": "Y splitter cable: original reference-informed rigid/deformable geometry.",
+  "units": "m",
+  "up_axis": "Z",
+  "construction": "Boolean union surface, TetGen volume, centroid part labels",
+  "rigid_groups": [
+    [
+      1,
+      2
+    ],
+    [
+      3,
+      4
+    ],
+    [
+      5,
+      6
+    ]
+  ],
+  "source_assets": [],
+  "behavior_validated": false,
+  "metadata": {
+    "reference_url": "https://media.startech.com/cms/pdfs/usb2habmy1_datasheet.pdf",
+    "endpoint_types": [
+      "mini_b",
+      "usb_a",
+      "usb_a"
+    ],
+    "independent_rigid_ends": true,
+    "cable_diameters_mm": [
+      4.4,
+      4,
+      4
+    ],
+    "override_levers": [
+      "deformable part 0 Young modulus",
+      "part 0 damping during later integration",
+      "each rigid end mass via density"
+    ],
+    "material_tuning": "Uncalibrated; no simulation performed",
+    "branch_count": 3,
+    "simplifications": "StarTech connector combination and molded strain reliefs; generic central Y junction replaces product-specific branch location. No internal conductors/contacts; approximate 300 mm span."
+  }
+}

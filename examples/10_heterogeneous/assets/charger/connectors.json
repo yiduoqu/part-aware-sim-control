@@ -1,0 +1,47 @@
+{
+  "schema": "mechanical-mating-frames-v1",
+  "units": "m",
+  "convention": "+X points from male shoulder into socket; Y/Z define profile orientation",
+  "male_ends": [
+    {
+      "id": "male_0",
+      "connector_type": "usb_c",
+      "rigid_parts": [
+        2,
+        3
+      ],
+      "T_asset_from_mating_frame": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.283
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "tip_length_m": 0.008,
+      "canonical_geometry_sha256": "ea0a41af422bf7270eff6b25305092c021b9d7e2c0b98e2b31dcba5c98d6fafe",
+      "matching_fixture": "../socket_usb_c",
+      "seated_shoulder_x_in_socket_m": -0.0005
+    }
+  ],
+  "female_ports": [],
+  "electrical_geometry": false
+}

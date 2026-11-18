@@ -15,50 +15,31 @@ from __future__ import annotations
 
 import argparse
 import dataclasses
-import hashlib
 import json
 import time
 from pathlib import Path
 
 import arm_gripper
+import cable_scene
 import numpy as np
 import rigid_part_body
-from clawhauser_scene import REFERENCE, Trajectory, arrangement, build_sim, set_contact
+from clawhauser_scene import REFERENCE, Trajectory, arrangement, build_sim
 from loop_geometry import smooth
 from parallel_gripper import ParallelGripperSpec
 
 import robosimstudio as rss
 from robosimstudio.core.render.finish import Finish
-from robosimstudio_materials.heterogeneous import load_labelled_tets
 
-ASSET = Path(__file__).resolve().parent / "assets" / "usb_hub"
-SOURCE_HASHES = {
-    "final_mesh.mesh": "12614f42f0da9bb66ef34405e04c555d0b29bfb1540bb828fb54606a5676240c",
-    "heterogeneous_params.npz": "673d52126a6ee06ca0488e48a7a31cdf103da97dfa2542dddede5c4c13a7403d",
-    "inferred_params.json": "d1efc934ca5514b35eba3b8b01d080e9fb9bfc28a621513c19260631ad27b7db",
-}
-"""The export manifest's digests."""
 HOUSING, CABLE, CONNECTOR, PLUG = 0, 1, 2, 3
-RIGID_PARTS = (HOUSING, (CONNECTOR, PLUG))
-"""The housing, and the connector and plug as one body (they meet only each other at their seam)."""
+"""The labels of every hub-like asset (``--asset``); the housing and connector+plug are rigid."""
 OUTPUT = Path(__file__).resolve().parents[2] / "outputs" / "usb_hub_box"
 CELL = arm_gripper.CELL
 CONTROL_HZ = REFERENCE.control_hz
 SUBSTEPS = 40
 """Substeps per frame: twice the Clawhauser scenes', so the thin cable's tension carries further per sweep."""
 DURATION = 13.0
-QUAT = (0.5, 0.5, 0.5, 0.5)
-"""Lying flat: the mesh's thin y goes up, its long x along the bench's y, its z along x."""
 GRASP_AT = (0.0, -0.12)
 """Where the pads close on the housing [m, bench frame]: clear of the arm's riser."""
-PLUG_END_MASS = 0.002
-"""The connector and plug together [kg]. The mesh fills them solid, so at the source's steel
-density they were 55 g, which the thin cable could not lift; a USB-A plug is a few grams."""
-CABLE_YOUNG = 2.0e7
-"""The cable's Young's modulus [Pa], four times the source's 5 MPa: the strand is a few tets
-thick, and at 5 MPa it stretched 1.5 times under the plug end."""
-CABLE_DAMPING = 3.0e4
-"""The cable's tet damping [Pa*s], nine times the shared ratio's 3.4e3 at 20 MPa: a cable's slow, heavy sway."""
 BOX_AT = (0.16, -0.04)
 """The box's centre [m, bench frame]: 160 mm along x and 80 mm along y from the grasp, about the
 farthest the arm reaches at the lift's height (200 mm along x alone; 150 by 100 mm). Nearer, the
@@ -94,19 +75,9 @@ PHASES = {
 GLASS = Finish(roughness=0.05, opacity=0.35, ior=1.5)
 
 
-def load_hub():
-    for relative, expected in SOURCE_HASHES.items():
-        if hashlib.sha256((ASSET / relative).read_bytes()).hexdigest() != expected:
-            raise ValueError(f"USB hub source asset changed: {relative}")
-    vertices, tets, labels, _elastic, _density = load_labelled_tets(
-        ASSET / "final_mesh.mesh", ASSET / "heterogeneous_params.npz"
-    )
-    return vertices, tets, labels
-
-
-def layout(vertices: np.ndarray, tets: np.ndarray, labels: np.ndarray) -> dict:
+def layout(vertices: np.ndarray, tets: np.ndarray, labels: np.ndarray, quat) -> dict:
     """Where the hub lies, where the pads close, and where the box goes, in the bench frame."""
-    turned = arm_gripper._rotate(np.asarray(QUAT), vertices)
+    turned = arm_gripper._rotate(np.asarray(quat), vertices)
     housing = turned[np.unique(tets[labels == HOUSING])]
     root = turned[np.intersect1d(tets[labels == HOUSING], tets[labels == CABLE])].mean(axis=0)
     # Near the housing's cable end, which ``root`` marks.
@@ -117,7 +88,7 @@ def layout(vertices: np.ndarray, tets: np.ndarray, labels: np.ndarray) -> dict:
     centre = np.array((0.5 * (band[:, 0].min() + band[:, 0].max()), grasp_y))
     reach = float(0.5 * (band[:, 0].max() - band[:, 0].min()))
     shift = np.asarray(GRASP_AT) - centre
-    pose = (float(shift[0]), float(shift[1]), float(-turned[:, 2].min()) + 0.001)
+    pose = (float(shift[0]), float(shift[1]), float(-turned[:, 2].min()) + cable_scene.PLACE_GAP)
     root_xy = root[:2] + shift
     return {
         "pose": pose,
@@ -131,13 +102,18 @@ def layout(vertices: np.ndarray, tets: np.ndarray, labels: np.ndarray) -> dict:
 
 
 def build_scene(
-    *, solver: str = "chebyshev", iterations: int, mu: float, grip_mu: float, force_limit: float, self_contact: bool
+    asset: cable_scene.CableAsset,
+    *,
+    solver: str = "chebyshev",
+    iterations: int,
+    mu: float,
+    grip_mu: float,
+    force_limit: float,
+    self_contact: bool,
 ):
-    vertices, tets, labels = load_hub()
-    geometry = layout(vertices, tets, labels)
+    vertices, tets, labels = cable_scene.load(asset)
+    geometry = layout(vertices, tets, labels, asset.quat)
     settings = dataclasses.replace(REFERENCE, substeps=SUBSTEPS)
-    plug = tets[np.isin(labels, (CONNECTOR, PLUG))]
-    plug_volume = float(np.abs(np.linalg.det(vertices[plug[:, 1:]] - vertices[plug[:, :1]])).sum() / 6.0)
     physics = arrangement(
         settings,
         claw="arm",
@@ -147,6 +123,7 @@ def build_scene(
         self_contact=self_contact,
         feedback_smoothing=0.15,
         feedback_clamp=1.5,
+        rest_exclusion=cable_scene.REST_EXCLUSION,
     )
     scene = rss.Scene(cell=CELL, physics=physics, name="usb_hub_box")
     bx, by = geometry["box_centre_m"]
@@ -173,37 +150,18 @@ def build_scene(
         extra = {"finish": finish} if finish is not None else {}
         scene.add(rss.slab(name=name, half=half, at=at, color=(0.55, 0.60, 0.65), **extra))
     obj = scene.add(
-        rigid_part_body.RigidPartSoftSpec(
-            rigid_parts=RIGID_PARTS,
-            name="usb_hub",
-            mesh_path=str(ASSET / "final_mesh.mesh"),
-            params_path=str(ASSET / "heterogeneous_params.npz"),
-            materials_path=str(ASSET / "inferred_params.json"),
-            pose=geometry["pose"],
-            quat=QUAT,
-            contact_ke=settings.contact_ke,
-            contact_kd=settings.contact_kd,
-            contact_mu=mu,
-            particle_radius=settings.particle_radius,
-            damping_ratio=settings.damping_ratio,
-            part_overrides=(
-                (CABLE, "youngs_modulus_pa", CABLE_YOUNG),
-                (CABLE, "damping_pa_s", CABLE_DAMPING),
-                (CONNECTOR, "density_kg_m3", PLUG_END_MASS / plug_volume),
-                (PLUG, "density_kg_m3", PLUG_END_MASS / plug_volume),
-            ),
-        )
+        cable_scene.spec(asset, vertices, tets, labels, name="usb_hub", pose=geometry["pose"], settings=settings, mu=mu)
     )
     arm_gripper.add_arm(scene, base_offset=arm_gripper.MOUNT, force_limit=force_limit)
     camera = scene.add(
         rss.CameraSpec(
-            name="overview", width=960, height=540, eye=(1.10, -0.55, 1.25), look_at=(0.66, -0.05, 0.85), fov_y=45.0
+            name="overview", width=960, height=540, eye=(1.25, -0.70, 1.35), look_at=(0.66, -0.05, 0.95), fov_y=50.0
         )
     )
     sim = build_sim(scene, rigid_loop=False)
     solver = arm_gripper.vbd_solver(sim.pipeline.program.solver)
     geometry["arm"] = arm_gripper.check_arm(sim, limit=force_limit)
-    geometry["friction"] = set_contact(sim, solver, settings, mu=mu, grip_mu=grip_mu)
+    geometry["friction"] = cable_scene.set_friction(sim, solver, settings, mu=mu, grip_mu=grip_mu)
     geometry["rigid_parts"] = {
         f"part{rp.part}": {"nodes": int(len(rp.nodes)), "mass_kg": rp.part_mass} for rp in obj.entity.rigid_parts
     }
@@ -259,6 +217,7 @@ def inside_box(points: np.ndarray, geometry: dict, surface: np.ndarray, top: flo
 
 def run(
     out: Path,
+    asset: cable_scene.CableAsset,
     *,
     steps: int,
     render_every: int,
@@ -268,14 +227,22 @@ def run(
     grip_mu: float,
     force_limit: float,
     self_contact: bool,
+    config: dict | None = None,
 ) -> dict:
     out.mkdir(parents=True, exist_ok=True)
     sim, obj, camera, geometry = build_scene(
-        solver=solver, iterations=iterations, mu=mu, grip_mu=grip_mu, force_limit=force_limit, self_contact=self_contact
+        asset,
+        solver=solver,
+        iterations=iterations,
+        mu=mu,
+        grip_mu=grip_mu,
+        force_limit=force_limit,
+        self_contact=self_contact,
     )
     entity = obj.entity
     particles, tets, labels = entity.particles, entity.source_tets, entity.tet_part_labels
     cable = np.unique(tets[labels == CABLE])
+    housing_nodes = np.unique(tets[labels == HOUSING])
     dangling = np.setdiff1d(np.unique(tets[labels != HOUSING]), np.unique(tets[labels == HOUSING]))
     soft = labels == CABLE
     surface = np.asarray(rss.get_cell(CELL).surface_frame[:3], dtype=np.float64)
@@ -318,8 +285,10 @@ def run(
                 "frame": frame + 1,
                 "time_s": (frame + 1) / CONTROL_HZ,
                 "minimum_z_m": float(owned[:, 2].min() - surface[2]),
+                "housing_minimum_z_m": float(owned[housing_nodes, 2].min() - surface[2]),
                 "cable_inside": float(inside_box(owned[cable], geometry, surface).mean()),
                 "inverted_tetrahedra": int(np.count_nonzero(np.linalg.det(edges) <= 0)),
+                "cable_inverted": int(np.count_nonzero(np.linalg.det(edges[soft]) <= 0)),
                 "cable_stretch_p99": float(np.percentile(stretch, 99.0)),
                 "finger_contacts": int(np.count_nonzero(np.isin(shapes, finger_shapes))),
                 "aperture_m": arm.aperture(),
@@ -347,6 +316,7 @@ def run(
         "geometry": geometry,
         "weight_n": float(entity.mass.sum() * 9.81),
         "lifted_clearance_m": min((r["minimum_z_m"] for r in lift_rows), default=None),
+        "housing_lifted_m": min((r["housing_minimum_z_m"] for r in lift_rows), default=None),
         "released": max(r["finger_contacts"] for r in tail) == 0,
         "cable_inside_final": diagnostics[-1]["cable_inside"],
         # The housing's centre, which lies on the cable it drops onto: within a housing height of the rim.
@@ -356,19 +326,24 @@ def run(
         "cable_stretch_p99_max": max(r["cable_stretch_p99"] for r in diagnostics),
         "rigid_skin_offset_max_m": skin,
         "max_inverted_tetrahedra": max(r["inverted_tetrahedra"] for r in diagnostics),
+        "max_cable_inverted": max(r["cable_inverted"] for r in diagnostics),
         "arm_path_error_m": route.worst_position_error_m,
         "steps": steps,
         "video_error": video_error,
         "mean_frame_ms": 1000.0 * elapsed / max(1, len(diagnostics)),
         "mean_step_ms": 1000.0 * elapsed / max(1, len(diagnostics) * SUBSTEPS),
         "elapsed_s": elapsed,
+        "config": config,
     }
     result["success"] = bool(
-        (result["lifted_clearance_m"] or 0.0) > 0.02
+        # The housing must leave the bench; a cable longer than the lift may still trail on it.
+        (result["housing_lifted_m"] or 0.0) > 0.02
         and result["released"]
-        and result["cable_inside_final"] >= 0.9
+        # Most of the cable: a 350 mm cable can leave a loop over the rim.
+        and result["cable_inside_final"] >= 0.8
         and result["housing_inside_final"]
-        and result["max_inverted_tetrahedra"] == 0
+        # Only the soft cable's tets count: a rigid part's own tets have almost no stiffness and ride on its body.
+        and result["max_cable_inverted"] == 0
     )
     (out / "result.json").write_text(json.dumps(result, indent=2) + "\n")
     print(json.dumps({k: v for k, v in result.items() if k != "geometry"}), flush=True)
@@ -378,17 +353,21 @@ def run(
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out", type=Path, default=OUTPUT / "run")
+    parser.add_argument("--asset", choices=("usb_hub", "usb_hub_gen", "charger", "power_strip"), default="usb_hub")
     parser.add_argument("--steps", type=int, default=round(DURATION * CONTROL_HZ))
     parser.add_argument("--render-every", type=int, default=0)
     parser.add_argument("--solver", choices=("vbd", "chebyshev"), default="chebyshev")
     parser.add_argument("--iterations", type=int, default=80)
-    parser.add_argument("--mu", type=float, default=2.0)
+    parser.add_argument("--mu", type=float, default=cable_scene.OBJECT_MU)
     parser.add_argument("--grip-mu", type=float, default=2.0)
     parser.add_argument("--force-limit", type=float, default=30.0)
     parser.add_argument("--no-self-contact", dest="self_contact", action="store_false")
+    cable_scene.add_lever_arguments(parser)
     args = parser.parse_args()
+    asset = cable_scene.with_levers(cable_scene.ASSETS[args.asset], args)
     run(
         args.out,
+        asset,
         steps=args.steps,
         render_every=args.render_every,
         solver=args.solver,
@@ -397,6 +376,7 @@ def main() -> None:
         grip_mu=args.grip_mu,
         force_limit=args.force_limit,
         self_contact=args.self_contact,
+        config=cable_scene.config(args, asset, dataclasses.replace(REFERENCE, substeps=SUBSTEPS)),
     )
 
 

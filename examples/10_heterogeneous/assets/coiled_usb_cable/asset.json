@@ -1,0 +1,43 @@
+{
+  "name": "coiled_usb_cable",
+  "description": "Coiled usb cable: original reference-informed rigid/deformable geometry.",
+  "units": "m",
+  "up_axis": "Z",
+  "construction": "Boolean union surface, TetGen volume, centroid part labels",
+  "rigid_groups": [
+    [
+      1,
+      2
+    ],
+    [
+      3,
+      4
+    ]
+  ],
+  "source_assets": [],
+  "behavior_validated": false,
+  "metadata": {
+    "reference_url": "https://www.keychron.com/products/keychron-custom-coiled-cable",
+    "endpoint_types": [
+      "usb_a",
+      "usb_c"
+    ],
+    "independent_rigid_ends": true,
+    "cable_diameters_mm": [
+      4.5
+    ],
+    "override_levers": [
+      "deformable part 0 Young modulus",
+      "part 0 damping during later integration",
+      "each rigid end mass via density"
+    ],
+    "material_tuning": "Uncalibrated; no simulation performed",
+    "coil_turns": 12,
+    "coil_centerline_radius_mm": 12,
+    "coil_pitch_mm": 5.6,
+    "nominal_interturn_surface_gap_mm": 1.0999999999999996,
+    "conservative_nonlocal_surface_clearance_mm": 0.885291774966225,
+    "centerline_length_mm": 1032.4449246834631,
+    "simplifications": "Coiled keyboard-cable proportions inspired by Keychron; tight twelve-turn section, USB-A/USB-C endpoints, no detachable aviator coupling. Cable internals homogenized."
+  }
+}

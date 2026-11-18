@@ -1,0 +1,52 @@
+{
+  "schema": "rigid-socket-v1",
+  "name": "socket_usb_c",
+  "units": "m",
+  "up_axis": "Z",
+  "description": "USB-C rigid socket block with a simple clearance cavity.",
+  "rigid_groups": [
+    [
+      0
+    ]
+  ],
+  "behavior_validated": false,
+  "collision_geometry": "physics/collision_mesh.obj",
+  "tetrahedral_volume": "physics/rigid_tets.npz",
+  "mesh_resolution": {
+    "vertices": 838,
+    "tetrahedra": 2420,
+    "boundary_faces": 1546,
+    "boundary_edge_mm": {
+      "median": 1.625,
+      "p95": 5.038270173852266,
+      "max": 5.9719821672470825
+    },
+    "tet_volume_mm3": {
+      "min": 0.0068001463158718295,
+      "median": 0.7169019248534527,
+      "p95": 13.846818814042473,
+      "max": 26.40808727990093
+    },
+    "mean_ratio": {
+      "min": 0.09825478984131035,
+      "p05": 0.18982500912376649,
+      "median": 0.5614111637424046
+    },
+    "nonpositive_tetrahedra": 0,
+    "added_tetrahedra": 44,
+    "refinement_batches": 2,
+    "maximum_boundary_edge_mm": 5.9719821672470825
+  },
+  "collision_requirement": "Preserve concave cavities; a single convex hull is unsuitable.",
+  "metadata": {
+    "connector_type": "usb_c",
+    "block_dimensions_mm": [
+      13,
+      28,
+      24
+    ],
+    "cavity_profile": "rectangle",
+    "clearance_per_side_mm": 0.5,
+    "electrical_internals": false
+  }
+}

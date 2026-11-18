@@ -1,0 +1,184 @@
+{
+  "schema": "mechanical-mating-frames-v1",
+  "units": "m",
+  "convention": "+X points from male shoulder into socket; Y/Z define profile orientation",
+  "male_ends": [
+    {
+      "id": "male_0",
+      "connector_type": "usb_a",
+      "rigid_parts": [
+        2,
+        3
+      ],
+      "T_asset_from_mating_frame": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.4345
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "tip_length_m": 0.012,
+      "canonical_geometry_sha256": "f10cde79891f3c6c6380eac634f22fd69dd3537b30550511e012701d640fcd76",
+      "matching_fixture": "../socket_usb_a",
+      "seated_shoulder_x_in_socket_m": -0.0005
+    }
+  ],
+  "female_ports": [
+    {
+      "id": "socket_0",
+      "connector_type": "usb_a",
+      "T_asset_from_mating_frame": [
+        [
+          0.0,
+          -1.0,
+          0.0,
+          -0.03
+        ],
+        [
+          1.0,
+          0.0,
+          0.0,
+          -0.0175
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "clearance_per_side_m": 0.0005,
+      "cavity_depth_m": 0.013,
+      "seated_shoulder_x_in_socket_m": -0.0005,
+      "cavity_shape": "rectangle"
+    },
+    {
+      "id": "socket_1",
+      "connector_type": "usb_a",
+      "T_asset_from_mating_frame": [
+        [
+          0.0,
+          -1.0,
+          0.0,
+          -0.01
+        ],
+        [
+          1.0,
+          0.0,
+          0.0,
+          -0.0175
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "clearance_per_side_m": 0.0005,
+      "cavity_depth_m": 0.013,
+      "seated_shoulder_x_in_socket_m": -0.0005,
+      "cavity_shape": "rectangle"
+    },
+    {
+      "id": "socket_2",
+      "connector_type": "usb_a",
+      "T_asset_from_mating_frame": [
+        [
+          0.0,
+          -1.0,
+          0.0,
+          0.01
+        ],
+        [
+          1.0,
+          0.0,
+          0.0,
+          -0.0175
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "clearance_per_side_m": 0.0005,
+      "cavity_depth_m": 0.013,
+      "seated_shoulder_x_in_socket_m": -0.0005,
+      "cavity_shape": "rectangle"
+    },
+    {
+      "id": "socket_3",
+      "connector_type": "usb_a",
+      "T_asset_from_mating_frame": [
+        [
+          0.0,
+          -1.0,
+          0.0,
+          0.03
+        ],
+        [
+          1.0,
+          0.0,
+          0.0,
+          -0.0175
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "clearance_per_side_m": 0.0005,
+      "cavity_depth_m": 0.013,
+      "seated_shoulder_x_in_socket_m": -0.0005,
+      "cavity_shape": "rectangle"
+    }
+  ],
+  "electrical_geometry": false
+}

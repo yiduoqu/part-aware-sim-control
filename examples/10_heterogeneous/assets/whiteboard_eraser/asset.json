@@ -1,0 +1,16 @@
+{
+  "name": "whiteboard_eraser",
+  "description": "110 x 48 mm eraser with a rigid rounded palm grip and a 10 mm compressible wiping pad.",
+  "units": "m",
+  "up_axis": "Z",
+  "construction": "Boolean union surface, TetGen volume, centroid part labels",
+  "rigid_groups": [
+    [
+      0,
+      1
+    ]
+  ],
+  "source_assets": [],
+  "behavior_validated": false,
+  "metadata": {}
+}

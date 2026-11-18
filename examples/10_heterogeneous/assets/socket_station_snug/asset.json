@@ -1,0 +1,52 @@
+{
+  "schema": "rigid-socket-v1",
+  "name": "socket_station_snug",
+  "units": "m",
+  "up_axis": "Z",
+  "description": "Round station plug rigid socket block with a simple clearance cavity. Snug: 1 mm per side, for simulated contact.",
+  "rigid_groups": [
+    [
+      0
+    ]
+  ],
+  "behavior_validated": false,
+  "collision_geometry": "physics/collision_mesh.obj",
+  "tetrahedral_volume": "physics/rigid_tets.npz",
+  "mesh_resolution": {
+    "vertices": 1011,
+    "tetrahedra": 2952,
+    "boundary_faces": 1932,
+    "boundary_edge_mm": {
+      "median": 1.6730398979103869,
+      "p95": 4.729220963605681,
+      "max": 5.999772313773162
+    },
+    "tet_volume_mm3": {
+      "min": 0.006800146315871817,
+      "median": 1.5525783502394361,
+      "p95": 12.740394491237318,
+      "max": 27.253886576444838
+    },
+    "mean_ratio": {
+      "min": 0.0808537940975418,
+      "p05": 0.21110739413852467,
+      "median": 0.47461562709154503
+    },
+    "nonpositive_tetrahedra": 0,
+    "added_tetrahedra": 59,
+    "refinement_batches": 2,
+    "maximum_boundary_edge_mm": 5.999772313773162
+  },
+  "collision_requirement": "Preserve concave cavities; a single convex hull is unsuitable.",
+  "metadata": {
+    "connector_type": "station",
+    "block_dimensions_mm": [
+      16.0,
+      28.0,
+      25.4
+    ],
+    "cavity_profile": "round",
+    "clearance_per_side_mm": 1.0,
+    "electrical_internals": false
+  }
+}

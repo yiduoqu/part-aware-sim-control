@@ -1,0 +1,39 @@
+{
+  "asset": "handled_fabric_bag",
+  "representation": "rigid_plus_cloth",
+  "static_validation_passed": true,
+  "cloth_vertices": 6081,
+  "cloth_triangles": 12000,
+  "cloth_components": 1,
+  "all_cloth_components_attached": true,
+  "rigid_cloth_sampled_penetrations": 0,
+  "cloth_panel_edge_crossings": 0,
+  "rigid_cloth_edge_crossings": null,
+  "visual_thickness_m": 0.0,
+  "cloth_boundary_edges": 160,
+  "min_triangle_area_m2": 2.262667769333657e-06,
+  "cloth_area_m2": 0.38932758901294195,
+  "cloth_mass_kg": 0.13626465615452968,
+  "attachment_count": 1761,
+  "free_cloth_vertices": 4320,
+  "rigid_bodies": [
+    {
+      "body_id": 1,
+      "watertight": true,
+      "components": 1,
+      "attached_vertices": 160,
+      "max_attachment_surface_distance_m": 4.3169076012830874e-08
+    },
+    {
+      "body_id": 2,
+      "watertight": true,
+      "components": 1,
+      "attached_vertices": 1601,
+      "max_attachment_surface_distance_m": 0.0005367435644646663
+    }
+  ],
+  "visual_binding_max_error_m": 0.0,
+  "glb_roundtrip_passed": true,
+  "simulation_run": false,
+  "loader_compatibility": "Documented rigid-cloth schema; scene adapter deferred. Volume-only tet loader is not applicable."
+}

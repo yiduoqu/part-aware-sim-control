@@ -1,0 +1,37 @@
+{
+  "asset": "rigid_pan",
+  "independent_validation_passed": true,
+  "watertight": true,
+  "connected_components": 1,
+  "rigid_body_count": 1,
+  "empty_bowl_probe_count": 480,
+  "empty_bowl_passed": true,
+  "flat_floor_ray_checks": 17,
+  "flat_floor_passed": true,
+  "glb_roundtrip_passed": true,
+  "visual_binding_max_error_m": 1.4890072841389212e-08,
+  "mesh_resolution": {
+    "vertices": 11482,
+    "tetrahedra": 34518,
+    "boundary_faces": 21906,
+    "boundary_edge_mm": {
+      "median": 3.6418962805662813,
+      "p95": 5.668541641753691,
+      "max": 5.99995844408276
+    },
+    "tet_volume_mm3": {
+      "min": 5.7057357036209335e-06,
+      "median": 7.247883041724872,
+      "p95": 14.119703868610163,
+      "max": 34.03604993702512
+    },
+    "mean_ratio": {
+      "min": 0.04168599481059286,
+      "p05": 0.4750669139347673,
+      "median": 0.7364432710761492
+    },
+    "nonpositive_tetrahedra": 0,
+    "face_connected_components": 1
+  },
+  "simulation_run": false
+}

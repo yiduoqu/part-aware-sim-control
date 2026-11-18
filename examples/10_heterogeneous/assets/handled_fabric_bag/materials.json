@@ -1,0 +1,54 @@
+{
+  "schema": "rigid-cloth-materials-v1",
+  "parts": [
+    {
+      "part_id": 0,
+      "name": "sewn polyester basket",
+      "physics": "cloth_membrane",
+      "material": "polyester",
+      "color_rgb": [
+        53,
+        130,
+        137
+      ]
+    },
+    {
+      "part_id": 1,
+      "name": "top frame and carry handle",
+      "physics": "rigid",
+      "material": "aluminium",
+      "color_rgb": [
+        177,
+        187,
+        194
+      ],
+      "density_kg_m3": 2700
+    },
+    {
+      "part_id": 2,
+      "name": "base board",
+      "physics": "rigid",
+      "material": "polypropylene",
+      "color_rgb": [
+        49,
+        58,
+        67
+      ],
+      "density_kg_m3": 950
+    }
+  ],
+  "cloth": {
+    "shell": "membrane",
+    "areal_density": 0.35,
+    "thickness": 0.0008,
+    "tri_ke": 15000.0,
+    "tri_ka": 15000.0,
+    "tri_kd": 0.02,
+    "edge_ke": 0.002,
+    "edge_kd": 0.0001,
+    "particle_radius": 0.0004,
+    "zero_rest_angle": false,
+    "friction": 0.5
+  },
+  "notes": "Engineering estimates; not measured or simulation-calibrated."
+}

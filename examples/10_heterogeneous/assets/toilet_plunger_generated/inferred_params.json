@@ -1,0 +1,53 @@
+{
+  "schema_version": "generated-heterogeneous-materials-v1",
+  "inferred_object_name": "toilet_plunger",
+  "num_parts": 3,
+  "predictions": [
+    {
+      "part_name": "wooden_handle",
+      "major_material_name": "wood",
+      "part_color_rgb": [
+        176,
+        123,
+        74
+      ],
+      "youngs_modulus_pa": 10000000000.0,
+      "poisson_ratio": 0.3,
+      "density_kg_m3": 650,
+      "friction_coefficient": 0.5,
+      "part_index": 0,
+      "volume_fill_mode": "solid_fill"
+    },
+    {
+      "part_name": "flexible_cup",
+      "major_material_name": "rubber",
+      "part_color_rgb": [
+        158,
+        49,
+        43
+      ],
+      "youngs_modulus_pa": 5000000.0,
+      "poisson_ratio": 0.49,
+      "density_kg_m3": 1100,
+      "friction_coefficient": 0.9,
+      "part_index": 1,
+      "volume_fill_mode": "solid_fill"
+    },
+    {
+      "part_name": "sealing_lip",
+      "major_material_name": "rubber",
+      "part_color_rgb": [
+        114,
+        31,
+        32
+      ],
+      "youngs_modulus_pa": 5000000.0,
+      "poisson_ratio": 0.49,
+      "density_kg_m3": 1100,
+      "friction_coefficient": 0.9,
+      "part_index": 2,
+      "volume_fill_mode": "solid_fill"
+    }
+  ],
+  "notes": "Engineering starting estimates, not measured or simulation-calibrated. Rigid grouping is in asset.json."
+}
