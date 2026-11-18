@@ -1,0 +1,26 @@
+{
+  "schema": "rigid-socket-v1",
+  "name": "socket_usb_c_loose",
+  "units": "m",
+  "up_axis": "Z",
+  "description": "USB-C rigid socket block with a simple clearance cavity. Loose: 4 mm per side, for simulated contact.",
+  "rigid_groups": [
+    [
+      0
+    ]
+  ],
+  "behavior_validated": false,
+  "collision_geometry": "physics/collision_mesh.obj",
+  "collision_requirement": "Preserve concave cavities; a single convex hull is unsuitable.",
+  "metadata": {
+    "connector_type": "usb_c",
+    "block_dimensions_mm": [
+      13,
+      28,
+      24
+    ],
+    "cavity_profile": "rectangle",
+    "clearance_per_side_mm": 4.0,
+    "electrical_internals": false
+  }
+}
