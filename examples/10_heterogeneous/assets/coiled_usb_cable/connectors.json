@@ -1,0 +1,85 @@
+{
+  "schema": "mechanical-mating-frames-v1",
+  "units": "m",
+  "convention": "+X points from male shoulder into socket; Y/Z define profile orientation",
+  "male_ends": [
+    {
+      "id": "male_0",
+      "connector_type": "usb_a",
+      "rigid_parts": [
+        1,
+        2
+      ],
+      "T_asset_from_mating_frame": [
+        [
+          -1.0,
+          0.0,
+          0.0,
+          -0.0795
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.012
+        ],
+        [
+          0.0,
+          0.0,
+          -1.0,
+          -0.02
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "tip_length_m": 0.012,
+      "canonical_geometry_sha256": "f10cde79891f3c6c6380eac634f22fd69dd3537b30550511e012701d640fcd76",
+      "matching_fixture": "../socket_usb_a",
+      "seated_shoulder_x_in_socket_m": -0.0005
+    },
+    {
+      "id": "male_1",
+      "connector_type": "usb_c",
+      "rigid_parts": [
+        3,
+        4
+      ],
+      "T_asset_from_mating_frame": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.1427
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.012
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.02
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "tip_length_m": 0.008,
+      "canonical_geometry_sha256": "ea0a41af422bf7270eff6b25305092c021b9d7e2c0b98e2b31dcba5c98d6fafe",
+      "matching_fixture": "../socket_usb_c",
+      "seated_shoulder_x_in_socket_m": -0.0005
+    }
+  ],
+  "female_ports": [],
+  "electrical_geometry": false
+}

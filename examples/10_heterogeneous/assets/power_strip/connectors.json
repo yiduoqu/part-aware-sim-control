@@ -1,0 +1,150 @@
+{
+  "schema": "mechanical-mating-frames-v1",
+  "units": "m",
+  "convention": "+X points from male shoulder into socket; Y/Z define profile orientation",
+  "male_ends": [
+    {
+      "id": "male_0",
+      "connector_type": "mains",
+      "rigid_parts": [
+        2,
+        3
+      ],
+      "T_asset_from_mating_frame": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.6505
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "tip_length_m": 0.016,
+      "canonical_geometry_sha256": "2917c63b029a6ce743d076713540800744a3db627745ef5dfef9158569194277",
+      "matching_fixture": "../socket_mains",
+      "seated_shoulder_x_in_socket_m": -0.0005
+    }
+  ],
+  "female_ports": [
+    {
+      "id": "socket_0",
+      "connector_type": "mains",
+      "T_asset_from_mating_frame": [
+        [
+          0.0,
+          0.0,
+          1.0,
+          -0.065
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          -1.0,
+          0.0,
+          0.0,
+          0.014
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "clearance_per_side_m": 0.0005,
+      "cavity_depth_m": 0.017,
+      "seated_shoulder_x_in_socket_m": -0.0005,
+      "cavity_shape": "two rectangular slots"
+    },
+    {
+      "id": "socket_1",
+      "connector_type": "mains",
+      "T_asset_from_mating_frame": [
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          -1.0,
+          0.0,
+          0.0,
+          0.014
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "clearance_per_side_m": 0.0005,
+      "cavity_depth_m": 0.017,
+      "seated_shoulder_x_in_socket_m": -0.0005,
+      "cavity_shape": "two rectangular slots"
+    },
+    {
+      "id": "socket_2",
+      "connector_type": "mains",
+      "T_asset_from_mating_frame": [
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.065
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          -1.0,
+          0.0,
+          0.0,
+          0.014
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "clearance_per_side_m": 0.0005,
+      "cavity_depth_m": 0.017,
+      "seated_shoulder_x_in_socket_m": -0.0005,
+      "cavity_shape": "two rectangular slots"
+    }
+  ],
+  "electrical_geometry": false
+}
