@@ -310,6 +310,7 @@ def arrangement(
     feedback_smoothing: float = 1.0,
     feedback_clamp: float = 0.0,
     surface_contact: bool = False,
+    rest_exclusion: float = 0.006,
 ) -> rss.ArrangementSpec:
     """The scenes' physics: the toy on VBD, and the arm on MuJoCo unless ``claw == "claw"``.
 
@@ -318,6 +319,7 @@ def arrangement(
     grip. Sticky matching is the scene's and the coupler forwards it.
     ``feedback_smoothing`` and ``feedback_clamp`` are the coupler's slide-feedback options;
     ``surface_contact`` adds soft contacts over the whole surface (edges and faces), not only particles.
+    ``rest_exclusion`` is the self-contact rest-shape exclusion radius [m].
     """
     common = {
         "particle_enable_self_contact": self_contact,
@@ -329,7 +331,7 @@ def arrangement(
         # The plush's own surface is within the contact margin at rest, and the
         # grasp squeezes the 11 mm loop by 6 mm; exclude pairs that are that
         # close in the rest shape, or the pinch folds the loop into itself.
-        "particle_rest_shape_contact_exclusion_radius": 0.006,
+        "particle_rest_shape_contact_exclusion_radius": rest_exclusion,
         "particle_vertex_contact_buffer_size": 32,
         "particle_edge_contact_buffer_size": 64,
         # The handoff's, which are Newton's defaults.
