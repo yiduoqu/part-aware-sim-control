@@ -1,0 +1,37 @@
+{
+  "name": "corded_soldering_iron",
+  "description": "Corded soldering iron: original reference-informed rigid/deformable geometry.",
+  "units": "m",
+  "up_axis": "Z",
+  "construction": "Boolean union surface, TetGen volume, centroid part labels",
+  "rigid_groups": [
+    [
+      1,
+      2
+    ],
+    [
+      3,
+      4
+    ]
+  ],
+  "source_assets": [],
+  "behavior_validated": false,
+  "metadata": {
+    "reference_url": "https://www.weller-tools.com/sites/default/files/products/documents/WEL_WSP80_Manual.pdf",
+    "endpoint_types": [
+      "station"
+    ],
+    "independent_rigid_ends": true,
+    "cable_diameters_mm": [
+      5.0
+    ],
+    "override_levers": [
+      "deformable part 0 Young modulus",
+      "part 0 damping during later integration",
+      "each rigid end mass via density"
+    ],
+    "material_tuning": "Uncalibrated; no simulation performed",
+    "iron_length_mm": 188,
+    "simplifications": "Weller pencil iron silhouette, finger stop, metal barrel and station lead; estimated dimensions, shortened lead, generic solid station connector without pins. Grip coating homogenized into a rigid handle; no electrical or thermal model."
+  }
+}

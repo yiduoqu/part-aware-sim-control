@@ -1,0 +1,74 @@
+{
+  "schema": "rigid-cloth-asset-v2",
+  "name": "buckled_strap",
+  "description": "35 mm-wide, 2.5 mm-thick woven strap loop with an open-slot metal buckle and deformable webbing.",
+  "representation": "rigid_meshes_plus_cloth_mid_surface",
+  "units": "m",
+  "up_axis": "Z",
+  "deformable_parts": [
+    0
+  ],
+  "rigid_groups": [
+    [
+      1
+    ]
+  ],
+  "rigid_bodies": [
+    {
+      "body_id": 1,
+      "part_id": 1,
+      "mesh": "physics/rigid_1.obj",
+      "tetrahedral_volume": "physics/rigid_1_tets.npz",
+      "mesh_resolution": {
+        "vertices": 1009,
+        "tetrahedra": 2695,
+        "boundary_faces": 1984,
+        "boundary_edge_mm": {
+          "median": 1.929036249011407,
+          "p95": 4.889801248517163,
+          "max": 6.0
+        },
+        "tet_volume_mm3": {
+          "min": 0.0067993480672080215,
+          "median": 0.14484374999999883,
+          "p95": 9.374999999999998,
+          "max": 17.8
+        },
+        "mean_ratio": {
+          "min": 0.07565102322538195,
+          "p05": 0.14782865710874363,
+          "median": 0.41246153066475394
+        },
+        "nonpositive_tetrahedra": 0,
+        "added_tetrahedra": 40,
+        "refinement_batches": 2,
+        "maximum_boundary_edge_mm": 6.0
+      },
+      "rest_position_m": [
+        0,
+        0,
+        0
+      ],
+      "rest_quaternion_xyzw": [
+        0,
+        0,
+        0,
+        1
+      ]
+    }
+  ],
+  "cloth_mesh": "physics/cloth.obj",
+  "attachments": "physics/attachments.npz",
+  "integration_status": "Mesh asset only. A scene adapter must load the cloth and apply attachment seams.",
+  "visual_cloth_thickness_m": 0.0025,
+  "visual_binding": "position plus signed deformed-normal offset",
+  "behavior_validated": false,
+  "metadata": {
+    "reference_url": "https://seatosummit.com/products/accessory-straps-hook-release",
+    "webbing_width_mm": 35,
+    "webbing_thickness_mm": 2.5,
+    "webbing_centerline_length_mm": 621.675711707823,
+    "rest_state": "fastened loop; both ends attached to the buckle; no active latch",
+    "simplifications": "Generic two-slot ladder buckle inspired by accessory-strap hardware; wider and thicker than the cited 20 mm strap. Fixed fastened ends, no sliding adjustment or loose tail. Physical membrane has thickness/collision radius and areal mass; a closed 2.5 mm render skin follows its normals."
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "name": "gap_sponge_wand",
+  "description": "Reference-informed dishwand with a continuous contoured rigid grip/neck, a small inset backing, and a rounded tapered 65 x 16 x 12 mm gap sponge.",
+  "units": "m",
+  "up_axis": "Z",
+  "construction": "Boolean union surface, TetGen volume, centroid part labels",
+  "rigid_groups": [
+    [
+      0,
+      1
+    ]
+  ],
+  "source_assets": [],
+  "behavior_validated": false,
+  "metadata": {
+    "head_dimensions_mm": [
+      65.0,
+      16.0,
+      12.0
+    ],
+    "task": "clean into a gap",
+    "design_revision": 2,
+    "backing_dimensions_mm": [
+      30,
+      8,
+      3
+    ],
+    "tetgen_minratio": 4.0,
+    "backing_center_mm": [
+      21,
+      0,
+      12.5
+    ],
+    "handle_docking_x_mm": 12,
+    "backing_rectangular_footprint_fraction": 0.23076923076923078,
+    "reference_urls": [
+      "https://www.oxo.com/shop/cleaning-organization/kitchen/sponge-brushes/oxo-gg-soap-dispensing-dish-sponge.html",
+      "https://www.scotch-brite.com/3M/en_US/p/d/b5005609038/"
+    ],
+    "design_notes": "Original geometry inspired by product silhouettes, not a dimensionally exact replica. No soap dispensing model."
+  }
+}

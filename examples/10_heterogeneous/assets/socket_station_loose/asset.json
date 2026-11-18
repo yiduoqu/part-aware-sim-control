@@ -1,0 +1,52 @@
+{
+  "schema": "rigid-socket-v1",
+  "name": "socket_station_loose",
+  "units": "m",
+  "up_axis": "Z",
+  "description": "Round station plug rigid socket block with a simple clearance cavity. Loose: 4 mm per side, for simulated contact.",
+  "rigid_groups": [
+    [
+      0
+    ]
+  ],
+  "behavior_validated": false,
+  "collision_geometry": "physics/collision_mesh.obj",
+  "tetrahedral_volume": "physics/rigid_tets.npz",
+  "mesh_resolution": {
+    "vertices": 1142,
+    "tetrahedra": 3330,
+    "boundary_faces": 2192,
+    "boundary_edge_mm": {
+      "median": 1.8375000000000012,
+      "p95": 4.968938745010047,
+      "max": 5.950502450213764
+    },
+    "tet_volume_mm3": {
+      "min": 0.006800146315871763,
+      "median": 1.5696843303706507,
+      "p95": 12.989723421761408,
+      "max": 30.074684803979263
+    },
+    "mean_ratio": {
+      "min": 0.07689500271761297,
+      "p05": 0.21110739413852417,
+      "median": 0.5033724924890479
+    },
+    "nonpositive_tetrahedra": 0,
+    "added_tetrahedra": 51,
+    "refinement_batches": 2,
+    "maximum_boundary_edge_mm": 5.950502450213764
+  },
+  "collision_requirement": "Preserve concave cavities; a single convex hull is unsuitable.",
+  "metadata": {
+    "connector_type": "station",
+    "block_dimensions_mm": [
+      16.0,
+      31.4,
+      31.4
+    ],
+    "cavity_profile": "round",
+    "clearance_per_side_mm": 4.0,
+    "electrical_internals": false
+  }
+}

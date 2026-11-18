@@ -1,0 +1,20 @@
+{
+  "schema": "rigid-cloth-attachments-v1",
+  "mode": "fixed_material_attachment",
+  "coordinates": "body local; all body rest poses identity in asset frame",
+  "seams": [
+    {
+      "seam_id": 0,
+      "name": "sewn_end",
+      "body_id": 1,
+      "vertex_count": 11
+    },
+    {
+      "seam_id": 1,
+      "name": "fastened_return_end",
+      "body_id": 1,
+      "vertex_count": 11
+    }
+  ],
+  "notes": "Permanent seam/fastened rest state. No active buckle latch or fabric detachment behavior implemented."
+}

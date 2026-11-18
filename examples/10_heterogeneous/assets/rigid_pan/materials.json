@@ -1,0 +1,30 @@
+{
+  "parts": [
+    {
+      "part_id": 0,
+      "name": "pan_and_handle",
+      "physics": "rigid",
+      "material": "coated aluminium proxy",
+      "density_kg_m3": 2700,
+      "friction_coefficient": 0.5
+    }
+  ],
+  "appearance_colors_rgb": [
+    [
+      81,
+      89,
+      98
+    ],
+    [
+      157,
+      166,
+      173
+    ],
+    [
+      46,
+      53,
+      62
+    ]
+  ],
+  "notes": "One rigid body. Appearance colors do not define separate physical parts. Material values are estimates."
+}

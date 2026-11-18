@@ -1,0 +1,52 @@
+{
+  "schema": "rigid-socket-v1",
+  "name": "socket_mini_b",
+  "units": "m",
+  "up_axis": "Z",
+  "description": "Mini-USB-B rigid socket block with a simple clearance cavity.",
+  "rigid_groups": [
+    [
+      0
+    ]
+  ],
+  "behavior_validated": false,
+  "collision_geometry": "physics/collision_mesh.obj",
+  "tetrahedral_volume": "physics/rigid_tets.npz",
+  "mesh_resolution": {
+    "vertices": 804,
+    "tetrahedra": 2309,
+    "boundary_faces": 1506,
+    "boundary_edge_mm": {
+      "median": 1.625,
+      "p95": 4.94501011121312,
+      "max": 5.970634872653701
+    },
+    "tet_volume_mm3": {
+      "min": 0.006800146315871817,
+      "median": 0.22802769741896323,
+      "p95": 14.140689590889222,
+      "max": 35.54455770417531
+    },
+    "mean_ratio": {
+      "min": 0.07565652062477297,
+      "p05": 0.18758492024344933,
+      "median": 0.5024811957439997
+    },
+    "nonpositive_tetrahedra": 0,
+    "added_tetrahedra": 12,
+    "refinement_batches": 1,
+    "maximum_boundary_edge_mm": 5.970634872653701
+  },
+  "collision_requirement": "Preserve concave cavities; a single convex hull is unsuitable.",
+  "metadata": {
+    "connector_type": "mini_b",
+    "block_dimensions_mm": [
+      11.5,
+      28.0,
+      24.0
+    ],
+    "cavity_profile": "rectangle",
+    "clearance_per_side_mm": 0.5,
+    "electrical_internals": false
+  }
+}

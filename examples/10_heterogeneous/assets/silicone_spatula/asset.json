@@ -1,0 +1,23 @@
+{
+  "name": "silicone_spatula",
+  "description": "NVIDIA wooden-handle silicone spatula, approximately 295 mm long. Source attachment openings are capped and unioned; the blade remains flexible.",
+  "units": "m",
+  "up_axis": "Z",
+  "construction": "Boolean union surface, TetGen volume, centroid part labels",
+  "rigid_groups": [
+    [
+      0
+    ]
+  ],
+  "source_assets": [
+    "utensil_spatula_silicone_a01"
+  ],
+  "behavior_validated": false,
+  "metadata": {
+    "joint_plane_mm": 65,
+    "task": "scrape a pan or transfer soft food",
+    "source_seam_weld_tolerance_mm": 0.02,
+    "contact_surface_edge_limit_mm": 6.0,
+    "source_repairs": "convex envelopes of source handle and silicone head; union at joint; restore hanging eyelet"
+  }
+}
