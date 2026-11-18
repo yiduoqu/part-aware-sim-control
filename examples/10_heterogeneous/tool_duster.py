@@ -23,8 +23,8 @@ import numpy as np
 import tool_scene
 import tool_sponge_wipe as wipe
 
-DUSTER = tool_scene._tool("cloth_duster_fem", 5.0e5, 200.0, handle=1, pad=-1, pitch_deg=-8.0)
-"""Cloth E and damping as in the q2-cloth-duster hold-and-sweep check; lying, it rests on its butt and two panels."""
+DUSTER = tool_scene._tool("cloth_duster_fem", 1.0e5, 200.0, handle=1, pad=-1, pitch_deg=-8.0)
+"""Soft cloth (E 1e5, softer than the asset's 5e5); lying, it rests on its butt and two panels."""
 # Rolled half a panel spacing about its axis: balanced on one panel's edge, the head topples sideways and flattens.
 DUSTER = dataclasses.replace(
     DUSTER, quat=tuple(arm_gripper.quat_multiply(DUSTER.quat, arm_gripper.axis_angle_quat((1.0, 0.0, 0.0), np.pi / 8)))
