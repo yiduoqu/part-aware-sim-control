@@ -1,0 +1,18 @@
+{
+  "name": "toilet_plunger",
+  "description": "110 mm diameter hollow rubber cup with a 20 mm wooden shaft; total height 377 mm. Mouth remains open.",
+  "units": "m",
+  "up_axis": "Z",
+  "construction": "Boolean union surface, TetGen volume, centroid part labels",
+  "rigid_groups": [
+    [
+      0
+    ]
+  ],
+  "source_assets": [],
+  "behavior_validated": false,
+  "metadata": {
+    "cavity": "open underside, not filled",
+    "pressure_model": "none; future contact test does not imply suction"
+  }
+}

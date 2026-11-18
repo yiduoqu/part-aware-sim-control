@@ -1,0 +1,120 @@
+{
+  "schema": "rigid-cloth-asset-v1",
+  "name": "handled_fabric_bag",
+  "description": "Open fabric shopping basket with rigid aluminium rim/handle, separate base board and deformable sewn sides.",
+  "representation": "rigid_meshes_plus_cloth_mid_surface",
+  "units": "m",
+  "up_axis": "Z",
+  "deformable_parts": [
+    0
+  ],
+  "rigid_groups": [
+    [
+      1
+    ],
+    [
+      2
+    ]
+  ],
+  "rigid_bodies": [
+    {
+      "body_id": 1,
+      "part_id": 1,
+      "mesh": "physics/rigid_1.obj",
+      "tetrahedral_volume": "physics/rigid_1_tets.npz",
+      "mesh_resolution": {
+        "vertices": 10052,
+        "tetrahedra": 31048,
+        "boundary_faces": 17932,
+        "boundary_edge_mm": {
+          "median": 3.4655755472135166,
+          "p95": 5.296245109509179,
+          "max": 5.927029406034704
+        },
+        "tet_volume_mm3": {
+          "min": 0.00018521219726207508,
+          "median": 7.840810720863206,
+          "p95": 14.805975204220333,
+          "max": 40.66895528401743
+        },
+        "mean_ratio": {
+          "min": 0.059677016352195265,
+          "p05": 0.4458886224975373,
+          "median": 0.5964288235403006
+        },
+        "nonpositive_tetrahedra": 0,
+        "added_tetrahedra": 672,
+        "refinement_batches": 2,
+        "maximum_boundary_edge_mm": 5.927029406034704
+      },
+      "rest_position_m": [
+        0,
+        0,
+        0
+      ],
+      "rest_quaternion_xyzw": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "body_id": 2,
+      "part_id": 2,
+      "mesh": "physics/rigid_2.obj",
+      "tetrahedral_volume": "physics/rigid_2_tets.npz",
+      "mesh_resolution": {
+        "vertices": 15049,
+        "tetrahedra": 50946,
+        "boundary_faces": 28434,
+        "boundary_edge_mm": {
+          "median": 3.55141241155042,
+          "p95": 5.1700167214386905,
+          "max": 5.997842903656451
+        },
+        "tet_volume_mm3": {
+          "min": 0.02544972854003887,
+          "median": 8.972122305365922,
+          "p95": 15.59450953788228,
+          "max": 29.92097309344663
+        },
+        "mean_ratio": {
+          "min": 0.059678694471027506,
+          "p05": 0.28400366740994104,
+          "median": 0.6814799437951581
+        },
+        "nonpositive_tetrahedra": 0,
+        "added_tetrahedra": 296,
+        "refinement_batches": 2,
+        "maximum_boundary_edge_mm": 5.997842903656451
+      },
+      "rest_position_m": [
+        0,
+        0,
+        0
+      ],
+      "rest_quaternion_xyzw": [
+        0,
+        0,
+        0,
+        1
+      ]
+    }
+  ],
+  "cloth_mesh": "physics/cloth.obj",
+  "attachments": "physics/attachments.npz",
+  "integration_status": "Mesh asset only. A scene adapter must load the cloth and apply attachment seams.",
+  "visual_cloth_thickness_m": 0.0,
+  "visual_binding": "direct indexed position",
+  "behavior_validated": false,
+  "metadata": {
+    "reference_url": "https://www.reisenthel.com/en/products/carrybag-frame-blackblack-bk7040",
+    "mouth_outer_mm": [
+      480,
+      280
+    ],
+    "body_height_mm": 260,
+    "simplifications": "Carrybag-inspired proportions; generic teal fabric, fixed raised handle, solid simplified frame sections, no zipper/feet. Manufacturer height is not used as an exact handle-height dimension. Rounded fabric rests are modeled, not simulated drape."
+  }
+}

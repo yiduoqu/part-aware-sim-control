@@ -1,0 +1,3566 @@
+{
+  "schema_version": 1,
+  "verified_on": "2026-11-17",
+  "source_repository": "https://github.com/ericchen321/HAG4R-MPC",
+  "source_commit": "3624989aea2925f26166c33f1d09b109ed63aa80",
+  "loader_commit": "36112215d9c17b2a0b3c80526fb8fba7f41c8d39",
+  "scope": "Static source, mesh, material, texture and rest-pose binding checks. No Newton stepping, contact, task-success or real-world validation was performed.",
+  "objects": [
+    {
+      "id": "clawhauser",
+      "path": "clawhauser",
+      "source_path": "assets/objects/clawhauser",
+      "source_url": "https://github.com/ericchen321/HAG4R-MPC/tree/3624989aea2925f26166c33f1d09b109ed63aa80/assets/objects/clawhauser",
+      "vertices": 1840,
+      "tetrahedra": 6850,
+      "visual_vertices": 1685,
+      "visual_faces": 2356,
+      "bounds_m": [
+        [
+          -0.053833119571208954,
+          -0.11047035455703735,
+          -0.036685723811388016
+        ],
+        [
+          0.05609363317489624,
+          0.11025557845223673,
+          0.03586788848042488
+        ]
+      ],
+      "extent_m": [
+        0.1099267527461052,
+        0.22072593300927407,
+        0.0725536122918129
+      ],
+      "source_mass_kg": 0.12506550861549387,
+      "source_stiffness_ratio": 10.0,
+      "parts": [
+        {
+          "id": 0,
+          "name": "stuffed_plush_tail",
+          "tetrahedra": 2335,
+          "youngs_modulus_pa": 500000,
+          "poisson_ratio": 0.45,
+          "density_kg_m3": 300
+        },
+        {
+          "id": 1,
+          "name": "stuffed_plush_character_body",
+          "tetrahedra": 2713,
+          "youngs_modulus_pa": 500000,
+          "poisson_ratio": 0.45,
+          "density_kg_m3": 300
+        },
+        {
+          "id": 2,
+          "name": "flexible_hanging_loop_and_clasp",
+          "tetrahedra": 1802,
+          "youngs_modulus_pa": 5000000,
+          "poisson_ratio": 0.49,
+          "density_kg_m3": 1100
+        }
+      ],
+      "checks": {
+        "source_files_unchanged": true,
+        "labelled_tet_loader_passed": true,
+        "no_duplicate_tetrahedra": true,
+        "material_json_matches_arrays": true,
+        "appearance_manifest_hashes_passed": true,
+        "images_decode": true,
+        "rest_binding_max_error_m": 3.8680731611876166e-09,
+        "glb_binding_max_error_m": 0.0
+      },
+      "files": {
+        "final_mesh.mesh": {
+          "sha256": "df3d1505d96d36fbfa76291e7ab94269a30500ba5e4b87516d0bf8f57f0c6458",
+          "size_bytes": 259591
+        },
+        "heterogeneous_params.npz": {
+          "sha256": "7cfc8ca3cc7c08d261aa90b08832230801fec1ac62848d0e9239d9e2f318e8c6",
+          "size_bytes": 221480
+        },
+        "inferred_params.json": {
+          "sha256": "45aacd698f2b38a6fd8bf13b46cc9c33497fc90c6c1bdf088ed12d915ec3d992",
+          "size_bytes": 8169
+        },
+        "volume_topology.json": {
+          "sha256": "d27cbaffa4c561c0536535e30b418954c406bbb6be14a43d74594e597692df38",
+          "size_bytes": 16383
+        },
+        "metric_mesh_scaling.json": {
+          "sha256": "b352e97f8852971381df511fc497409eae218f14db7bc14d9eaeb7602a6532c4",
+          "size_bytes": 1674
+        },
+        "final_export_manifest.json": {
+          "sha256": "6f24cc15d06840198532536df776e284785b446d7ea62b3b37bcd2dc69fc88a6",
+          "size_bytes": 27684
+        },
+        "appearance/albedo.png": {
+          "sha256": "8f466236b9d885d1c27266f66b0b417caaeeec0a360ae8078c4127f807718fc5",
+          "size_bytes": 545518
+        },
+        "appearance/post_mesh_texture_request.json": {
+          "sha256": "c0e35c2fd33305ec7ca97dcb435e915478046889bb5d0102095b39e5b693f0e9",
+          "size_bytes": 1147
+        },
+        "appearance/qa/confidence.png": {
+          "sha256": "0bfdc2b60e48055ce7435e2ceffabcedff7fa3a8f386b83b43f40d40fc7653cd",
+          "size_bytes": 724643
+        },
+        "appearance/qa/fill_provenance.png": {
+          "sha256": "d33253dbdca898bc2bdb3c9d569118bc15b47ce0ac90d2df308aff5dc59a4d42",
+          "size_bytes": 57980
+        },
+        "appearance/qa/observed_coverage.png": {
+          "sha256": "76e1df26d639fb13f1c113cfc64b8c47319c99e4bc517c8dd83e131a2b0036ec",
+          "size_bytes": 36022
+        },
+        "appearance/qa/report.json": {
+          "sha256": "3c10cd2ab4677a493924f1c3d6dba0dcb1668903c77478ad1d8e8c5341edb9b0",
+          "size_bytes": 2582
+        },
+        "appearance/qa/rest_pose_render.png": {
+          "sha256": "bd55adce6da40a0078856d2a8a9bec340233a94ab06531c3a44388d062824270",
+          "size_bytes": 63911
+        },
+        "appearance/visual_manifest.json": {
+          "sha256": "9f3ac483c2156805a8c95adc6ea85ff291fdf8e8b73e4825230ddfd1a1a86db3",
+          "size_bytes": 6891
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "284a63756a7609f737997ee4b863a6cd7975dfd87e87db3f16ecccbe8842c180",
+          "size_bytes": 608812
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "4b015d1141794211e4e2c6e2b39fadef6762a73ffe2d76b921e47d5676f3d6c4",
+          "size_bytes": 53805
+        }
+      },
+      "import_status": "existing",
+      "suggested_task": "Pick/place and hanging",
+      "limitations": "Existing scenes override source material/contact settings.",
+      "newton_task_run_during_import": false,
+      "source_license": "No separate asset license declared in the source snapshot; retain source attribution. The target software license is not asserted to cover this data.",
+      "readme": "SOURCE.md"
+    },
+    {
+      "id": "usb_hub",
+      "path": "usb_hub",
+      "source_path": "assets/objects/usb_hub_revised",
+      "source_url": "https://github.com/ericchen321/HAG4R-MPC/tree/3624989aea2925f26166c33f1d09b109ed63aa80/assets/objects/usb_hub_revised",
+      "vertices": 3022,
+      "tetrahedra": 9652,
+      "visual_vertices": 3985,
+      "visual_faces": 5282,
+      "bounds_m": [
+        [
+          -0.12556388974189758,
+          -0.010108010843396187,
+          -0.09305117271806072
+        ],
+        [
+          0.12539710593658016,
+          0.009355701506137848,
+          0.08859949207814807
+        ]
+      ],
+      "extent_m": [
+        0.25096099567847774,
+        0.019463712349534035,
+        0.18165066479620878
+      ],
+      "source_mass_kg": 0.23092463487526127,
+      "source_stiffness_ratio": 40000.0,
+      "parts": [
+        {
+          "id": 0,
+          "name": "pale_mint_usb_hub_housing",
+          "tetrahedra": 2480,
+          "youngs_modulus_pa": 2200000000,
+          "poisson_ratio": 0.37,
+          "density_kg_m3": 1100
+        },
+        {
+          "id": 1,
+          "name": "black_flexible_usb_cable",
+          "tetrahedra": 1968,
+          "youngs_modulus_pa": 5000000,
+          "poisson_ratio": 0.49,
+          "density_kg_m3": 1100
+        },
+        {
+          "id": 2,
+          "name": "silver_inline_connector",
+          "tetrahedra": 1754,
+          "youngs_modulus_pa": 200000000000,
+          "poisson_ratio": 0.3,
+          "density_kg_m3": 7850
+        },
+        {
+          "id": 3,
+          "name": "distal_usb_a_metal_terminal",
+          "tetrahedra": 3450,
+          "youngs_modulus_pa": 200000000000,
+          "poisson_ratio": 0.3,
+          "density_kg_m3": 7850
+        }
+      ],
+      "checks": {
+        "source_files_unchanged": true,
+        "labelled_tet_loader_passed": true,
+        "no_duplicate_tetrahedra": true,
+        "material_json_matches_arrays": true,
+        "appearance_manifest_hashes_passed": true,
+        "images_decode": true,
+        "rest_binding_max_error_m": 7.450580596923828e-09,
+        "glb_binding_max_error_m": 0.0
+      },
+      "files": {
+        "final_mesh.mesh": {
+          "sha256": "12614f42f0da9bb66ef34405e04c555d0b29bfb1540bb828fb54606a5676240c",
+          "size_bytes": 400650
+        },
+        "heterogeneous_params.npz": {
+          "sha256": "673d52126a6ee06ca0488e48a7a31cdf103da97dfa2542dddede5c4c13a7403d",
+          "size_bytes": 311208
+        },
+        "inferred_params.json": {
+          "sha256": "d1efc934ca5514b35eba3b8b01d080e9fb9bfc28a621513c19260631ad27b7db",
+          "size_bytes": 11044
+        },
+        "metric_mesh_scaling.json": {
+          "sha256": "b45d5591aa928995701d6e614accce367dc044e0dea353794be4bb8b769379a2",
+          "size_bytes": 1768
+        },
+        "volume_topology.json": {
+          "sha256": "25f96377e1d2a7b537deb5911ab36012745eb267e3a1a2e39d7dffb8f1c22866",
+          "size_bytes": 20403
+        },
+        "final_export_manifest.json": {
+          "sha256": "6bfc2ae2c6ce458a40b597da2d5dd05826aee67372553705179416da3b33714d",
+          "size_bytes": 3318
+        },
+        "appearance/albedo.png": {
+          "sha256": "d043ab69f8951de41cb94f23ffea5e5ff1a2b68f9cf173690b16aedea2a0c5ad",
+          "size_bytes": 587013
+        },
+        "appearance/post_mesh_texture_request.json": {
+          "sha256": "ef26932ba2fbb27d663513754c884dd3418353d85eddc429b936d00345306516",
+          "size_bytes": 1604
+        },
+        "appearance/qa/confidence.png": {
+          "sha256": "7fece7848ddb7ac9c912feadbf199c195bf6bc4a9b73c57e61aba849cefe69dd",
+          "size_bytes": 409651
+        },
+        "appearance/qa/fill_provenance.png": {
+          "sha256": "aed84e43e44f26f8c4ebeede108a8e16cd6e4f63132b7d185fc3d20a944970dc",
+          "size_bytes": 74411
+        },
+        "appearance/qa/observed_coverage.png": {
+          "sha256": "7b8586349a4ff1ad76b5f600f92831feced2c847908b77df467b9b76f2a2891f",
+          "size_bytes": 39011
+        },
+        "appearance/qa/report.json": {
+          "sha256": "b48d4065e1e6324da9e2b8b0a08650a6b3155d8ef80dbf7cafe78cd634c4494b",
+          "size_bytes": 3024
+        },
+        "appearance/qa/rest_pose_render.png": {
+          "sha256": "c76953d50b589f50eb778177f90844559a02c7042d2d7a1488f0b471f76b3f08",
+          "size_bytes": 37584
+        },
+        "appearance/visual_manifest.json": {
+          "sha256": "5c15ab0dff1614a57617348f897e497f0f73da6c489dd5827ef7c1fff977c978",
+          "size_bytes": 7732
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "4c8743cda4a6b11454ec58d941157ca666d14cb94a5945f6fa17c4c1e9740936",
+          "size_bytes": 731424
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "2c7d0347211dc73808d096d01e058bda34a06384628d37f5786263620cdc4c3f",
+          "size_bytes": 123451
+        }
+      },
+      "import_status": "existing",
+      "suggested_task": "Cable placement, hanging and retrieval",
+      "limitations": "Source E ratio is 40000; existing scene uses rigid groups and tuned cable/mass settings.",
+      "newton_task_run_during_import": false,
+      "source_license": "No separate asset license declared in the source snapshot; retain source attribution. The target software license is not asserted to cover this data.",
+      "readme": "SOURCE.md"
+    },
+    {
+      "id": "kitchen_tongs",
+      "path": "kitchen_tongs",
+      "source_path": "assets/objects/kitchen_tongs",
+      "source_url": "https://github.com/ericchen321/HAG4R-MPC/tree/3624989aea2925f26166c33f1d09b109ed63aa80/assets/objects/kitchen_tongs",
+      "vertices": 967,
+      "tetrahedra": 2727,
+      "visual_vertices": 1167,
+      "visual_faces": 1692,
+      "bounds_m": [
+        [
+          -0.029770180583000183,
+          -0.022478079423308372,
+          -0.14518095552921295
+        ],
+        [
+          0.02795419469475746,
+          0.01891549676656723,
+          0.14314867556095123
+        ]
+      ],
+      "extent_m": [
+        0.057724375277757645,
+        0.0413935761898756,
+        0.2883296310901642
+      ],
+      "source_mass_kg": 0.1587423566730437,
+      "source_stiffness_ratio": 1.0,
+      "parts": [
+        {
+          "id": 0,
+          "name": "continuous_flexible_tong_body",
+          "tetrahedra": 2696,
+          "youngs_modulus_pa": 5000000,
+          "poisson_ratio": 0.49,
+          "density_kg_m3": 1100
+        },
+        {
+          "id": 1,
+          "name": "embedded_grip_detail_patch",
+          "tetrahedra": 31,
+          "youngs_modulus_pa": 5000000,
+          "poisson_ratio": 0.49,
+          "density_kg_m3": 1100
+        }
+      ],
+      "checks": {
+        "source_files_unchanged": true,
+        "labelled_tet_loader_passed": true,
+        "no_duplicate_tetrahedra": true,
+        "material_json_matches_arrays": true,
+        "appearance_manifest_hashes_passed": true,
+        "images_decode": true,
+        "rest_binding_max_error_m": 7.454217687985916e-09,
+        "glb_binding_max_error_m": 0.0
+      },
+      "files": {
+        "final_mesh.mesh": {
+          "sha256": "77d486f285f24d565cf409e5e78f536d9eb6778b94f6062f6b3b5e3944553941",
+          "size_bytes": 112818
+        },
+        "heterogeneous_params.npz": {
+          "sha256": "8e74784fe9725dfb3a5efcdd4266250e6b362ccfe6308f7f3e82ee0831f59c25",
+          "size_bytes": 89480
+        },
+        "inferred_params.json": {
+          "sha256": "d523f1c17ffd7147edb6c9cddf4dfa50ada43fa852e7ca11c07657fd8c41d5f5",
+          "size_bytes": 7173
+        },
+        "volume_topology.json": {
+          "sha256": "211b18251e8ef16da14840f0e3006bbd9f4ee64d08c397497862a936ea6732c5",
+          "size_bytes": 14808
+        },
+        "metric_mesh_scaling.json": {
+          "sha256": "8097d89564efa3b23d5b67f4bd7ae430a6967269bd9d917565266c85024a2345",
+          "size_bytes": 1714
+        },
+        "final_export_manifest.json": {
+          "sha256": "debbf7079372ad4a0f70ab4a5985d893a2b47b6fa69b70d6810ea4580a495288",
+          "size_bytes": 27288
+        },
+        "appearance/albedo.png": {
+          "sha256": "6367d801ec944581b9eb8e1e548725babb566578f6d9b7440c286d34977a7b82",
+          "size_bytes": 486206
+        },
+        "appearance/post_mesh_texture_request.json": {
+          "sha256": "8997e78dd9e44ed219bd557942901fe30728b72a920b28849efe3fa3156eeeb2",
+          "size_bytes": 1398
+        },
+        "appearance/qa/confidence.png": {
+          "sha256": "81dfa4e5b4a17b42ef6c4fa05f113d8ca657df5f9df06d1609f8e1071ba00800",
+          "size_bytes": 455745
+        },
+        "appearance/qa/fill_provenance.png": {
+          "sha256": "288719f133f2b5724384a3d7d314093b282b5979980a702a142debb75b2982a8",
+          "size_bytes": 42715
+        },
+        "appearance/qa/observed_coverage.png": {
+          "sha256": "6dbb83d72a629ecdf70b9a542b097076d63f7e8f83ee17816ed856fae10dc3f6",
+          "size_bytes": 29612
+        },
+        "appearance/qa/report.json": {
+          "sha256": "12b4eaaedf3576cf7f0ed5ce37ddd1e83381e8da646d03f8143e2bc97216eef2",
+          "size_bytes": 2135
+        },
+        "appearance/qa/rest_pose_render.png": {
+          "sha256": "98f31f4972b0b71ee293e3fd507fcff1e612dec455a0d095a87258c4f4066ec8",
+          "size_bytes": 57205
+        },
+        "appearance/visual_manifest.json": {
+          "sha256": "277bc4e608d77a34e8cbdc165ec7b5ec3de1e7e9f6e62025acccdf987b663262",
+          "size_bytes": 6656
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "12c2756863ca804c16591b9120d196b1ecc8a88643c42a7be5ae45165559bf10",
+          "size_bytes": 531172
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "34bd00b18439e6be67bc2243ab905dc65a328c93ad7d8c423693f506e46cd4e1",
+          "size_bytes": 38015
+        }
+      },
+      "import_status": "new",
+      "suggested_task": "Compliant tongs grasp and place",
+      "limitations": "Two semantic labels share one 5 MPa material. Newton task not run.",
+      "newton_task_run_during_import": false,
+      "source_license": "No separate asset license declared in the source snapshot; retain source attribution. The target software license is not asserted to cover this data.",
+      "readme": "SOURCE.md"
+    },
+    {
+      "id": "cookie",
+      "path": "cookie",
+      "source_path": "assets/objects/cookie",
+      "source_url": "https://github.com/ericchen321/HAG4R-MPC/tree/3624989aea2925f26166c33f1d09b109ed63aa80/assets/objects/cookie",
+      "vertices": 2811,
+      "tetrahedra": 11920,
+      "visual_vertices": 1666,
+      "visual_faces": 2792,
+      "bounds_m": [
+        [
+          -0.06120436266064644,
+          -0.01474367082118988,
+          -0.05842015519738197
+        ],
+        [
+          0.0603073388338089,
+          0.015848642215132713,
+          0.058205243200063705
+        ]
+      ],
+      "extent_m": [
+        0.12151170149445534,
+        0.030592313036322594,
+        0.11662539839744568
+      ],
+      "source_mass_kg": 0.15598211801777884,
+      "source_stiffness_ratio": 1.0,
+      "parts": [
+        {
+          "id": 0,
+          "name": "baked_cookie_body",
+          "tetrahedra": 11870,
+          "youngs_modulus_pa": 3000000000,
+          "poisson_ratio": 0.3,
+          "density_kg_m3": 700
+        },
+        {
+          "id": 1,
+          "name": "cookie_edge_crumb",
+          "tetrahedra": 50,
+          "youngs_modulus_pa": 3000000000,
+          "poisson_ratio": 0.3,
+          "density_kg_m3": 700
+        }
+      ],
+      "checks": {
+        "source_files_unchanged": true,
+        "labelled_tet_loader_passed": true,
+        "no_duplicate_tetrahedra": true,
+        "material_json_matches_arrays": true,
+        "appearance_manifest_hashes_passed": true,
+        "images_decode": true,
+        "rest_binding_max_error_m": 2.634178031930877e-09,
+        "glb_binding_max_error_m": 0.0
+      },
+      "files": {
+        "final_mesh.mesh": {
+          "sha256": "9d552c60706c3cf491cbd36a1ff99bff759dafaafcdf7268421ac272a2a75d89",
+          "size_bytes": 431392
+        },
+        "heterogeneous_params.npz": {
+          "sha256": "e267fac60628ddaff721ae37a96259fb5828e4fce75c7034ec837897a17a6a87",
+          "size_bytes": 383656
+        },
+        "inferred_params.json": {
+          "sha256": "f1d8f429aa812c58c729d5ecd6fe499e5948d3e08b7336b33f0e456d1f70fdcb",
+          "size_bytes": 8093
+        },
+        "volume_topology.json": {
+          "sha256": "5dac73000c02db624ec5fe0e78fc928378eab850773a75b68915a61c235ed00c",
+          "size_bytes": 14201
+        },
+        "metric_mesh_scaling.json": {
+          "sha256": "af65c2bececccc21121bbc05d401faa58037afc5257362fb13b2bfb73af02a32",
+          "size_bytes": 1715
+        },
+        "final_export_manifest.json": {
+          "sha256": "bd7dadb5fadbeecd29ef7cd2a1bf622a83b62f156570a17d91f392b169fb070d",
+          "size_bytes": 29520
+        },
+        "appearance/albedo.png": {
+          "sha256": "40851e972542b393e43e77100ddeee8475ae798d7c35526facdde5f966c24c0a",
+          "size_bytes": 445122
+        },
+        "appearance/post_mesh_texture_request.json": {
+          "sha256": "2f4ea4ea4965e755a5bdf87b56280474212ba4c6b9316de9e1cc4f43496fa3e3",
+          "size_bytes": 1391
+        },
+        "appearance/qa/confidence.png": {
+          "sha256": "fc5b33f95b5c6be49fee802636246aa55485148a941b1e5fcff44d17a3004344",
+          "size_bytes": 633201
+        },
+        "appearance/qa/fill_provenance.png": {
+          "sha256": "4a7f330469d79770dd735ef713420927524ecd016a50aac56e34e315f44a4aad",
+          "size_bytes": 41793
+        },
+        "appearance/qa/observed_coverage.png": {
+          "sha256": "86287b0ed01ad5a4b978ce5accb23b1f2fd79439d34b71e363f922e4dd54c753",
+          "size_bytes": 28821
+        },
+        "appearance/qa/report.json": {
+          "sha256": "20c5a2d70098a8ba95bed6b7ecb4a42280ecfafdb21ca6c24967b2f40ecd04d7",
+          "size_bytes": 2099
+        },
+        "appearance/qa/rest_pose_render.png": {
+          "sha256": "8a397c6f2a3ff546cafe5950bfd40fd70cb85bed4dfe2274071bbd1ae898279d",
+          "size_bytes": 63246
+        },
+        "appearance/visual_manifest.json": {
+          "sha256": "e3a244df6b5d5c40ccccebabd51c61f244a1a43e7c20588f160c5aebc8788281",
+          "size_bytes": 6621
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "ff46dd490b944b26dcace24e9b905712cf91f76ead0b02d46914705bb711d3e6",
+          "size_bytes": 513268
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "82a9f9eef807be7928f56d3b8397fd4389189811302797186564a9d7476eb0c8",
+          "size_bytes": 58603
+        }
+      },
+      "import_status": "new",
+      "suggested_task": "Companion object for tongs",
+      "limitations": "3 GPa proxy; no fracture or crumbling model. Newton task not run.",
+      "newton_task_run_during_import": false,
+      "source_license": "No separate asset license declared in the source snapshot; retain source attribution. The target software license is not asserted to cover this data.",
+      "readme": "SOURCE.md"
+    },
+    {
+      "id": "sauce_keeper_400ml",
+      "path": "sauce_keeper_400ml",
+      "source_path": "assets/objects/sauce_keeper_400ml",
+      "source_url": "https://github.com/ericchen321/HAG4R-MPC/tree/3624989aea2925f26166c33f1d09b109ed63aa80/assets/objects/sauce_keeper_400ml",
+      "vertices": 13031,
+      "tetrahedra": 65623,
+      "visual_vertices": 3867,
+      "visual_faces": 6446,
+      "bounds_m": [
+        [
+          -0.036309708553154935,
+          -0.10212686657905579,
+          -0.03193107159275354
+        ],
+        [
+          0.038148296554342924,
+          0.10152593827634225,
+          0.032362315518106186
+        ]
+      ],
+      "extent_m": [
+        0.07445800510749787,
+        0.20365280485539805,
+        0.06429338711085972
+      ],
+      "source_mass_kg": 0.5515858816792298,
+      "source_stiffness_ratio": 1.1,
+      "parts": [
+        {
+          "id": 0,
+          "name": "cloudy_translucent_squeeze_bottle_body",
+          "tetrahedra": 33511,
+          "youngs_modulus_pa": 2000000000,
+          "poisson_ratio": 0.38,
+          "density_kg_m3": 1050
+        },
+        {
+          "id": 1,
+          "name": "orange_ribbed_cap_nozzle_and_tether",
+          "tetrahedra": 32112,
+          "youngs_modulus_pa": 2200000000,
+          "poisson_ratio": 0.37,
+          "density_kg_m3": 1100
+        }
+      ],
+      "checks": {
+        "source_files_unchanged": true,
+        "labelled_tet_loader_passed": true,
+        "no_duplicate_tetrahedra": true,
+        "material_json_matches_arrays": true,
+        "appearance_manifest_hashes_passed": true,
+        "images_decode": true,
+        "rest_binding_max_error_m": 4.165916232510366e-09,
+        "glb_binding_max_error_m": 0.0
+      },
+      "files": {
+        "final_mesh.mesh": {
+          "sha256": "e1bbeda5aa14edd5aa5a2877424cef17ff11ed32bab70647983404c2bb08bab3",
+          "size_bytes": 2346599
+        },
+        "heterogeneous_params.npz": {
+          "sha256": "d0cda2ec075dea3f414ff72c94464eec50f6ff41b7bb83a7053a97f051e4d614",
+          "size_bytes": 2102152
+        },
+        "inferred_params.json": {
+          "sha256": "9572f8e510fcea16e45f36abe250a1b8f8dd587b49a60112ed6b3234db606772",
+          "size_bytes": 8771
+        },
+        "volume_topology.json": {
+          "sha256": "823699976be293c7bed72d7653f36d4a524d7b287fdb737891e010420c9fe560",
+          "size_bytes": 16639
+        },
+        "metric_mesh_scaling.json": {
+          "sha256": "c8cd9ad38ff49cd94e15a545fb2a7376661f279b3c6fcae16b6946ebfc914ad1",
+          "size_bytes": 1711
+        },
+        "final_export_manifest.json": {
+          "sha256": "0f5c04ab090c558525274d64a2131d944336a95f4f668c77174be2f18efae82a",
+          "size_bytes": 30688
+        },
+        "appearance/albedo.png": {
+          "sha256": "d3e0fde7c9f3e09c050a0da18c43b8c8564719f1a43cdaccaae9ac9fb052f249",
+          "size_bytes": 453494
+        },
+        "appearance/post_mesh_texture_request.json": {
+          "sha256": "d154f40304d2e388c4e1decce5907e43d04e43bcff762389c6eeab4e3ee035fc",
+          "size_bytes": 1403
+        },
+        "appearance/qa/confidence.png": {
+          "sha256": "37b809af37ee87f80f2f3549fd054ed8020a6866998c142c9556bd7a6fb72db7",
+          "size_bytes": 524272
+        },
+        "appearance/qa/fill_provenance.png": {
+          "sha256": "a2172ba0cdbf903363824cce38253c49a983b40c74e1bcd0bcc5822781b3b170",
+          "size_bytes": 56950
+        },
+        "appearance/qa/observed_coverage.png": {
+          "sha256": "687b69c833590ffec972c6230c6e82de678c99e7bdc9e851946eafdf84b8e718",
+          "size_bytes": 36579
+        },
+        "appearance/qa/report.json": {
+          "sha256": "7ec40f9e9e590e14527385217d1ea9ad842f67c5a2d42246bf49686c4953ee37",
+          "size_bytes": 2134
+        },
+        "appearance/qa/rest_pose_render.png": {
+          "sha256": "8295c15a61e94b374b0ba72e59d30de43804c5c370a991060b84cd8b4c4ba5cb",
+          "size_bytes": 51867
+        },
+        "appearance/visual_manifest.json": {
+          "sha256": "fb21e540ae386f9bc42a128874180cc073f665fda146be3301a4dcd97efc1651",
+          "size_bytes": 6672
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "f7ef5114d511e73d3823d28a26c70deb2fcb22abdc289e6b087f842b6c3c2c20",
+          "size_bytes": 609508
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "c2ada5ef530f952d9ea68fac87dffcdb9d4f7c60d3ad9fad8868d369e269de49",
+          "size_bytes": 136485
+        }
+      },
+      "import_status": "new",
+      "suggested_task": "Bottle compression",
+      "limitations": "High absolute stiffness; tune effective scene parameters. No liquid or verified fluid cavity. Newton task not run.",
+      "newton_task_run_during_import": false,
+      "source_license": "No separate asset license declared in the source snapshot; retain source attribution. The target software license is not asserted to cover this data.",
+      "readme": "SOURCE.md"
+    },
+    {
+      "id": "toilet_plunger",
+      "path": "toilet_plunger",
+      "source_path": "assets/objects/toilet_plunger",
+      "source_url": "https://github.com/ericchen321/HAG4R-MPC/tree/3624989aea2925f26166c33f1d09b109ed63aa80/assets/objects/toilet_plunger",
+      "vertices": 3899,
+      "tetrahedra": 17728,
+      "visual_vertices": 2120,
+      "visual_faces": 3210,
+      "bounds_m": [
+        [
+          -0.20466558635234833,
+          -0.07320870164052541,
+          -0.07324671583438183
+        ],
+        [
+          0.2022889652626891,
+          0.07169696986174394,
+          0.07305782288312912
+        ]
+      ],
+      "extent_m": [
+        0.40695455161503746,
+        0.14490567150226935,
+        0.14630453871751095
+      ],
+      "source_mass_kg": 0.7113397723248208,
+      "source_stiffness_ratio": 20000.0,
+      "parts": [
+        {
+          "id": 0,
+          "name": "soft_rubber_suction_cup",
+          "tetrahedra": 12397,
+          "youngs_modulus_pa": 1000000,
+          "poisson_ratio": 0.48,
+          "density_kg_m3": 1100
+        },
+        {
+          "id": 1,
+          "name": "rigid_wooden_handle",
+          "tetrahedra": 5331,
+          "youngs_modulus_pa": 20000000000,
+          "poisson_ratio": 0.35,
+          "density_kg_m3": 700
+        }
+      ],
+      "checks": {
+        "source_files_unchanged": true,
+        "labelled_tet_loader_passed": true,
+        "no_duplicate_tetrahedra": true,
+        "material_json_matches_arrays": true,
+        "appearance_manifest_hashes_passed": true,
+        "images_decode": true,
+        "rest_binding_max_error_m": 8.33000234328132e-09,
+        "glb_binding_max_error_m": 0.0
+      },
+      "files": {
+        "final_mesh.mesh": {
+          "sha256": "7e7f668b3597718f2df7936b1d347512fc37f9de3b8961e5a47f6c4ca275c462",
+          "size_bytes": 625052
+        },
+        "heterogeneous_params.npz": {
+          "sha256": "70de8303872f159b03140306a7f91fc3e50bc58a7430be443a480e2df0ffd2a1",
+          "size_bytes": 569512
+        },
+        "inferred_params.json": {
+          "sha256": "ed4204964d76a3e23aa6e607260b57bbf0f2391541271594175c033d894f04d3",
+          "size_bytes": 7109
+        },
+        "volume_topology.json": {
+          "sha256": "3d90bbbd2c08e5b31b3144efbffbf74265a057078041bb78e92a873f7277131e",
+          "size_bytes": 15937
+        },
+        "metric_mesh_scaling.json": {
+          "sha256": "71c88494fe49eca13aa78ac6268d675c85434e42f54355f369f77942d8b1638a",
+          "size_bytes": 1716
+        },
+        "final_export_manifest.json": {
+          "sha256": "1624dce023988966167c9669ca7be72043410f421364968a3bc83e31bb405d18",
+          "size_bytes": 30422
+        },
+        "appearance/albedo.png": {
+          "sha256": "48cea9a3333a48f50a49be380b36169494f6743e07504136568b73b45ded475e",
+          "size_bytes": 403342
+        },
+        "appearance/post_mesh_texture_request.json": {
+          "sha256": "e04e38c1eb82313e3e44dbe17698115869ceb88a38410bdb75f0387a5690a2cf",
+          "size_bytes": 1431
+        },
+        "appearance/qa/confidence.png": {
+          "sha256": "2b71b650ce84c566fc957b6448ab3040f373e71b8d394954f32884872db20573",
+          "size_bytes": 564317
+        },
+        "appearance/qa/fill_provenance.png": {
+          "sha256": "4b0c717315c31c6f317641cea5529961085a7669838d124fa6481bb70fd82d6d",
+          "size_bytes": 45596
+        },
+        "appearance/qa/observed_coverage.png": {
+          "sha256": "2a97177d186484eec596c3647bfe141f5e084cfc9c909748a58725be3d125b28",
+          "size_bytes": 27975
+        },
+        "appearance/qa/report.json": {
+          "sha256": "3b159f83e51dfc625a7d6831f00d13ae3f64b8b067552e597dce5b11a741c559",
+          "size_bytes": 2140
+        },
+        "appearance/qa/rest_pose_render.png": {
+          "sha256": "6ce4b8f365cd1aa34fa2e2ae8474914e9a99dd8a094f56d7a1d004cc78604a99",
+          "size_bytes": 39891
+        },
+        "appearance/visual_manifest.json": {
+          "sha256": "16f01530a3365ad53e03cbf88a4f75ae9fc7f17083d3c19f65b532ad6ef69f91",
+          "size_bytes": 6699
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "ab09af9f14da8a2462867bd9a6fd4fba2f64528405be53cade3410713ecd7a97",
+          "size_bytes": 485584
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "7670b3110479ed9de40236f81a0ef9d73d53de885749036e45ed24f4ef9b3557",
+          "size_bytes": 70668
+        }
+      },
+      "import_status": "new",
+      "suggested_task": "Cup compression against a surface",
+      "limitations": "Source E ratio is 20000; scene override needed for <=100 effective contrast. No suction model. Newton task not run.",
+      "newton_task_run_during_import": false,
+      "source_license": "No separate asset license declared in the source snapshot; retain source attribution. The target software license is not asserted to cover this data.",
+      "readme": "SOURCE.md"
+    },
+    {
+      "id": "buckled_strap",
+      "path": "buckled_strap",
+      "kind": "rigid-cloth-asset-v2",
+      "source": "generated_tool_assets (procedural geometry, Manifold union + TetGen, centroid part labels)",
+      "import_status": "generated",
+      "description": "35 mm-wide, 2.5 mm-thick woven strap loop with an open-slot metal buckle and deformable webbing.",
+      "bounds_m": [
+        [
+          -0.14124920964241028,
+          -0.023499999195337296,
+          -0.0012499999720603228
+        ],
+        [
+          0.14124920964241028,
+          0.023499999195337296,
+          0.1208549290895462
+        ]
+      ],
+      "extent_m": [
+        0.28249841928482056,
+        0.04699999839067459,
+        0.12210492906160653
+      ],
+      "checks": {
+        "source_hashes_match": true
+      },
+      "rigid_groups": [
+        [
+          1
+        ]
+      ],
+      "used_by": [],
+      "behavior_validated_at_source": false,
+      "limitations": "Source estimates; tune per scene.",
+      "readme": "SOURCE.md",
+      "preview": "previews/buckled_strap.png",
+      "files": {
+        "appearance/albedo.png": {
+          "sha256": "f18254316d62a68175fcede06909ff58e7d31fcbb9d9189d71a4e1616adb98bd",
+          "size_bytes": 237
+        },
+        "appearance/cloth_skin.npz": {
+          "sha256": "6487a1df28cbfa3bffa0c9196d65314709849406775f7702f9d7fe73c58202a1",
+          "size_bytes": 50465
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "897068ba4e38d561fd67fd7743c98853d9149b9c707e8db1a834c47be82f5a1d",
+          "size_bytes": 780776
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "26590ee698727c6654feed434670acb545754163f0f91ea19af51b53a39df153",
+          "size_bytes": 148739
+        },
+        "asset.json": {
+          "sha256": "d1f931fcdca0956b3d5bbf985c38600e5e3f6397a7fb9dfaa34864ebcff25de6",
+          "size_bytes": 2353
+        },
+        "materials.json": {
+          "sha256": "fe2e0d21822ce88b535d4baf24b77ee687e773a551a36f99cb615604e472699e",
+          "size_bytes": 857
+        },
+        "physics/attachments.json": {
+          "sha256": "0bb868bb3614d7cd245145637341120427315aa3cfb14da3953dc39054c785f9",
+          "size_bytes": 512
+        },
+        "physics/attachments.npz": {
+          "sha256": "b4947e90c94b08b3b8775886adedeb15fc811c141209f47232cb9eb646180d12",
+          "size_bytes": 1035
+        },
+        "physics/cloth.obj": {
+          "sha256": "ee253989171d98b88673294a1602a37175351468a31f7c56d3ffb7a56f313fc8",
+          "size_bytes": 141581
+        },
+        "physics/cloth_mesh.npz": {
+          "sha256": "d02df263993a6456256e0d6667e6db3436d98157537d044a8ff50f1647ab95b2",
+          "size_bytes": 20656
+        },
+        "physics/rigid_1.npz": {
+          "sha256": "e8f8085791997dc4959d78e41e108782d697490e624241ca2ea509090807caf9",
+          "size_bytes": 12155
+        },
+        "physics/rigid_1.obj": {
+          "sha256": "bd8eaffea6217b814e4821cc771512b6f7f63efceb5b51c6bd37c386ac32e038",
+          "size_bytes": 62808
+        },
+        "physics/rigid_1_tets.npz": {
+          "sha256": "8e6918c7b143c000305b717c8f5805e47b5be424090b8e42e92707642af35061",
+          "size_bytes": 35155
+        }
+      }
+    },
+    {
+      "id": "charger",
+      "path": "charger",
+      "kind": "labelled-tet-v1",
+      "source": "generated_tool_assets (procedural geometry, Manifold union + TetGen, centroid part labels)",
+      "import_status": "generated",
+      "description": "Charger: rounded housing, straight 220 mm cable, 4 mm diameter, two strain reliefs, usb_c endpoint.",
+      "vertices": 5067,
+      "tetrahedra": 18156,
+      "bounds_m": [
+        [
+          -0.0325,
+          -0.0225,
+          -0.0135
+        ],
+        [
+          0.291,
+          0.0225,
+          0.0135
+        ]
+      ],
+      "extent_m": [
+        0.3235,
+        0.045,
+        0.027
+      ],
+      "source_mass_kg": 0.09212658302787081,
+      "source_stiffness_ratio": 40000.0,
+      "parts": [
+        {
+          "id": 0,
+          "name": "housing",
+          "tetrahedra": 10192,
+          "youngs_modulus_pa": 2200000000.0,
+          "poisson_ratio": 0.37,
+          "density_kg_m3": 1100.0
+        },
+        {
+          "id": 1,
+          "name": "cable_and_root_strain_relief",
+          "tetrahedra": 5768,
+          "youngs_modulus_pa": 5000000.0,
+          "poisson_ratio": 0.49,
+          "density_kg_m3": 1100.0
+        },
+        {
+          "id": 2,
+          "name": "distal_collar_connector",
+          "tetrahedra": 1760,
+          "youngs_modulus_pa": 2200000000.0,
+          "poisson_ratio": 0.37,
+          "density_kg_m3": 1100.0
+        },
+        {
+          "id": 3,
+          "name": "plug",
+          "tetrahedra": 436,
+          "youngs_modulus_pa": 200000000000.0,
+          "poisson_ratio": 0.3,
+          "density_kg_m3": 7850.0
+        }
+      ],
+      "checks": {
+        "labelled_tet_loader_passed": true,
+        "no_duplicate_tetrahedra": true,
+        "source_hashes_match": true
+      },
+      "rigid_groups": [
+        [
+          0
+        ],
+        [
+          2,
+          3
+        ]
+      ],
+      "used_by": [
+        "cable_hang_stick.py",
+        "cable_scene.py",
+        "cable_sort_plug.py",
+        "cable_tray_multi.py",
+        "cable_untangle_sort.py",
+        "usb_hub_box.py"
+      ],
+      "behavior_validated_at_source": false,
+      "limitations": "No simulation retuning performed; source estimates only.",
+      "readme": "SOURCE.md",
+      "preview": "previews/charger.png",
+      "files": {
+        "appearance/albedo.png": {
+          "sha256": "6f77b30fef3f6cd0ef57da0103947556f0c36e9db66cbc1353ee785c971677a3",
+          "size_bytes": 288
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "e616d32c9a3aebb62542368b0631fa96dfe7841bae4e8ea0d88848d09688c479",
+          "size_bytes": 560384
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "93b238779a1c7b2de9eac4fb468f22cc2b71dde69dd493944eb7b72ca8ab7929",
+          "size_bytes": 167354
+        },
+        "asset.json": {
+          "sha256": "2e34ea7e92b7f1c0adf20c43d20c4dacad60e5932e9175e01a584bb430ad9d50",
+          "size_bytes": 885
+        },
+        "connectors.json": {
+          "sha256": "29090829cb53311c9ef2bde55b6d72e77c432448b9a983095eb4c81384a719f0",
+          "size_bytes": 941
+        },
+        "final_mesh.mesh": {
+          "sha256": "8243c1a8d8222c01b6fb91719ad71654f3f84d7059a2b319a2a9c0cbc70790f4",
+          "size_bytes": 570404
+        },
+        "heterogeneous_params.npz": {
+          "sha256": "ac466b322752c91a8c2ad5f6e908e28c547643ac9e1b11f943d5509d2b0048b8",
+          "size_bytes": 11659
+        },
+        "inferred_params.json": {
+          "sha256": "4c6c7ec912fccdcaa22774dfd03c16aa5ebb1c7134c1c181c6d8e536f2644b1e",
+          "size_bytes": 1681
+        }
+      }
+    },
+    {
+      "id": "cloth_cleaning_wand",
+      "path": "cloth_cleaning_wand",
+      "kind": "rigid-cloth-asset-v2",
+      "source": "generated_tool_assets (procedural geometry, Manifold union + TetGen, centroid part labels)",
+      "import_status": "generated",
+      "description": "Star-shaped cloth duster: eight medium sheets attached along a slim central connector, with free outer edges and tips.",
+      "bounds_m": [
+        [
+          -0.16500000655651093,
+          -0.03399524465203285,
+          -0.03399524465203285
+        ],
+        [
+          0.125,
+          0.03399524465203285,
+          0.03399524465203285
+        ]
+      ],
+      "extent_m": [
+        0.2900000065565109,
+        0.0679904893040657,
+        0.0679904893040657
+      ],
+      "checks": {
+        "source_hashes_match": true
+      },
+      "rigid_groups": [
+        [
+          1
+        ]
+      ],
+      "used_by": [],
+      "behavior_validated_at_source": false,
+      "limitations": "Source estimates; tune per scene.",
+      "readme": "SOURCE.md",
+      "preview": "previews/cloth_cleaning_wand.png",
+      "files": {
+        "appearance/albedo.png": {
+          "sha256": "a1005f9d19097e7101df13eab277dcc694f864137d00ea9779d05125ed4912b3",
+          "size_bytes": 236
+        },
+        "appearance/cloth_skin.npz": {
+          "sha256": "e4b20241e926fea09afdd976da93364f2a71c8cb5a1758d813e2d9fc2a360e7d",
+          "size_bytes": 81584
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "284648fa90630d5defdaf691a7d65ebaa7be695326b41356c6bf68a80ebe54cd",
+          "size_bytes": 1188708
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "9501164c7d999a958062a5f6db887cfb186e385b7c18722a9243d122607007c3",
+          "size_bytes": 240800
+        },
+        "asset.json": {
+          "sha256": "4a947f6db7bf74d5d9c3b256011c23ef7464288175534a96ab09b4948e31493e",
+          "size_bytes": 2760
+        },
+        "manifest.json": {
+          "sha256": "02f4ff51c129b109f4e4636537e38bae509562805387676258d3c1beb6ab84b0",
+          "size_bytes": 1330
+        },
+        "materials.json": {
+          "sha256": "c028044ca3d97e86ef2e9c3265e52a19f7ed5e8de534d2cb8e33d110d1fa5080",
+          "size_bytes": 875
+        },
+        "physics/attachments.json": {
+          "sha256": "2cbea5257469c0a4aaa4259b56cbde0a6302a6b208bb424d437f84b1324270d8",
+          "size_bytes": 1312
+        },
+        "physics/attachments.npz": {
+          "sha256": "52eb3ef84392d79acc38e71d6989262178137a28c0415c35001fc032ba88fb81",
+          "size_bytes": 1774
+        },
+        "physics/cloth.obj": {
+          "sha256": "4a7cf0a1b461b15bbfa1cb1d449956570780f0f57089c539423bddce75ae9fc0",
+          "size_bytes": 203569
+        },
+        "physics/cloth_mesh.npz": {
+          "sha256": "e56895e5ca67a0ac43e17c14493c93a6a34385fbe213dbc3aa05e5d083a04c64",
+          "size_bytes": 37543
+        },
+        "physics/rigid_1.npz": {
+          "sha256": "3e5e955d16e25c923a7bde581dbedf6cfb34ea79b3d4197d230c44d37ec51e72",
+          "size_bytes": 25735
+        },
+        "physics/rigid_1.obj": {
+          "sha256": "c45a175a8e57467a2d6c449be4a5c9787b61ba3f0556dfee0bdf4f1c2c4febb7",
+          "size_bytes": 129097
+        },
+        "physics/rigid_1_tets.npz": {
+          "sha256": "bd3f00aa75f4735787a1eec47dfbca3eaff8b2cce0e1849f2c72aa3b0607528f",
+          "size_bytes": 125180
+        },
+        "validation.json": {
+          "sha256": "febcbd270f4fcaec34fe73202a6dc676f67241cdb81efc6e10d0f203108510e9",
+          "size_bytes": 1039
+        }
+      }
+    },
+    {
+      "id": "coiled_usb_cable",
+      "path": "coiled_usb_cable",
+      "kind": "labelled-tet-v1",
+      "source": "generated_tool_assets (procedural geometry, Manifold union + TetGen, centroid part labels)",
+      "import_status": "generated",
+      "description": "Coiled usb cable: original reference-informed rigid/deformable geometry.",
+      "vertices": 24065,
+      "tetrahedra": 71030,
+      "bounds_m": [
+        [
+          -0.0915,
+          -0.0142498,
+          -0.0245
+        ],
+        [
+          0.1507,
+          0.02,
+          0.024
+        ]
+      ],
+      "extent_m": [
+        0.2422,
+        0.0342498,
+        0.0485
+      ],
+      "source_mass_kg": 0.03150816957101052,
+      "source_stiffness_ratio": 40000.0,
+      "parts": [
+        {
+          "id": 0,
+          "name": "flexible_cable_and_strain_reliefs",
+          "tetrahedra": 65505,
+          "youngs_modulus_pa": 5000000.0,
+          "poisson_ratio": 0.47,
+          "density_kg_m3": 1250.0
+        },
+        {
+          "id": 1,
+          "name": "usb_a_end_1_housing",
+          "tetrahedra": 1999,
+          "youngs_modulus_pa": 2200000000.0,
+          "poisson_ratio": 0.37,
+          "density_kg_m3": 1100.0
+        },
+        {
+          "id": 2,
+          "name": "usb_a_end_1_metal",
+          "tetrahedra": 1298,
+          "youngs_modulus_pa": 200000000000.0,
+          "poisson_ratio": 0.3,
+          "density_kg_m3": 7850.0
+        },
+        {
+          "id": 3,
+          "name": "usb_c_end_2_housing",
+          "tetrahedra": 1792,
+          "youngs_modulus_pa": 2200000000.0,
+          "poisson_ratio": 0.37,
+          "density_kg_m3": 1100.0
+        },
+        {
+          "id": 4,
+          "name": "usb_c_end_2_metal",
+          "tetrahedra": 436,
+          "youngs_modulus_pa": 200000000000.0,
+          "poisson_ratio": 0.3,
+          "density_kg_m3": 7850.0
+        }
+      ],
+      "checks": {
+        "labelled_tet_loader_passed": true,
+        "no_duplicate_tetrahedra": true,
+        "source_hashes_match": true
+      },
+      "rigid_groups": [
+        [
+          1,
+          2
+        ],
+        [
+          3,
+          4
+        ]
+      ],
+      "used_by": [
+        "cable_scene.py",
+        "cable_untangle_sort.py"
+      ],
+      "behavior_validated_at_source": false,
+      "limitations": "Source estimates; tune per scene.",
+      "readme": "SOURCE.md",
+      "preview": "previews/coiled_usb_cable.png",
+      "files": {
+        "appearance/albedo.png": {
+          "sha256": "147462671d1cf202035dbe4671b7040d8ee494344f1382d24151153fc2f832bd",
+          "size_bytes": 306
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "78f42bb7fef3beab872da6924afbcf988de1bd8f0bea7ac9674a5e219ea74321",
+          "size_bytes": 3318040
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "44580b4ff5dbe5ddc91f1c7ec71256a9630d1c2a6b72e43b06f2e0ddf7cc2272",
+          "size_bytes": 1248826
+        },
+        "asset.json": {
+          "sha256": "6ed83faa1fbbaf2a9a529444a070ecda634beaa193d20358ae8f5025a76d9fc9",
+          "size_bytes": 1307
+        },
+        "connectors.json": {
+          "sha256": "94018401a3c9931e8dd6d9eb25bcc155634f7c942817162e9e730990100a5a90",
+          "size_bytes": 1665
+        },
+        "final_mesh.mesh": {
+          "sha256": "4cfa8949facfc58fe840327779589dc5d6c251dabd6a8d775730a1e0f031bdce",
+          "size_bytes": 2715167
+        },
+        "heterogeneous_params.npz": {
+          "sha256": "cb7112b26a7c12ecfa42c1ddaa9d43b9cb4e0c6b1c3b7d628b82c15b5ef475ec",
+          "size_bytes": 34525
+        },
+        "inferred_params.json": {
+          "sha256": "ee7eb82decc636c3746d1c9d5a5db5068af0dff1c4dff9d2a3db69ef56ff812f",
+          "size_bytes": 2089
+        }
+      }
+    },
+    {
+      "id": "corded_soldering_iron",
+      "path": "corded_soldering_iron",
+      "kind": "labelled-tet-v1",
+      "source": "generated_tool_assets (procedural geometry, Manifold union + TetGen, centroid part labels)",
+      "import_status": "generated",
+      "description": "Corded soldering iron: original reference-informed rigid/deformable geometry.",
+      "vertices": 6246,
+      "tetrahedra": 19117,
+      "bounds_m": [
+        [
+          -0.3195,
+          -0.013,
+          -0.013
+        ],
+        [
+          0.188,
+          0.0875,
+          0.013
+        ]
+      ],
+      "extent_m": [
+        0.5075000000000001,
+        0.10049999999999999,
+        0.026
+      ],
+      "source_mass_kg": 0.08746135176105138,
+      "source_stiffness_ratio": 40000.0,
+      "parts": [
+        {
+          "id": 0,
+          "name": "flexible_cable_and_strain_reliefs",
+          "tetrahedra": 8604,
+          "youngs_modulus_pa": 5000000.0,
+          "poisson_ratio": 0.47,
+          "density_kg_m3": 1250.0
+        },
+        {
+          "id": 1,
+          "name": "iron_insulated_grip",
+          "tetrahedra": 6646,
+          "youngs_modulus_pa": 2200000000.0,
+          "poisson_ratio": 0.37,
+          "density_kg_m3": 1100.0
+        },
+        {
+          "id": 2,
+          "name": "iron_barrel_and_tip",
+          "tetrahedra": 2753,
+          "youngs_modulus_pa": 200000000000.0,
+          "poisson_ratio": 0.3,
+          "density_kg_m3": 7850.0
+        },
+        {
+          "id": 3,
+          "name": "station_end_1_housing",
+          "tetrahedra": 785,
+          "youngs_modulus_pa": 2200000000.0,
+          "poisson_ratio": 0.37,
+          "density_kg_m3": 1100.0
+        },
+        {
+          "id": 4,
+          "name": "station_end_1_metal",
+          "tetrahedra": 329,
+          "youngs_modulus_pa": 200000000000.0,
+          "poisson_ratio": 0.3,
+          "density_kg_m3": 7850.0
+        }
+      ],
+      "checks": {
+        "labelled_tet_loader_passed": true,
+        "no_duplicate_tetrahedra": true,
+        "source_hashes_match": true
+      },
+      "rigid_groups": [
+        [
+          1,
+          2
+        ],
+        [
+          3,
+          4
+        ]
+      ],
+      "used_by": [],
+      "behavior_validated_at_source": false,
+      "limitations": "Source estimates; tune per scene.",
+      "readme": "SOURCE.md",
+      "preview": "previews/corded_soldering_iron.png",
+      "files": {
+        "appearance/albedo.png": {
+          "sha256": "98d0e54534670321211668ca575d742b03217d5294413a68b01370f724456014",
+          "size_bytes": 309
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "21d6c797c9c127c6c3850209cb3c48c9a28076707719a08826ffb58a62c10a59",
+          "size_bytes": 830004
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "631e6a63cf51870b3e94eac750b3f03bdf81d12238cafff90349381f007f98f8",
+          "size_bytes": 266520
+        },
+        "asset.json": {
+          "sha256": "b59de64cba97fda713e9735ac5d14fc4091ca0cbe6d9ba26cd8e510d4a7b799a",
+          "size_bytes": 1165
+        },
+        "connectors.json": {
+          "sha256": "ea0233d2d0ecfb1cdff1513442fdfa6614e062d710c69d5a9a7c61c38a36f32c",
+          "size_bytes": 950
+        },
+        "final_mesh.mesh": {
+          "sha256": "a1d3a19abeb47819b916a4086dae5c9fe7fa5852c9fa63a205e6c92bf4e36624",
+          "size_bytes": 616589
+        },
+        "heterogeneous_params.npz": {
+          "sha256": "29a0337677089f02eb0d81fe4b7a11dba64553cfc742f186a24c2d1262a110b0",
+          "size_bytes": 22207
+        },
+        "inferred_params.json": {
+          "sha256": "4daec7fe9decf692bd2f9bf16d6a9bbde58ae7ace766232e93d001c05adad2fc",
+          "size_bytes": 2099
+        }
+      }
+    },
+    {
+      "id": "gap_sponge_wand",
+      "path": "gap_sponge_wand",
+      "kind": "labelled-tet-v1",
+      "source": "generated_tool_assets (procedural geometry, Manifold union + TetGen, centroid part labels)",
+      "import_status": "generated",
+      "description": "Reference-informed dishwand with a continuous contoured rigid grip/neck, a small inset backing, and a rounded tapered 65 x 16 x 12 mm gap sponge.",
+      "vertices": 4352,
+      "tetrahedra": 14813,
+      "bounds_m": [
+        [
+          -0.17,
+          -0.00911937999725,
+          0.0
+        ],
+        [
+          0.065,
+          0.00911937999725,
+          0.0693235778809
+        ]
+      ],
+      "extent_m": [
+        0.23500000000000001,
+        0.0182387599945,
+        0.0693235778809
+      ],
+      "source_mass_kg": 0.032201633009280424,
+      "source_stiffness_ratio": 27500.0,
+      "parts": [
+        {
+          "id": 0,
+          "name": "handle",
+          "tetrahedra": 10090,
+          "youngs_modulus_pa": 2200000000.0,
+          "poisson_ratio": 0.37,
+          "density_kg_m3": 1100.0
+        },
+        {
+          "id": 1,
+          "name": "backing",
+          "tetrahedra": 2150,
+          "youngs_modulus_pa": 2200000000.0,
+          "poisson_ratio": 0.37,
+          "density_kg_m3": 1100.0
+        },
+        {
+          "id": 2,
+          "name": "compressible_sponge",
+          "tetrahedra": 1980,
+          "youngs_modulus_pa": 80000.0,
+          "poisson_ratio": 0.25,
+          "density_kg_m3": 80.0
+        },
+        {
+          "id": 3,
+          "name": "scouring_face",
+          "tetrahedra": 593,
+          "youngs_modulus_pa": 300000.0,
+          "poisson_ratio": 0.3,
+          "density_kg_m3": 180.0
+        }
+      ],
+      "checks": {
+        "labelled_tet_loader_passed": true,
+        "no_duplicate_tetrahedra": true,
+        "source_hashes_match": true
+      },
+      "rigid_groups": [
+        [
+          0,
+          1
+        ]
+      ],
+      "used_by": [],
+      "behavior_validated_at_source": false,
+      "limitations": "Source estimates; tune per scene.",
+      "readme": "SOURCE.md",
+      "preview": "previews/gap_sponge_wand.png",
+      "files": {
+        "appearance/albedo.png": {
+          "sha256": "92d0c6d2bb01b076537cd6c22e54b89dccbc9c8c57edcd6c3bf4264c8ff44bd9",
+          "size_bytes": 288
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "f6be47f1269664db86a02d96d9992cabeea623d0a511e31f13c6ebf7e9fa072c",
+          "size_bytes": 522780
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "a2c6af1de890cb98f79f121956318540c1fa336e49ef282e041284dfbc163993",
+          "size_bytes": 188780
+        },
+        "asset.json": {
+          "sha256": "be2702667feb462217cd578e7c7af011b744f00942cac04c3e403dc66997dab9",
+          "size_bytes": 1171
+        },
+        "final_mesh.mesh": {
+          "sha256": "25ed873b258d1a7ff89d705d0b428b6b0399e41d3c3461b3d150593daba8246c",
+          "size_bytes": 533320
+        },
+        "heterogeneous_params.npz": {
+          "sha256": "e8d94496d51659df25dcee645ca8bad2a37a3223101e0744311c8dd60febc15a",
+          "size_bytes": 14489
+        },
+        "inferred_params.json": {
+          "sha256": "3ce4aa4c082b265970e123d86461e72931654938c507d4ff99c3ee4973b09408",
+          "size_bytes": 1687
+        }
+      }
+    },
+    {
+      "id": "handled_fabric_bag",
+      "path": "handled_fabric_bag",
+      "kind": "rigid-cloth-asset-v1",
+      "source": "generated_tool_assets (procedural geometry, Manifold union + TetGen, centroid part labels)",
+      "import_status": "generated",
+      "description": "Open fabric shopping basket with rigid aluminium rim/handle, separate base board and deformable sewn sides.",
+      "bounds_m": [
+        [
+          -0.23999999463558197,
+          -0.14199739694595337,
+          0.0
+        ],
+        [
+          0.23999999463558197,
+          0.14199739694595337,
+          0.39800000190734863
+        ]
+      ],
+      "extent_m": [
+        0.47999998927116394,
+        0.28399479389190674,
+        0.39800000190734863
+      ],
+      "checks": {
+        "source_hashes_match": true
+      },
+      "rigid_groups": [
+        [
+          1
+        ],
+        [
+          2
+        ]
+      ],
+      "used_by": [],
+      "behavior_validated_at_source": false,
+      "limitations": "Source estimates; tune per scene.",
+      "readme": "SOURCE.md",
+      "preview": "previews/handled_fabric_bag.png",
+      "files": {
+        "appearance/albedo.png": {
+          "sha256": "d3651805922a1dc79fd1e82b1d0a7032fb71f577fdfd75478cb79b96acb2ea77",
+          "size_bytes": 257
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "b63ccce7516d60052376645b2ffeb27a5ce4b7c0578fa24dd98ac8bf3835941d",
+          "size_bytes": 4203840
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "d09c5f98bc03f7a208544c5cc9ec6213a817c3accf90dad8b258850bb88f9eb4",
+          "size_bytes": 1019099
+        },
+        "asset.json": {
+          "sha256": "de9f2cefae97f039e93ddc2d9314c0e540c07d283536ac5547128942a9412283",
+          "size_bytes": 3326
+        },
+        "manifest.json": {
+          "sha256": "a91cf618e15c022afb092b2a66b782d331f8d0d5f9ad7a48d8f5e2f3ef0a3492",
+          "size_bytes": 1515
+        },
+        "materials.json": {
+          "sha256": "ab9ad89566c921f8e256d2578f740d15a0c5e70ef88021db752cc809db8fc6f7",
+          "size_bytes": 1071
+        },
+        "physics/attachments.json": {
+          "sha256": "d65689d5920e6caac34468852d68bd0f2f26698af023b6fa85347e9ccfede126",
+          "size_bytes": 524
+        },
+        "physics/attachments.npz": {
+          "sha256": "475930c452414dc724137d8430bd1ee9d2685f878b24bc480f3811e1c6ca31e0",
+          "size_bytes": 11900
+        },
+        "physics/cloth.obj": {
+          "sha256": "b121369c20a57b9f21068a2dec8b837adfac19cc3a711daeb91f9b48ca7f1efc",
+          "size_bytes": 416234
+        },
+        "physics/cloth_mesh.npz": {
+          "sha256": "1f5855c64b502987631145b1304795ae0897d585e0acd54ef4cc2275da51a057",
+          "size_bytes": 113803
+        },
+        "physics/rigid_1.npz": {
+          "sha256": "9a7cf65b71594095a4d22616d9a88bf4e8d2575e3526dcea26408b23ee78bf37",
+          "size_bytes": 134881
+        },
+        "physics/rigid_1.obj": {
+          "sha256": "ed6d7d46aee59a68f15659c00588dd9e8fc4c434132d2627ebf357648839788e",
+          "size_bytes": 620670
+        },
+        "physics/rigid_1_tets.npz": {
+          "sha256": "90043ac1bc8052347ccce53dde7f9d875ba87d1a95d9ff3e01429d81a4078e2a",
+          "size_bytes": 460611
+        },
+        "physics/rigid_2.npz": {
+          "sha256": "5be50bc68cfd3da2565048eea264db6b5bf592c98dec16a469daab9607e2a1f5",
+          "size_bytes": 309263
+        },
+        "physics/rigid_2.obj": {
+          "sha256": "54137a2e69d49c6b9db7789e3c5f70035a2bdc0256f7cdd0c7d2b663981fb6ba",
+          "size_bytes": 1012775
+        },
+        "physics/rigid_2_tets.npz": {
+          "sha256": "9338436d0f3721cb930f3b4e76329071a7bd0dc239493a148e0773d0e4a93e26",
+          "size_bytes": 830283
+        },
+        "validation.json": {
+          "sha256": "f43c058c435490caadd4198b93da8d2f8a2ac72d91852846f71825325e4b4936",
+          "size_bytes": 1200
+        }
+      }
+    },
+    {
+      "id": "power_strip",
+      "path": "power_strip",
+      "kind": "labelled-tet-v1",
+      "source": "generated_tool_assets (procedural geometry, Manifold union + TetGen, centroid part labels)",
+      "import_status": "generated",
+      "description": "Power Strip: rounded housing, straight 500 mm cable, 10 mm diameter, two strain reliefs, mains endpoint.",
+      "vertices": 10619,
+      "tetrahedra": 35632,
+      "bounds_m": [
+        [
+          -0.105,
+          -0.024,
+          -0.014
+        ],
+        [
+          0.6665,
+          0.024,
+          0.014
+        ]
+      ],
+      "extent_m": [
+        0.7715,
+        0.048,
+        0.028
+      ],
+      "source_mass_kg": 0.371347892782643,
+      "source_stiffness_ratio": 40000.0,
+      "parts": [
+        {
+          "id": 0,
+          "name": "housing",
+          "tetrahedra": 18585,
+          "youngs_modulus_pa": 2200000000.0,
+          "poisson_ratio": 0.37,
+          "density_kg_m3": 1100.0
+        },
+        {
+          "id": 1,
+          "name": "cable_and_root_strain_relief",
+          "tetrahedra": 10803,
+          "youngs_modulus_pa": 5000000.0,
+          "poisson_ratio": 0.49,
+          "density_kg_m3": 1100.0
+        },
+        {
+          "id": 2,
+          "name": "distal_collar_connector",
+          "tetrahedra": 2480,
+          "youngs_modulus_pa": 2200000000.0,
+          "poisson_ratio": 0.37,
+          "density_kg_m3": 1100.0
+        },
+        {
+          "id": 3,
+          "name": "plug",
+          "tetrahedra": 3764,
+          "youngs_modulus_pa": 200000000000.0,
+          "poisson_ratio": 0.3,
+          "density_kg_m3": 7850.0
+        }
+      ],
+      "checks": {
+        "labelled_tet_loader_passed": true,
+        "no_duplicate_tetrahedra": true,
+        "source_hashes_match": true
+      },
+      "rigid_groups": [
+        [
+          0
+        ],
+        [
+          2,
+          3
+        ]
+      ],
+      "used_by": [
+        "cable_retrieve.py",
+        "cable_scene.py",
+        "usb_hub_box.py"
+      ],
+      "behavior_validated_at_source": false,
+      "limitations": "No simulation retuning performed; source estimates only.",
+      "readme": "SOURCE.md",
+      "preview": "previews/power_strip.png",
+      "files": {
+        "appearance/albedo.png": {
+          "sha256": "e568af9dbdb760ff49e1ccf792db8d85e4c1fe5b137d8d96e0a36606360e42c8",
+          "size_bytes": 288
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "7a82dda7361152d686ee6df98dff5cc8e9423c074fe6ea2d8b6fab3f2e464295",
+          "size_bytes": 1234020
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "5fe8a3c559e799764d27c02cdf6a01668aaf77be6c31ecde332444f7b172c375",
+          "size_bytes": 379371
+        },
+        "asset.json": {
+          "sha256": "c89c6ed89cfb1e91dbea1d1680358a8a8341ea2778b4dfedf33b533d4cb526a6",
+          "size_bytes": 899
+        },
+        "connectors.json": {
+          "sha256": "0edfedcd0813f7863d4354c5023e65c2315dceb7e6a36116ba8eeba677461c49",
+          "size_bytes": 2752
+        },
+        "final_mesh.mesh": {
+          "sha256": "428631e871e4b5a9c71d13a5d7489c261415bb5c9c6b7043c09e5891cc0751f4",
+          "size_bytes": 1168001
+        },
+        "heterogeneous_params.npz": {
+          "sha256": "837cea606effb352aad053c8842df62a3358494b67eb2d9a1001c27e8d1c81b5",
+          "size_bytes": 29668
+        },
+        "inferred_params.json": {
+          "sha256": "de9c019bd007190dbe7bf98d3ab8f283f177c336dc642527a0dfe1d22bdb5300",
+          "size_bytes": 1688
+        }
+      }
+    },
+    {
+      "id": "rigid_pan",
+      "path": "rigid_pan",
+      "kind": "rigid-mesh-v1",
+      "source": "generated_tool_assets (procedural geometry, Manifold union + TetGen, centroid part labels)",
+      "import_status": "generated",
+      "description": "Simple rigid frying pan: 240 mm open bowl, flat 4 mm base, flared sides and fixed rounded handle.",
+      "bounds_m": [
+        [
+          -0.11999999731779099,
+          -0.11999999731779099,
+          0.0
+        ],
+        [
+          0.29252558946609497,
+          0.11999999731779099,
+          0.05709550157189369
+        ]
+      ],
+      "extent_m": [
+        0.41252558678388596,
+        0.23999999463558197,
+        0.05709550157189369
+      ],
+      "checks": {
+        "source_hashes_match": true
+      },
+      "rigid_groups": [
+        [
+          0
+        ]
+      ],
+      "used_by": [],
+      "behavior_validated_at_source": false,
+      "limitations": "Source estimates; tune per scene.",
+      "readme": "SOURCE.md",
+      "preview": "previews/rigid_pan.png",
+      "files": {
+        "appearance/albedo.png": {
+          "sha256": "e91e0b89069fc82ed579de8d667eb02f1a2f94bf44628f6a74bfb4bd449e966f",
+          "size_bytes": 257
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "867dc1fcfc77b72f69419f43aeb9b65adf79707498dd3ad09b4804e78a4aad8c",
+          "size_bytes": 1578712
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "4606ecb0336a103ffaa70530cfd704996bada261e1b6989da51d752c26e6085f",
+          "size_bytes": 435603
+        },
+        "asset.json": {
+          "sha256": "459d17d7d0a466fe261d4705a0252c228d7d1d74d92a29584b24681a08fc756b",
+          "size_bytes": 1857
+        },
+        "manifest.json": {
+          "sha256": "6268bc04a3f5acfa68061ba8250b3166deb98e5521b0c1ef3d683432f0bbf7a3",
+          "size_bytes": 861
+        },
+        "materials.json": {
+          "sha256": "204acaf2beba0b08e588da48afa53c1f48c08d8e792cfaa2f1610e76049feadc",
+          "size_bytes": 498
+        },
+        "physics/collision_mesh.npz": {
+          "sha256": "329e5f7e7f8995fec49a48d73a80f430359ad731ae8e81fe53f69c394db70ece",
+          "size_bytes": 256161
+        },
+        "physics/collision_mesh.obj": {
+          "sha256": "60e8e8c749c16c39eed5bb3708b30e50b83d9fd32b06f3764b0d4e03a1d06983",
+          "size_bytes": 761519
+        },
+        "physics/rigid_tets.npz": {
+          "sha256": "edccd0e0938a690fbbe4cf6fd0958501d5fbb5b9cd88fd7b7ad267111f6a77e3",
+          "size_bytes": 587070
+        },
+        "validation.json": {
+          "sha256": "1e699a08b5a8340f6eb8f6171b54d0e65d45991ab7e88ebc538129e6e0454dd9",
+          "size_bytes": 981
+        }
+      }
+    },
+    {
+      "id": "silicone_spatula",
+      "path": "silicone_spatula",
+      "kind": "labelled-tet-v1",
+      "source": "generated_tool_assets (procedural geometry, Manifold union + TetGen, centroid part labels)",
+      "import_status": "generated",
+      "description": "NVIDIA wooden-handle silicone spatula, approximately 295 mm long. Source attachment openings are capped and unioned; the blade remains flexible.",
+      "vertices": 7658,
+      "tetrahedra": 29121,
+      "bounds_m": [
+        [
+          -0.1279665,
+          -0.0309026,
+          -4.7e-06
+        ],
+        [
+          0.1668269,
+          0.0345932,
+          0.0137736
+        ]
+      ],
+      "extent_m": [
+        0.2947934,
+        0.06549579999999999,
+        0.0137783
+      ],
+      "source_mass_kg": 0.07368532535497549,
+      "source_stiffness_ratio": 6666.666666666667,
+      "parts": [
+        {
+          "id": 0,
+          "name": "wooden_handle",
+          "tetrahedra": 20917,
+          "youngs_modulus_pa": 10000000000.0,
+          "poisson_ratio": 0.3,
+          "density_kg_m3": 650.0
+        },
+        {
+          "id": 1,
+          "name": "flexible_silicone_head",
+          "tetrahedra": 8204,
+          "youngs_modulus_pa": 1500000.0,
+          "poisson_ratio": 0.48,
+          "density_kg_m3": 1100.0
+        }
+      ],
+      "checks": {
+        "labelled_tet_loader_passed": true,
+        "no_duplicate_tetrahedra": true,
+        "source_hashes_match": true
+      },
+      "rigid_groups": [
+        [
+          0
+        ]
+      ],
+      "used_by": [],
+      "behavior_validated_at_source": false,
+      "limitations": "Source estimates; tune per scene.",
+      "readme": "SOURCE.md",
+      "preview": "previews/silicone_spatula.png",
+      "files": {
+        "appearance/albedo.png": {
+          "sha256": "46882d65c07c7494e2a43998ec57d17e49d85b520c3c2f550efe2691ee9b06cd",
+          "size_bytes": 237
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "78f3c18bc1f87d42d722235e5ecfce170680b1ae4ec614a7a58dc233cfef1508",
+          "size_bytes": 760496
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "bec0c6387cc8c153237499ec1f42abbe9b0458566b9ab9c9d1b2cd60b9541fca",
+          "size_bytes": 309460
+        },
+        "asset.json": {
+          "sha256": "710edf515343201f4508c4775f24c896c2b79f5a9ca4e476436454637a53f8d5",
+          "size_bytes": 747
+        },
+        "final_mesh.mesh": {
+          "sha256": "d30a3a8ed2393b3143b59b86fd5a0963d651c78b133948049eeb3631cc3d3e17",
+          "size_bytes": 1005944
+        },
+        "heterogeneous_params.npz": {
+          "sha256": "82673c3d99c6bbc225b1615ba788af8b51f30c9c20eada676635da282d86c86f",
+          "size_bytes": 22360
+        },
+        "inferred_params.json": {
+          "sha256": "c3d4d9fc1d78bd8baa1d65036f29d0232b8a5cfc098120d04955b57fea0109e2",
+          "size_bytes": 987
+        }
+      }
+    },
+    {
+      "id": "socket_mains",
+      "path": "socket_mains",
+      "kind": "rigid-socket-v1",
+      "source": "generated_tool_assets (procedural geometry, Manifold union + TetGen, centroid part labels)",
+      "import_status": "generated",
+      "description": "Two-prong mains rigid socket block with a simple clearance cavity.",
+      "bounds_m": [
+        [
+          0.0,
+          -0.014000000432133675,
+          0.0
+        ],
+        [
+          0.020999999716877937,
+          0.014000000432133675,
+          0.024000000208616257
+        ]
+      ],
+      "extent_m": [
+        0.020999999716877937,
+        0.02800000086426735,
+        0.024000000208616257
+      ],
+      "checks": {
+        "source_hashes_match": true
+      },
+      "rigid_groups": [
+        [
+          0
+        ]
+      ],
+      "used_by": [],
+      "behavior_validated_at_source": false,
+      "limitations": "Source estimates; tune per scene.",
+      "readme": "SOURCE.md",
+      "preview": "previews/socket_mains.png",
+      "files": {
+        "appearance/albedo.png": {
+          "sha256": "879634d9af576396a945f6f53733560bc1fc1e51878c28f63cf3a75d26612263",
+          "size_bytes": 236
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "e5f1e7e1bcd1fe6e88022ba8677cdd4dd95f363adc08fa055da51fbabf2e4f5a",
+          "size_bytes": 138348
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "d6b1aebc60f64f9f23c32f678a495d43c8a4b467b55c051257081f1c24105f09",
+          "size_bytes": 29408
+        },
+        "asset.json": {
+          "sha256": "7a691eadd0521c2dc289d85848d7410019200df4621c6c3517fbf1525c758621",
+          "size_bytes": 1340
+        },
+        "connectors.json": {
+          "sha256": "45b0e2cf5e75fb80aeb126f45e20af501e70bae1ed21f5b22f2ce724c6337419",
+          "size_bytes": 829
+        },
+        "materials.json": {
+          "sha256": "3aa5ae90ca249ac077903e525a9c2ec0fcb170ff13619c5b0eee83187704fbe1",
+          "size_bytes": 288
+        },
+        "physics/collision_mesh.npz": {
+          "sha256": "52af54e62485f81624c26f2939ecb4d89132b997f612f140fae0a3f1ef9fd747",
+          "size_bytes": 13718
+        },
+        "physics/collision_mesh.obj": {
+          "sha256": "9321b6c9ff27a7265310ee54835a224273c2965979697ce2b8f1521916704581",
+          "size_bytes": 59851
+        }
+      }
+    },
+    {
+      "id": "socket_mains_loose",
+      "path": "socket_mains_loose",
+      "kind": "rigid-socket-v1",
+      "source": "generated_tool_assets (procedural geometry, Manifold union + TetGen, centroid part labels)",
+      "import_status": "generated",
+      "description": "Two-prong mains rigid socket block with a simple clearance cavity. Loose: 4 mm per side, for simulated contact.",
+      "bounds_m": [
+        [
+          0.0,
+          -0.016599999740719795,
+          0.0
+        ],
+        [
+          0.020999999716877937,
+          0.016599999740719795,
+          0.025299999862909317
+        ]
+      ],
+      "extent_m": [
+        0.020999999716877937,
+        0.03319999948143959,
+        0.025299999862909317
+      ],
+      "checks": {
+        "source_hashes_match": true
+      },
+      "rigid_groups": [
+        [
+          0
+        ]
+      ],
+      "used_by": [],
+      "behavior_validated_at_source": false,
+      "limitations": "Source estimates; tune per scene.",
+      "readme": "SOURCE.md",
+      "preview": "previews/socket_mains_loose.png",
+      "files": {
+        "appearance/albedo.png": {
+          "sha256": "879634d9af576396a945f6f53733560bc1fc1e51878c28f63cf3a75d26612263",
+          "size_bytes": 236
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "9bf6345ac9c5f84126614b44ad03411e32779326b54a8107869c294d15c549cf",
+          "size_bytes": 149004
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "9255a7da039b248c296f109e258eebb13c581579655c4185e1c4579be8afac56",
+          "size_bytes": 32582
+        },
+        "asset.json": {
+          "sha256": "0508d3bb1771b9ea3be762e2e8984dcaa4718e3ebc5efd172cb5a5082495ca01",
+          "size_bytes": 1399
+        },
+        "connectors.json": {
+          "sha256": "84b3e936c6c20ff1edb638b4513146b6df29ef8486281918dd6572a13b83994f",
+          "size_bytes": 830
+        },
+        "materials.json": {
+          "sha256": "3aa5ae90ca249ac077903e525a9c2ec0fcb170ff13619c5b0eee83187704fbe1",
+          "size_bytes": 288
+        },
+        "physics/collision_mesh.npz": {
+          "sha256": "239445541391f42f94331e87e144e0d921a13b89517f7ef3c5bec8427e7b6a30",
+          "size_bytes": 15664
+        },
+        "physics/collision_mesh.obj": {
+          "sha256": "f69140c137c818b76d246ec77bb2cd73ed3251a273b542829fa9a48f1a1848a4",
+          "size_bytes": 64668
+        }
+      }
+    },
+    {
+      "id": "socket_mains_snug",
+      "path": "socket_mains_snug",
+      "kind": "rigid-socket-v1",
+      "source": "generated_tool_assets (procedural geometry, Manifold union + TetGen, centroid part labels)",
+      "import_status": "generated",
+      "description": "Two-prong mains rigid socket block with a simple clearance cavity. Snug: 1 mm per side, for simulated contact.",
+      "bounds_m": [
+        [
+          0.0,
+          -0.014000000432133675,
+          0.0
+        ],
+        [
+          0.020999999716877937,
+          0.014000000432133675,
+          0.024000000208616257
+        ]
+      ],
+      "extent_m": [
+        0.020999999716877937,
+        0.02800000086426735,
+        0.024000000208616257
+      ],
+      "checks": {
+        "source_hashes_match": true
+      },
+      "rigid_groups": [
+        [
+          0
+        ]
+      ],
+      "used_by": [],
+      "behavior_validated_at_source": false,
+      "limitations": "Source estimates; tune per scene.",
+      "readme": "SOURCE.md",
+      "preview": "previews/socket_mains_snug.png",
+      "files": {
+        "appearance/albedo.png": {
+          "sha256": "879634d9af576396a945f6f53733560bc1fc1e51878c28f63cf3a75d26612263",
+          "size_bytes": 236
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "5e529c5647594b263b7f86eea9795f6ddd6af76b1bcceea5f93e46cbdc2d19ce",
+          "size_bytes": 132156
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "d5c9712b87a871eab7c48a903fbd933baebcbc9a6b706366b0726e38b4ee4cfc",
+          "size_bytes": 28252
+        },
+        "asset.json": {
+          "sha256": "6215c2aba76493a91c689e3fe072a235d6e03991fcdf8edc30362b55f6273ad4",
+          "size_bytes": 1393
+        },
+        "connectors.json": {
+          "sha256": "cfd258aee3a5a767638dd53761a3940c57ce80032da1a1c0e18dcbbd12c47618",
+          "size_bytes": 828
+        },
+        "materials.json": {
+          "sha256": "3aa5ae90ca249ac077903e525a9c2ec0fcb170ff13619c5b0eee83187704fbe1",
+          "size_bytes": 288
+        },
+        "physics/collision_mesh.npz": {
+          "sha256": "3a23b3554492d231b63a8146c66875bc3dacc2b631c408d5089a653cccbfe873",
+          "size_bytes": 13238
+        },
+        "physics/collision_mesh.obj": {
+          "sha256": "87fa8b27ce8f88d2ce6205a1a45464c063d06d4a88c1f9f6f5ede6a62d5b2524",
+          "size_bytes": 57111
+        }
+      }
+    },
+    {
+      "id": "socket_mini_b",
+      "path": "socket_mini_b",
+      "kind": "rigid-socket-v1",
+      "source": "generated_tool_assets (procedural geometry, Manifold union + TetGen, centroid part labels)",
+      "import_status": "generated",
+      "description": "Mini-USB-B rigid socket block with a simple clearance cavity.",
+      "bounds_m": [
+        [
+          0.0,
+          -0.014000000432133675,
+          0.0
+        ],
+        [
+          0.011500000022351742,
+          0.014000000432133675,
+          0.024000000208616257
+        ]
+      ],
+      "extent_m": [
+        0.011500000022351742,
+        0.02800000086426735,
+        0.024000000208616257
+      ],
+      "checks": {
+        "source_hashes_match": true
+      },
+      "rigid_groups": [
+        [
+          0
+        ]
+      ],
+      "used_by": [],
+      "behavior_validated_at_source": false,
+      "limitations": "Source estimates; tune per scene.",
+      "readme": "SOURCE.md",
+      "preview": "previews/socket_mini_b.png",
+      "files": {
+        "appearance/albedo.png": {
+          "sha256": "879634d9af576396a945f6f53733560bc1fc1e51878c28f63cf3a75d26612263",
+          "size_bytes": 236
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "88833605cce06a534d85513c7da79f73c75f2b07f098a113653c6d9c55ac763a",
+          "size_bytes": 109836
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "bfb3aec0f84b142b68ae47ca07d542e79db67d3c4d3d7c51cd1cf6f0ece32dd4",
+          "size_bytes": 23388
+        },
+        "asset.json": {
+          "sha256": "95862817645cde01ff6a6d89d594ae2c8eeb46ccfb0a947413dd06cb21b827a4",
+          "size_bytes": 1333
+        },
+        "connectors.json": {
+          "sha256": "ff07d415e04d6176d892b5fdb11a3a3e2ad522114cd41fbdb05a7c2df4b34fa7",
+          "size_bytes": 819
+        },
+        "materials.json": {
+          "sha256": "3aa5ae90ca249ac077903e525a9c2ec0fcb170ff13619c5b0eee83187704fbe1",
+          "size_bytes": 288
+        },
+        "physics/collision_mesh.npz": {
+          "sha256": "668a05217f45a5dac2b231c701c89d837feaa09e659d9f78694e9d1f0a3987dd",
+          "size_bytes": 10501
+        },
+        "physics/collision_mesh.obj": {
+          "sha256": "769d7b7e5777220949b949abff2ad25ad66924b2bddc9293d2494cffac37c055",
+          "size_bytes": 47286
+        }
+      }
+    },
+    {
+      "id": "socket_mini_b_loose",
+      "path": "socket_mini_b_loose",
+      "kind": "rigid-socket-v1",
+      "source": "generated_tool_assets (procedural geometry, Manifold union + TetGen, centroid part labels)",
+      "import_status": "generated",
+      "description": "Mini-USB-B rigid socket block with a simple clearance cavity. Loose: 4 mm per side, for simulated contact.",
+      "bounds_m": [
+        [
+          0.0,
+          -0.014000000432133675,
+          0.0
+        ],
+        [
+          0.011500000022351742,
+          0.014000000432133675,
+          0.024000000208616257
+        ]
+      ],
+      "extent_m": [
+        0.011500000022351742,
+        0.02800000086426735,
+        0.024000000208616257
+      ],
+      "checks": {
+        "source_hashes_match": true
+      },
+      "rigid_groups": [
+        [
+          0
+        ]
+      ],
+      "used_by": [],
+      "behavior_validated_at_source": false,
+      "limitations": "Source estimates; tune per scene.",
+      "readme": "SOURCE.md",
+      "preview": "previews/socket_mini_b_loose.png",
+      "files": {
+        "appearance/albedo.png": {
+          "sha256": "879634d9af576396a945f6f53733560bc1fc1e51878c28f63cf3a75d26612263",
+          "size_bytes": 236
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "35ca569d17355516a4c9ec38b148e76a1254ad1e4ec0025792d670b9a6fbdffa",
+          "size_bytes": 12624
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "4a437ae53a344f6bdd97c7deda571d1439c9aa651ca8b1578ec48c6e7ec981c1",
+          "size_bytes": 3436
+        },
+        "asset.json": {
+          "sha256": "e2340771fb8520b549f5ce8a23302e63c0f3422c26b6d9a9f01f270d3006b378",
+          "size_bytes": 678
+        },
+        "connectors.json": {
+          "sha256": "20ea993fd872ccea0f46204b4ec77e29b11f22daeb7114ef61fad2a446582889",
+          "size_bytes": 818
+        },
+        "materials.json": {
+          "sha256": "3aa5ae90ca249ac077903e525a9c2ec0fcb170ff13619c5b0eee83187704fbe1",
+          "size_bytes": 288
+        },
+        "physics/collision_mesh.npz": {
+          "sha256": "23e95d6960db65a266cd4eaf004a459ae4c812f93fd2502e6dca0ba904fa096b",
+          "size_bytes": 1540
+        },
+        "physics/collision_mesh.obj": {
+          "sha256": "1ad52bff4ab241ec41cfd75a5fd082ffdbb2a6aa6d10a9e819e46f9d5d7d4e55",
+          "size_bytes": 4538
+        }
+      }
+    },
+    {
+      "id": "socket_mini_b_snug",
+      "path": "socket_mini_b_snug",
+      "kind": "rigid-socket-v1",
+      "source": "generated_tool_assets (procedural geometry, Manifold union + TetGen, centroid part labels)",
+      "import_status": "generated",
+      "description": "Mini-USB-B rigid socket block with a simple clearance cavity. Snug: 1 mm per side, for simulated contact.",
+      "bounds_m": [
+        [
+          0.0,
+          -0.014000000432133675,
+          0.0
+        ],
+        [
+          0.011500000022351742,
+          0.014000000432133675,
+          0.024000000208616257
+        ]
+      ],
+      "extent_m": [
+        0.011500000022351742,
+        0.02800000086426735,
+        0.024000000208616257
+      ],
+      "checks": {
+        "source_hashes_match": true
+      },
+      "rigid_groups": [
+        [
+          0
+        ]
+      ],
+      "used_by": [],
+      "behavior_validated_at_source": false,
+      "limitations": "Source estimates; tune per scene.",
+      "readme": "SOURCE.md",
+      "preview": "previews/socket_mini_b_snug.png",
+      "files": {
+        "appearance/albedo.png": {
+          "sha256": "879634d9af576396a945f6f53733560bc1fc1e51878c28f63cf3a75d26612263",
+          "size_bytes": 236
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "9a8697d3016b76c4f8dbd43c2dd9d7995a152c9f0bb82b2fbafbed5dac6e96a9",
+          "size_bytes": 12624
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "244b844afadb5ec66169c628118ffe27b199412feff07c1d0a00be18cd5bdb9f",
+          "size_bytes": 3434
+        },
+        "asset.json": {
+          "sha256": "ff5c93031e852fc53780ae7d0fd3576eeb910306cfea56c53397bcff9c83a0a2",
+          "size_bytes": 676
+        },
+        "connectors.json": {
+          "sha256": "da9171f873aee4ae1235af3d3be34d43aacbcb60ed3a19f22497b74ee0bf75c2",
+          "size_bytes": 818
+        },
+        "materials.json": {
+          "sha256": "3aa5ae90ca249ac077903e525a9c2ec0fcb170ff13619c5b0eee83187704fbe1",
+          "size_bytes": 288
+        },
+        "physics/collision_mesh.npz": {
+          "sha256": "b511fa617829f962366ad400efa86eec646d18e056377dd923d3fec6fa852908",
+          "size_bytes": 1538
+        },
+        "physics/collision_mesh.obj": {
+          "sha256": "59bb0cd2d0ed420f6d11bee7f36b5d466488702a13edde24564348ab66a33f7c",
+          "size_bytes": 4538
+        }
+      }
+    },
+    {
+      "id": "socket_station",
+      "path": "socket_station",
+      "kind": "rigid-socket-v1",
+      "source": "generated_tool_assets (procedural geometry, Manifold union + TetGen, centroid part labels)",
+      "import_status": "generated",
+      "description": "Round station plug rigid socket block with a simple clearance cavity.",
+      "bounds_m": [
+        [
+          0.0,
+          -0.014000000432133675,
+          0.0
+        ],
+        [
+          0.01600000075995922,
+          0.014000000432133675,
+          0.024399999529123306
+        ]
+      ],
+      "extent_m": [
+        0.01600000075995922,
+        0.02800000086426735,
+        0.024399999529123306
+      ],
+      "checks": {
+        "source_hashes_match": true
+      },
+      "rigid_groups": [
+        [
+          0
+        ]
+      ],
+      "used_by": [],
+      "behavior_validated_at_source": false,
+      "limitations": "Source estimates; tune per scene.",
+      "readme": "SOURCE.md",
+      "preview": "previews/socket_station.png",
+      "files": {
+        "appearance/albedo.png": {
+          "sha256": "879634d9af576396a945f6f53733560bc1fc1e51878c28f63cf3a75d26612263",
+          "size_bytes": 236
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "abff69d0f98ef9f1fd8ad8588c901673d38d978dfda1578fcd3f7c2dbed070db",
+          "size_bytes": 143532
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "e475148caabe66231018f374089d204e51e18e04845c8601dfd677aa72de5b3e",
+          "size_bytes": 30164
+        },
+        "asset.json": {
+          "sha256": "6c242bdfbf66aba6b854abd09b8c86247cf6acabedfd12283265359730afacd6",
+          "size_bytes": 1357
+        },
+        "connectors.json": {
+          "sha256": "5ec0d7b206816734ef8a212679298e09b8a38484f57dec2ab3d6fcab316102b7",
+          "size_bytes": 830
+        },
+        "materials.json": {
+          "sha256": "3aa5ae90ca249ac077903e525a9c2ec0fcb170ff13619c5b0eee83187704fbe1",
+          "size_bytes": 288
+        },
+        "physics/collision_mesh.npz": {
+          "sha256": "19181ccf0295f825fbc8865f6a97d4d976cd02dfef7a63e5735263000ee88044",
+          "size_bytes": 13977
+        },
+        "physics/collision_mesh.obj": {
+          "sha256": "5a02dd2855c32140d696a8c553e12e9fa6d5b3acf60c0984ccf0f1266ec04d70",
+          "size_bytes": 62137
+        },
+        "physics/rigid_tets.npz": {
+          "sha256": "7d5ce131da88649a7a26b268693c9ec0d13f3a5c7a76ea8044334b5c00002fac",
+          "size_bytes": 39446
+        }
+      }
+    },
+    {
+      "id": "socket_station_loose",
+      "path": "socket_station_loose",
+      "kind": "rigid-socket-v1",
+      "source": "generated_tool_assets (procedural geometry, Manifold union + TetGen, centroid part labels)",
+      "import_status": "generated",
+      "description": "Round station plug rigid socket block with a simple clearance cavity. Loose: 4 mm per side, for simulated contact.",
+      "bounds_m": [
+        [
+          0.0,
+          -0.015699999406933784,
+          0.0
+        ],
+        [
+          0.01600000075995922,
+          0.015699999406933784,
+          0.03139999881386757
+        ]
+      ],
+      "extent_m": [
+        0.01600000075995922,
+        0.03139999881386757,
+        0.03139999881386757
+      ],
+      "checks": {
+        "source_hashes_match": true
+      },
+      "rigid_groups": [
+        [
+          0
+        ]
+      ],
+      "used_by": [],
+      "behavior_validated_at_source": false,
+      "limitations": "Source estimates; tune per scene.",
+      "readme": "SOURCE.md",
+      "preview": "previews/socket_station_loose.png",
+      "files": {
+        "appearance/albedo.png": {
+          "sha256": "879634d9af576396a945f6f53733560bc1fc1e51878c28f63cf3a75d26612263",
+          "size_bytes": 236
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "d95571f9197e2c080834ad3716278e97488d268c56c0c33fe568c6134f832944",
+          "size_bytes": 159228
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "da7d5d5d01274201f1dec8245ed10745595c3e87f7c7255e9b1ac29e3c8bda50",
+          "size_bytes": 33856
+        },
+        "asset.json": {
+          "sha256": "58a50df1571670b82213a4dd841ca2048cc1d2a4ea869f8a975ea61323eb3dad",
+          "size_bytes": 1405
+        },
+        "connectors.json": {
+          "sha256": "cc2b334e8f79e811774227af20d189dfc054bc0c28414d823a14c28e222f85d1",
+          "size_bytes": 815
+        },
+        "materials.json": {
+          "sha256": "3aa5ae90ca249ac077903e525a9c2ec0fcb170ff13619c5b0eee83187704fbe1",
+          "size_bytes": 288
+        },
+        "physics/collision_mesh.npz": {
+          "sha256": "5e72cc856459138cd642fabdadf1e2f737e6e0042aa90277cb8669ed2a21f45a",
+          "size_bytes": 15726
+        },
+        "physics/collision_mesh.obj": {
+          "sha256": "ef904e98683082a0438233c241e62082bf58c9b4a24efc74a2f48dc3a7da151e",
+          "size_bytes": 69630
+        },
+        "physics/rigid_tets.npz": {
+          "sha256": "b3d2dca3b4a896f016a620f668626094205a3b62d654a289665c21bb4f6c7d09",
+          "size_bytes": 43938
+        }
+      }
+    },
+    {
+      "id": "socket_station_snug",
+      "path": "socket_station_snug",
+      "kind": "rigid-socket-v1",
+      "source": "generated_tool_assets (procedural geometry, Manifold union + TetGen, centroid part labels)",
+      "import_status": "generated",
+      "description": "Round station plug rigid socket block with a simple clearance cavity. Snug: 1 mm per side, for simulated contact.",
+      "bounds_m": [
+        [
+          0.0,
+          -0.014000000432133675,
+          0.0
+        ],
+        [
+          0.01600000075995922,
+          0.014000000432133675,
+          0.02539999969303608
+        ]
+      ],
+      "extent_m": [
+        0.01600000075995922,
+        0.02800000086426735,
+        0.02539999969303608
+      ],
+      "checks": {
+        "source_hashes_match": true
+      },
+      "rigid_groups": [
+        [
+          0
+        ]
+      ],
+      "used_by": [],
+      "behavior_validated_at_source": false,
+      "limitations": "Source estimates; tune per scene.",
+      "readme": "SOURCE.md",
+      "preview": "previews/socket_station_snug.png",
+      "files": {
+        "appearance/albedo.png": {
+          "sha256": "879634d9af576396a945f6f53733560bc1fc1e51878c28f63cf3a75d26612263",
+          "size_bytes": 236
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "19e6e2b7cccf9f919a124eb37894a61a4bf1955917fe77208c6e404848528dfb",
+          "size_bytes": 140504
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "5524d56a20fa3f47b5625cebdf2615091ecaae5128161cf1c743134588838ba1",
+          "size_bytes": 29618
+        },
+        "asset.json": {
+          "sha256": "ff839aab9761c021f4388986453a2c4d48488747ded77498d7027c551050b52c",
+          "size_bytes": 1403
+        },
+        "connectors.json": {
+          "sha256": "c3a02cd34b5e032c9a86af9a32ef7cc2ec776d5af44a68d12e8dd266f4d4fdc1",
+          "size_bytes": 815
+        },
+        "materials.json": {
+          "sha256": "3aa5ae90ca249ac077903e525a9c2ec0fcb170ff13619c5b0eee83187704fbe1",
+          "size_bytes": 288
+        },
+        "physics/collision_mesh.npz": {
+          "sha256": "7b5b4323f416785d82a296761788f2ef2d90969fa403516393293e78ff0cd055",
+          "size_bytes": 13600
+        },
+        "physics/collision_mesh.obj": {
+          "sha256": "7a975bf7880f59c7384f7d054bad8e3758d4ae46f2b79ac029d616189f57f226",
+          "size_bytes": 60796
+        },
+        "physics/rigid_tets.npz": {
+          "sha256": "a22b0f30de949db3d3ca0c112eb216fa830f1e2e6b5276ff9539d42cf0a3cadc",
+          "size_bytes": 38626
+        }
+      }
+    },
+    {
+      "id": "socket_usb_a",
+      "path": "socket_usb_a",
+      "kind": "rigid-socket-v1",
+      "source": "generated_tool_assets (procedural geometry, Manifold union + TetGen, centroid part labels)",
+      "import_status": "generated",
+      "description": "USB-A rigid socket block with a simple clearance cavity.",
+      "bounds_m": [
+        [
+          0.0,
+          -0.014000000432133675,
+          0.0
+        ],
+        [
+          0.017000000923871994,
+          0.014000000432133675,
+          0.024000000208616257
+        ]
+      ],
+      "extent_m": [
+        0.017000000923871994,
+        0.02800000086426735,
+        0.024000000208616257
+      ],
+      "checks": {
+        "source_hashes_match": true
+      },
+      "rigid_groups": [
+        [
+          0
+        ]
+      ],
+      "used_by": [],
+      "behavior_validated_at_source": false,
+      "limitations": "Source estimates; tune per scene.",
+      "readme": "SOURCE.md",
+      "preview": "previews/socket_usb_a.png",
+      "files": {
+        "appearance/albedo.png": {
+          "sha256": "879634d9af576396a945f6f53733560bc1fc1e51878c28f63cf3a75d26612263",
+          "size_bytes": 236
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "cbc65d20933f377267d3ece114bc63716e43e22edbac19d298f19088de538be0",
+          "size_bytes": 12624
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "c647ec5c56c060d038c6a8a067711e6f0e31940705d0b43db6b3866ffb3ee2c2",
+          "size_bytes": 3449
+        },
+        "asset.json": {
+          "sha256": "f583c5faa8d5720de7f1ebc4f026a1a536d73a27bd163d9b7b04c8ccd4c8f2ef",
+          "size_bytes": 614
+        },
+        "connectors.json": {
+          "sha256": "86403d592d7b2cf3e713151efbd685ecc638b457f610e330c72094b418188dfb",
+          "size_bytes": 817
+        },
+        "materials.json": {
+          "sha256": "3aa5ae90ca249ac077903e525a9c2ec0fcb170ff13619c5b0eee83187704fbe1",
+          "size_bytes": 288
+        },
+        "physics/collision_mesh.npz": {
+          "sha256": "040eebcb5275450f0704d199edfdfc8f02e5d572a987a31135dd841acfb74c77",
+          "size_bytes": 1536
+        },
+        "physics/collision_mesh.obj": {
+          "sha256": "360ab943e9d3440f0dcf5b8224df4f8e16eeca400175f22a1923e4c789e264b1",
+          "size_bytes": 4538
+        }
+      }
+    },
+    {
+      "id": "socket_usb_a_loose",
+      "path": "socket_usb_a_loose",
+      "kind": "rigid-socket-v1",
+      "source": "generated_tool_assets (procedural geometry, Manifold union + TetGen, centroid part labels)",
+      "import_status": "generated",
+      "description": "USB-A rigid socket block with a simple clearance cavity. Loose: 4 mm per side, for simulated contact.",
+      "bounds_m": [
+        [
+          0.0,
+          -0.01549999974668026,
+          0.0
+        ],
+        [
+          0.017000000923871994,
+          0.01549999974668026,
+          0.024000000208616257
+        ]
+      ],
+      "extent_m": [
+        0.017000000923871994,
+        0.03099999949336052,
+        0.024000000208616257
+      ],
+      "checks": {
+        "source_hashes_match": true
+      },
+      "rigid_groups": [
+        [
+          0
+        ]
+      ],
+      "used_by": [
+        "cable_plug_place.py"
+      ],
+      "behavior_validated_at_source": false,
+      "limitations": "Source estimates; tune per scene.",
+      "readme": "SOURCE.md",
+      "preview": "previews/socket_usb_a_loose.png",
+      "files": {
+        "appearance/albedo.png": {
+          "sha256": "879634d9af576396a945f6f53733560bc1fc1e51878c28f63cf3a75d26612263",
+          "size_bytes": 236
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "b329c4a1e531136cfd2aca6f3e40625ad1861c5b327206b26b8a9ad4895513a3",
+          "size_bytes": 12624
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "aaee5753677f770781a4841c5defa8929c35e08a6af3344c91a65a8911dfc585",
+          "size_bytes": 3446
+        },
+        "asset.json": {
+          "sha256": "b8662de7a79aacf85003878be26622e7c45b409878321f8cd419f7619bb9dbce",
+          "size_bytes": 671
+        },
+        "connectors.json": {
+          "sha256": "e6e9caae795e1410e25180afb0d9f58426ca67cccc7c777707b17b903e7c12b2",
+          "size_bytes": 816
+        },
+        "materials.json": {
+          "sha256": "3aa5ae90ca249ac077903e525a9c2ec0fcb170ff13619c5b0eee83187704fbe1",
+          "size_bytes": 288
+        },
+        "physics/collision_mesh.npz": {
+          "sha256": "a2fe76b2366ee5520ab0cbf7d439f0b402b22db1397f2ebd8a33c2c703368f1d",
+          "size_bytes": 1545
+        },
+        "physics/collision_mesh.obj": {
+          "sha256": "862998fb1499240deb2d0da6fcdd76fe1d8ff46ab9cd1f26774ff8a4a1e5033d",
+          "size_bytes": 4538
+        }
+      }
+    },
+    {
+      "id": "socket_usb_a_snug",
+      "path": "socket_usb_a_snug",
+      "kind": "rigid-socket-v1",
+      "source": "generated_tool_assets (procedural geometry, Manifold union + TetGen, centroid part labels)",
+      "import_status": "generated",
+      "description": "USB-A rigid socket block with a simple clearance cavity. Snug: 1 mm per side, for simulated contact.",
+      "bounds_m": [
+        [
+          0.0,
+          -0.014000000432133675,
+          0.0
+        ],
+        [
+          0.017000000923871994,
+          0.014000000432133675,
+          0.024000000208616257
+        ]
+      ],
+      "extent_m": [
+        0.017000000923871994,
+        0.02800000086426735,
+        0.024000000208616257
+      ],
+      "checks": {
+        "source_hashes_match": true
+      },
+      "rigid_groups": [
+        [
+          0
+        ]
+      ],
+      "used_by": [
+        "cable_plug_place.py"
+      ],
+      "behavior_validated_at_source": false,
+      "limitations": "Source estimates; tune per scene.",
+      "readme": "SOURCE.md",
+      "preview": "previews/socket_usb_a_snug.png",
+      "files": {
+        "appearance/albedo.png": {
+          "sha256": "879634d9af576396a945f6f53733560bc1fc1e51878c28f63cf3a75d26612263",
+          "size_bytes": 236
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "625fe2bc827202021b35630385623415b446dce18a82e2333312ab1add79f654",
+          "size_bytes": 12624
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "585f8e50dad4f2f54c28fea7aa40c9245949cb914a0201f96514c92df05f6215",
+          "size_bytes": 3455
+        },
+        "asset.json": {
+          "sha256": "422bd5e6fbfae32e69973c558e920d9f58bc3698089c914bdbe6e17ed431ee13",
+          "size_bytes": 663
+        },
+        "connectors.json": {
+          "sha256": "271a6c1ce113be0b075dd55ca1df0ffb90219b2ffbc13998841102c354bd35cb",
+          "size_bytes": 816
+        },
+        "materials.json": {
+          "sha256": "3aa5ae90ca249ac077903e525a9c2ec0fcb170ff13619c5b0eee83187704fbe1",
+          "size_bytes": 288
+        },
+        "physics/collision_mesh.npz": {
+          "sha256": "37bd4eef8b5f8a125961e714b719b98a8bf9988f491011769bc747896e0642d0",
+          "size_bytes": 1538
+        },
+        "physics/collision_mesh.obj": {
+          "sha256": "9f5d36bbefb48d55d41c0a88a1596170e86abbaa4623c21f1558e481297b6c7d",
+          "size_bytes": 4539
+        }
+      }
+    },
+    {
+      "id": "socket_usb_c",
+      "path": "socket_usb_c",
+      "kind": "rigid-socket-v1",
+      "source": "generated_tool_assets (procedural geometry, Manifold union + TetGen, centroid part labels)",
+      "import_status": "generated",
+      "description": "USB-C rigid socket block with a simple clearance cavity.",
+      "bounds_m": [
+        [
+          0.0,
+          -0.014000000432133675,
+          0.0
+        ],
+        [
+          0.013000000268220901,
+          0.014000000432133675,
+          0.024000000208616257
+        ]
+      ],
+      "extent_m": [
+        0.013000000268220901,
+        0.02800000086426735,
+        0.024000000208616257
+      ],
+      "checks": {
+        "source_hashes_match": true
+      },
+      "rigid_groups": [
+        [
+          0
+        ]
+      ],
+      "used_by": [],
+      "behavior_validated_at_source": false,
+      "limitations": "Source estimates; tune per scene.",
+      "readme": "SOURCE.md",
+      "preview": "previews/socket_usb_c.png",
+      "files": {
+        "appearance/albedo.png": {
+          "sha256": "879634d9af576396a945f6f53733560bc1fc1e51878c28f63cf3a75d26612263",
+          "size_bytes": 236
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "0966ad1d8079ce70f9eeddf7bff633d990b327c85712ce69eedb4f6dddfd4f5f",
+          "size_bytes": 112716
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "c0012b622d9a10cf6b10e694b79e534a0aeebc7dc8937ac3563a107a8abfadef",
+          "size_bytes": 23892
+        },
+        "asset.json": {
+          "sha256": "465d68c0e1ba8f3d206ae6501139a67315bd91dffa72da3be007780645d04a91",
+          "size_bytes": 1323
+        },
+        "connectors.json": {
+          "sha256": "fda3597aedf4a81feeebb74fa6db07130b73753a2465224c84490042e8ccd6ac",
+          "size_bytes": 817
+        },
+        "materials.json": {
+          "sha256": "3aa5ae90ca249ac077903e525a9c2ec0fcb170ff13619c5b0eee83187704fbe1",
+          "size_bytes": 288
+        },
+        "physics/collision_mesh.npz": {
+          "sha256": "bdbaf7e16b0b63177edd551207433749b52283892bdf55b127de4bee5d98a447",
+          "size_bytes": 10794
+        },
+        "physics/collision_mesh.obj": {
+          "sha256": "c1e454cbb2b06f6442082c578c71b513c97f1e7ab003834a56d7b5472f8e476e",
+          "size_bytes": 48548
+        }
+      }
+    },
+    {
+      "id": "socket_usb_c_loose",
+      "path": "socket_usb_c_loose",
+      "kind": "rigid-socket-v1",
+      "source": "generated_tool_assets (procedural geometry, Manifold union + TetGen, centroid part labels)",
+      "import_status": "generated",
+      "description": "USB-C rigid socket block with a simple clearance cavity. Loose: 4 mm per side, for simulated contact.",
+      "bounds_m": [
+        [
+          0.0,
+          -0.014000000432133675,
+          0.0
+        ],
+        [
+          0.013000000268220901,
+          0.014000000432133675,
+          0.024000000208616257
+        ]
+      ],
+      "extent_m": [
+        0.013000000268220901,
+        0.02800000086426735,
+        0.024000000208616257
+      ],
+      "checks": {
+        "source_hashes_match": true
+      },
+      "rigid_groups": [
+        [
+          0
+        ]
+      ],
+      "used_by": [],
+      "behavior_validated_at_source": false,
+      "limitations": "Source estimates; tune per scene.",
+      "readme": "SOURCE.md",
+      "preview": "previews/socket_usb_c_loose.png",
+      "files": {
+        "appearance/albedo.png": {
+          "sha256": "879634d9af576396a945f6f53733560bc1fc1e51878c28f63cf3a75d26612263",
+          "size_bytes": 236
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "eccbfa4349c74c1f8c162dd2996afb958a769973fdb3f0e55fa18d665f9b527c",
+          "size_bytes": 12624
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "4fae5434da0130977ed8337e1341db19f48c33865e36efacd528b264631aaa30",
+          "size_bytes": 3442
+        },
+        "asset.json": {
+          "sha256": "423abd1ab6c3235fec94aa363769242f8c8d46a7439e3ea3c784fbc7c792c80d",
+          "size_bytes": 665
+        },
+        "connectors.json": {
+          "sha256": "4616aa7d53034821a8f3916f0608425132d8783b9da6fa0012b68091e4dc5114",
+          "size_bytes": 816
+        },
+        "materials.json": {
+          "sha256": "3aa5ae90ca249ac077903e525a9c2ec0fcb170ff13619c5b0eee83187704fbe1",
+          "size_bytes": 288
+        },
+        "physics/collision_mesh.npz": {
+          "sha256": "18cdb4b1dfdb636abb9f81e7efdcdbdc922479c3e4546163bc3ffba67dacef91",
+          "size_bytes": 1542
+        },
+        "physics/collision_mesh.obj": {
+          "sha256": "ad223e3d82a01b31644de158bc19f97794b3f38e7671f88d6afd194083078128",
+          "size_bytes": 4538
+        }
+      }
+    },
+    {
+      "id": "socket_usb_c_snug",
+      "path": "socket_usb_c_snug",
+      "kind": "rigid-socket-v1",
+      "source": "generated_tool_assets (procedural geometry, Manifold union + TetGen, centroid part labels)",
+      "import_status": "generated",
+      "description": "USB-C rigid socket block with a simple clearance cavity. Snug: 1 mm per side, for simulated contact.",
+      "bounds_m": [
+        [
+          0.0,
+          -0.014000000432133675,
+          0.0
+        ],
+        [
+          0.013000000268220901,
+          0.014000000432133675,
+          0.024000000208616257
+        ]
+      ],
+      "extent_m": [
+        0.013000000268220901,
+        0.02800000086426735,
+        0.024000000208616257
+      ],
+      "checks": {
+        "source_hashes_match": true
+      },
+      "rigid_groups": [
+        [
+          0
+        ]
+      ],
+      "used_by": [],
+      "behavior_validated_at_source": false,
+      "limitations": "Source estimates; tune per scene.",
+      "readme": "SOURCE.md",
+      "preview": "previews/socket_usb_c_snug.png",
+      "files": {
+        "appearance/albedo.png": {
+          "sha256": "879634d9af576396a945f6f53733560bc1fc1e51878c28f63cf3a75d26612263",
+          "size_bytes": 236
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "603363136b34dd5edadaf6aba0188c9eab19d9c046809974dbda20db9f7c7182",
+          "size_bytes": 12624
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "2cabccaea05e6f2735f910f258da6f4d32ae37c48902c0288773d4672ee7f9d2",
+          "size_bytes": 3441
+        },
+        "asset.json": {
+          "sha256": "cf303f76ccf55bce8e58a476aee0a514c2af9557d38fdb507879e258c3e316bb",
+          "size_bytes": 663
+        },
+        "connectors.json": {
+          "sha256": "75488c3c60b4a4472a2bf7765476123845ca5aeecb0cca5c04affb338003f991",
+          "size_bytes": 816
+        },
+        "materials.json": {
+          "sha256": "3aa5ae90ca249ac077903e525a9c2ec0fcb170ff13619c5b0eee83187704fbe1",
+          "size_bytes": 288
+        },
+        "physics/collision_mesh.npz": {
+          "sha256": "88b1bfcb23b1b4ba885f4b9507e97f99219900e5834725285d64b13ac3dc8d81",
+          "size_bytes": 1537
+        },
+        "physics/collision_mesh.obj": {
+          "sha256": "b5359fd1233c6f2a350a412805d5e54d4d36c02a6975ee69de5b423de5e2144a",
+          "size_bytes": 4537
+        }
+      }
+    },
+    {
+      "id": "sponge_wand",
+      "path": "sponge_wand",
+      "kind": "labelled-tet-v1",
+      "source": "generated_tool_assets (procedural geometry, Manifold union + TetGen, centroid part labels)",
+      "import_status": "generated",
+      "description": "Reference-informed dishwand with a continuous contoured rigid grip/neck, a small inset backing, and a rounded tapered 85 x 50 x 20 mm cleaning sponge.",
+      "vertices": 5012,
+      "tetrahedra": 16874,
+      "bounds_m": [
+        [
+          -0.17,
+          -0.025,
+          0.0
+        ],
+        [
+          0.085,
+          0.025,
+          0.0912872161865
+        ]
+      ],
+      "extent_m": [
+        0.255,
+        0.05,
+        0.0912872161865
+      ],
+      "source_mass_kg": 0.04977166546490766,
+      "source_stiffness_ratio": 27500.0,
+      "parts": [
+        {
+          "id": 0,
+          "name": "handle",
+          "tetrahedra": 8775,
+          "youngs_modulus_pa": 2200000000.0,
+          "poisson_ratio": 0.37,
+          "density_kg_m3": 1100.0
+        },
+        {
+          "id": 1,
+          "name": "backing",
+          "tetrahedra": 3373,
+          "youngs_modulus_pa": 2200000000.0,
+          "poisson_ratio": 0.37,
+          "density_kg_m3": 1100.0
+        },
+        {
+          "id": 2,
+          "name": "compressible_sponge",
+          "tetrahedra": 3703,
+          "youngs_modulus_pa": 80000.0,
+          "poisson_ratio": 0.25,
+          "density_kg_m3": 80.0
+        },
+        {
+          "id": 3,
+          "name": "scouring_face",
+          "tetrahedra": 1023,
+          "youngs_modulus_pa": 300000.0,
+          "poisson_ratio": 0.3,
+          "density_kg_m3": 180.0
+        }
+      ],
+      "checks": {
+        "labelled_tet_loader_passed": true,
+        "no_duplicate_tetrahedra": true,
+        "source_hashes_match": true
+      },
+      "rigid_groups": [
+        [
+          0,
+          1
+        ]
+      ],
+      "used_by": [],
+      "behavior_validated_at_source": false,
+      "limitations": "Source estimates; tune per scene.",
+      "readme": "SOURCE.md",
+      "preview": "previews/sponge_wand.png",
+      "files": {
+        "appearance/albedo.png": {
+          "sha256": "92d0c6d2bb01b076537cd6c22e54b89dccbc9c8c57edcd6c3bf4264c8ff44bd9",
+          "size_bytes": 288
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "8cf35df253178d37730059024dd2e90102eda7943a6e18728a3805157f78f9e7",
+          "size_bytes": 597228
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "8d1a3fe51c9f7d41952bde0ee4b35548854210d981e606c67bdea74b42b7ec26",
+          "size_bytes": 213680
+        },
+        "asset.json": {
+          "sha256": "aed2882c50a1059d28411dda5244207671cc2ab71598bf89daafec29dd6c9b51",
+          "size_bytes": 1170
+        },
+        "final_mesh.mesh": {
+          "sha256": "6e2940bd199ab18e2a808c07313ffd182fc0e1ba756a04a76eacd884c37c959d",
+          "size_bytes": 606931
+        },
+        "heterogeneous_params.npz": {
+          "sha256": "bf8b435e3aa10d226099e3cf453c74969430d2d634a700a8c7bcec47a2e6b8fd",
+          "size_bytes": 18887
+        },
+        "inferred_params.json": {
+          "sha256": "e98a1ac1d477fe0d48cfc4888ddcfc9b2514d94b6d5da6d8b112aab587c5ace1",
+          "size_bytes": 1683
+        }
+      }
+    },
+    {
+      "id": "toilet_plunger_generated",
+      "path": "toilet_plunger_generated",
+      "kind": "labelled-tet-v1",
+      "source": "generated_tool_assets (procedural geometry, Manifold union + TetGen, centroid part labels)",
+      "import_status": "generated",
+      "description": "110 mm diameter hollow rubber cup with a 20 mm wooden shaft; total height 377 mm. Mouth remains open.",
+      "vertices": 7251,
+      "tetrahedra": 20735,
+      "bounds_m": [
+        [
+          -0.055,
+          -0.055,
+          0.0
+        ],
+        [
+          0.055,
+          0.055,
+          0.377
+        ]
+      ],
+      "extent_m": [
+        0.11,
+        0.11,
+        0.377
+      ],
+      "source_mass_kg": 0.18931908174107934,
+      "source_stiffness_ratio": 2000.0,
+      "parts": [
+        {
+          "id": 0,
+          "name": "wooden_handle",
+          "tetrahedra": 8447,
+          "youngs_modulus_pa": 10000000000.0,
+          "poisson_ratio": 0.3,
+          "density_kg_m3": 650.0
+        },
+        {
+          "id": 1,
+          "name": "flexible_cup",
+          "tetrahedra": 11072,
+          "youngs_modulus_pa": 5000000.0,
+          "poisson_ratio": 0.49,
+          "density_kg_m3": 1100.0
+        },
+        {
+          "id": 2,
+          "name": "sealing_lip",
+          "tetrahedra": 1216,
+          "youngs_modulus_pa": 5000000.0,
+          "poisson_ratio": 0.49,
+          "density_kg_m3": 1100.0
+        }
+      ],
+      "checks": {
+        "labelled_tet_loader_passed": true,
+        "no_duplicate_tetrahedra": true,
+        "source_hashes_match": true
+      },
+      "rigid_groups": [
+        [
+          0
+        ]
+      ],
+      "used_by": [],
+      "behavior_validated_at_source": false,
+      "limitations": "Source estimates; tune per scene.",
+      "readme": "SOURCE.md",
+      "preview": "previews/toilet_plunger_generated.png",
+      "files": {
+        "appearance/albedo.png": {
+          "sha256": "62017135481c3c586068161349bc1a42ae18a6c4c92ed7bea1cd3633cc34b7c8",
+          "size_bytes": 260
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "d03bc944b170a69b9e101a912c6f5b53b1a9ad50320142751bee14035bdb745b",
+          "size_bytes": 972208
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "b0e9f14e7abae66ffaa08b6949ac5ebe0280f1983f98e843af6f64c4e81aadb7",
+          "size_bytes": 343739
+        },
+        "asset.json": {
+          "sha256": "9289d558729381e94e036b56c309564d6e862eab062b59e4a91b9a66120fb696",
+          "size_bytes": 504
+        },
+        "final_mesh.mesh": {
+          "sha256": "1a2175e77dea82ad15aebc265309d63703f7fc2ba48cf1460cb3822aebab7a37",
+          "size_bytes": 774843
+        },
+        "heterogeneous_params.npz": {
+          "sha256": "0f63fd5bd39d5568e5e53df651734134fc389840132e5d0a808d7457ce3e4f9c",
+          "size_bytes": 13920
+        },
+        "inferred_params.json": {
+          "sha256": "34bbb923050fb4e5c7f7eaf080f30e4dd264c509929a672431e7156d9edf856c",
+          "size_bytes": 1320
+        }
+      }
+    },
+    {
+      "id": "usb_hub_gen",
+      "path": "usb_hub_gen",
+      "kind": "labelled-tet-v1",
+      "source": "generated_tool_assets (procedural geometry, Manifold union + TetGen, centroid part labels)",
+      "import_status": "generated",
+      "description": "Usb Hub: rounded housing, straight 350 mm cable, 4.5 mm diameter, two strain reliefs, usb_a endpoint.",
+      "vertices": 6052,
+      "tetrahedra": 19025,
+      "bounds_m": [
+        [
+          -0.05,
+          -0.0175,
+          -0.0075
+        ],
+        [
+          0.4465,
+          0.0175,
+          0.0075
+        ]
+      ],
+      "extent_m": [
+        0.4965,
+        0.035,
+        0.015
+      ],
+      "source_mass_kg": 0.06698386899418877,
+      "source_stiffness_ratio": 40000.0,
+      "parts": [
+        {
+          "id": 0,
+          "name": "housing",
+          "tetrahedra": 6933,
+          "youngs_modulus_pa": 2200000000.0,
+          "poisson_ratio": 0.37,
+          "density_kg_m3": 1100.0
+        },
+        {
+          "id": 1,
+          "name": "cable_and_root_strain_relief",
+          "tetrahedra": 8875,
+          "youngs_modulus_pa": 5000000.0,
+          "poisson_ratio": 0.49,
+          "density_kg_m3": 1100.0
+        },
+        {
+          "id": 2,
+          "name": "distal_collar_connector",
+          "tetrahedra": 1925,
+          "youngs_modulus_pa": 2200000000.0,
+          "poisson_ratio": 0.37,
+          "density_kg_m3": 1100.0
+        },
+        {
+          "id": 3,
+          "name": "plug",
+          "tetrahedra": 1292,
+          "youngs_modulus_pa": 200000000000.0,
+          "poisson_ratio": 0.3,
+          "density_kg_m3": 7850.0
+        }
+      ],
+      "checks": {
+        "labelled_tet_loader_passed": true,
+        "no_duplicate_tetrahedra": true,
+        "source_hashes_match": true
+      },
+      "rigid_groups": [
+        [
+          0
+        ],
+        [
+          2,
+          3
+        ]
+      ],
+      "used_by": [
+        "cable_hang_stick.py",
+        "cable_plug_place.py",
+        "cable_scene.py",
+        "cable_sort_plug.py",
+        "cable_tray_multi.py",
+        "cable_untangle_sort.py",
+        "usb_hub_box.py"
+      ],
+      "behavior_validated_at_source": false,
+      "limitations": "No simulation retuning performed; source estimates only.",
+      "readme": "SOURCE.md",
+      "preview": "previews/usb_hub_gen.png",
+      "files": {
+        "appearance/albedo.png": {
+          "sha256": "a269c1a6ae2cdf0fde81a91c64fa24fb7c4231878c1f178ce15b0bef9141843d",
+          "size_bytes": 287
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "af61f80a2369ea98441dc18fda970022a5ad3faf122d6847eb72a3abb6be78b3",
+          "size_bytes": 786608
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "259b3f7edd6b176fc9b79dd83febbf960be263437be67dafcca6b7fe0da41397",
+          "size_bytes": 234612
+        },
+        "asset.json": {
+          "sha256": "358d2cb6a313c075040b897e56d6485baee74859b91b547fe07abef9336c6c0e",
+          "size_bytes": 893
+        },
+        "connectors.json": {
+          "sha256": "e1cac2fb6a37f92e1c03d274695272def80edef03cfebaeb7be58bcc2fbd4ca8",
+          "size_bytes": 3314
+        },
+        "final_mesh.mesh": {
+          "sha256": "79df5b54178cadb8bd5b4cf4e5683eef98de7052e93b167ee14615ec2accdae3",
+          "size_bytes": 605444
+        },
+        "heterogeneous_params.npz": {
+          "sha256": "8ba61d9bf29c86d4138b094ab22e61f6e0f0fec54efa36825eec9bcb02d6d48a",
+          "size_bytes": 16721
+        },
+        "inferred_params.json": {
+          "sha256": "381c9e1957557b13a59a0865462de0367ab4ed9c5c611dfe3a5d81530d235bb9",
+          "size_bytes": 1684
+        }
+      }
+    },
+    {
+      "id": "whiteboard_eraser",
+      "path": "whiteboard_eraser",
+      "kind": "labelled-tet-v1",
+      "source": "generated_tool_assets (procedural geometry, Manifold union + TetGen, centroid part labels)",
+      "import_status": "generated",
+      "description": "110 x 48 mm eraser with a rigid rounded palm grip and a 10 mm compressible wiping pad.",
+      "vertices": 8915,
+      "tetrahedra": 36910,
+      "bounds_m": [
+        [
+          -0.055,
+          -0.024,
+          0.0
+        ],
+        [
+          0.055,
+          0.024,
+          0.032
+        ]
+      ],
+      "extent_m": [
+        0.11,
+        0.048,
+        0.032
+      ],
+      "source_mass_kg": 0.10324216188990577,
+      "source_stiffness_ratio": 18333.333333333332,
+      "parts": [
+        {
+          "id": 0,
+          "name": "palm_grip",
+          "tetrahedra": 7149,
+          "youngs_modulus_pa": 2200000000.0,
+          "poisson_ratio": 0.37,
+          "density_kg_m3": 1100.0
+        },
+        {
+          "id": 1,
+          "name": "pad_backing",
+          "tetrahedra": 17541,
+          "youngs_modulus_pa": 2200000000.0,
+          "poisson_ratio": 0.37,
+          "density_kg_m3": 1100.0
+        },
+        {
+          "id": 2,
+          "name": "felt_foam_wiping_pad",
+          "tetrahedra": 12220,
+          "youngs_modulus_pa": 120000.0,
+          "poisson_ratio": 0.28,
+          "density_kg_m3": 150.0
+        }
+      ],
+      "checks": {
+        "labelled_tet_loader_passed": true,
+        "no_duplicate_tetrahedra": true,
+        "source_hashes_match": true
+      },
+      "rigid_groups": [
+        [
+          0,
+          1
+        ]
+      ],
+      "used_by": [],
+      "behavior_validated_at_source": false,
+      "limitations": "Source estimates; tune per scene.",
+      "readme": "SOURCE.md",
+      "preview": "previews/whiteboard_eraser.png",
+      "files": {
+        "appearance/albedo.png": {
+          "sha256": "6ee4f2989f5b00000e181430699d819e1436fa32a453a02e61b7f698a49c74e1",
+          "size_bytes": 261
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "915871dda7547b9744a2bbb64e7e228794622a4a1dd2ac225515a76f627cd465",
+          "size_bytes": 781556
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "fe9658fb5738066e9eedb3a296db898b31ce6c101c9ec91ef8413f2674c13546",
+          "size_bytes": 262073
+        },
+        "asset.json": {
+          "sha256": "72ba7612389ea74e325c4335107382ed4cbb812a58fad554e10698847d7c9ad8",
+          "size_bytes": 381
+        },
+        "final_mesh.mesh": {
+          "sha256": "d4f48a4d04080d77611507f9a027af8026e73d2606e3b9c0ad9ce8a3d05512f9",
+          "size_bytes": 1187291
+        },
+        "heterogeneous_params.npz": {
+          "sha256": "b8449b0125e9d822aaa8e9798a40dd74aa00c109a4b928fc2d653a6869485271",
+          "size_bytes": 34196
+        },
+        "inferred_params.json": {
+          "sha256": "65cb86f8012816d122797c5a485f63f27abeef0ad04e8a9261cf47bc2f8df271",
+          "size_bytes": 1351
+        }
+      }
+    },
+    {
+      "id": "y_splitter_cable",
+      "path": "y_splitter_cable",
+      "kind": "labelled-tet-v1",
+      "source": "generated_tool_assets (procedural geometry, Manifold union + TetGen, centroid part labels)",
+      "import_status": "generated",
+      "description": "Y splitter cable: original reference-informed rigid/deformable geometry.",
+      "vertices": 6701,
+      "tetrahedra": 20969,
+      "bounds_m": [
+        [
+          -0.183,
+          -0.066,
+          -0.0045
+        ],
+        [
+          0.1615,
+          0.066,
+          0.0045
+        ]
+      ],
+      "extent_m": [
+        0.34450000000000003,
+        0.132,
+        0.009
+      ],
+      "source_mass_kg": 0.0294886862768745,
+      "source_stiffness_ratio": 40000.0,
+      "parts": [
+        {
+          "id": 0,
+          "name": "flexible_cable_and_strain_reliefs",
+          "tetrahedra": 12959,
+          "youngs_modulus_pa": 5000000.0,
+          "poisson_ratio": 0.47,
+          "density_kg_m3": 1250.0
+        },
+        {
+          "id": 1,
+          "name": "mini_b_end_1_housing",
+          "tetrahedra": 1512,
+          "youngs_modulus_pa": 2200000000.0,
+          "poisson_ratio": 0.37,
+          "density_kg_m3": 1100.0
+        },
+        {
+          "id": 2,
+          "name": "mini_b_end_1_metal",
+          "tetrahedra": 35,
+          "youngs_modulus_pa": 200000000000.0,
+          "poisson_ratio": 0.3,
+          "density_kg_m3": 7850.0
+        },
+        {
+          "id": 3,
+          "name": "usb_a_end_2_housing",
+          "tetrahedra": 1914,
+          "youngs_modulus_pa": 2200000000.0,
+          "poisson_ratio": 0.37,
+          "density_kg_m3": 1100.0
+        },
+        {
+          "id": 4,
+          "name": "usb_a_end_2_metal",
+          "tetrahedra": 1318,
+          "youngs_modulus_pa": 200000000000.0,
+          "poisson_ratio": 0.3,
+          "density_kg_m3": 7850.0
+        },
+        {
+          "id": 5,
+          "name": "usb_a_end_3_housing",
+          "tetrahedra": 1928,
+          "youngs_modulus_pa": 2200000000.0,
+          "poisson_ratio": 0.37,
+          "density_kg_m3": 1100.0
+        },
+        {
+          "id": 6,
+          "name": "usb_a_end_3_metal",
+          "tetrahedra": 1303,
+          "youngs_modulus_pa": 200000000000.0,
+          "poisson_ratio": 0.3,
+          "density_kg_m3": 7850.0
+        }
+      ],
+      "checks": {
+        "labelled_tet_loader_passed": true,
+        "no_duplicate_tetrahedra": true,
+        "source_hashes_match": true
+      },
+      "rigid_groups": [
+        [
+          1,
+          2
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          5,
+          6
+        ]
+      ],
+      "used_by": [
+        "cable_scene.py",
+        "cable_untangle_sort.py"
+      ],
+      "behavior_validated_at_source": false,
+      "limitations": "Source estimates; tune per scene.",
+      "readme": "SOURCE.md",
+      "preview": "previews/y_splitter_cable.png",
+      "files": {
+        "appearance/albedo.png": {
+          "sha256": "f0fe5cbea0140ebd1c343504db536025500dede3800be739253b94fc180cfa27",
+          "size_bytes": 331
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "88c1d7532a330e9ce655a0d03bce701f581d41404e61d70a1b3388c4ca5c6f63",
+          "size_bytes": 919160
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "1bb4e858ffb8f6fae5a3b14ee1db6d68fea60f8a73e94dacfd9b124886e8ff9b",
+          "size_bytes": 290658
+        },
+        "asset.json": {
+          "sha256": "d5f149e71b6680174f35986004cafcc3841d382d0f4dc4b9d89a8217957c279d",
+          "size_bytes": 1149
+        },
+        "connectors.json": {
+          "sha256": "021cb07c91e4eab9d45f9c28a49abfe201e95bdfb29d2e38926fb8975f62fb75",
+          "size_bytes": 2379
+        },
+        "final_mesh.mesh": {
+          "sha256": "34ce5f6f957f8092f715075844fcaf4601b6b81a053d9a01e4839126be146942",
+          "size_bytes": 658269
+        },
+        "heterogeneous_params.npz": {
+          "sha256": "b73a79c3e31af69a8c2bfe56e2a633f0149a3caac3556acc56403ae0c52a7d69",
+          "size_bytes": 26302
+        },
+        "inferred_params.json": {
+          "sha256": "7a01c194c854e28ae9ac17e62540948e9325f57b0952645e81c396b7251ef9eb",
+          "size_bytes": 2795
+        }
+      }
+    }
+  ]
+}

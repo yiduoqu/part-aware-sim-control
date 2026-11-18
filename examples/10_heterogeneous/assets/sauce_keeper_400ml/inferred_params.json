@@ -1,0 +1,163 @@
+{
+  "schema_version": "hag4r-agentic-gpt-staged-material-inference-v1",
+  "image_path": "/workspace/HAG4R-runpod/outputs/agentic_asset_refinement/ya20_deformable_part2_4_sauce_keeper_400ml_yiduo_20260904_150032/revisions/revision_0000/omnipart/sauce_keeper_400ml/mesh_combined_part_labels_top.png",
+  "processed_image_path": "/workspace/HAG4R-runpod/outputs/agentic_asset_refinement/ya20_deformable_part2_4_sauce_keeper_400ml_yiduo_20260904_150032/revisions/revision_0000/segmentation/sauce_keeper_400ml/sauce_keeper_400ml_white_bg.png",
+  "part_colors_path": "/workspace/HAG4R-runpod/outputs/agentic_asset_refinement/ya20_deformable_part2_4_sauce_keeper_400ml_yiduo_20260904_150032/revisions/revision_0000/omnipart/sauce_keeper_400ml/part_labels.npz",
+  "num_parts": 2,
+  "inferred_object_name": "400 ml sauce-keeper squeeze bottle",
+  "geometry_inference": {
+    "inferred_object_name": "400 ml sauce-keeper squeeze bottle",
+    "predictions": [
+      {
+        "attachment_pattern": "continuous main body with the upper stepped region joined at the top; the thin upper-side projection remains connected to the top assembly in the front and back views.",
+        "geometric_category": "tall rounded cylindrical container body with stepped shoulder and closure base",
+        "geometry_description": "Dominant continuous upright geometry spanning nearly the full height and width in all six indexed views, with long straight sides, a rounded lower end, rounded shoulder transition, and a stepped upper closure region; a thin line-like projection leaves the upper side in the front and back views.",
+        "part_color_rgb": [
+          141.0,
+          211.0,
+          199.0
+        ],
+        "part_index": 0,
+        "relative_size": "largest indexed part by a wide margin: visible in all six views with 692682 total indexed pixels and tall-vertical-post shape hints in the front, back, left, and right views."
+      },
+      {
+        "attachment_pattern": "top-centered attachment to the main closure/body with narrow line-like extensions; visible fragments remain aligned with the upper assembly across the six views.",
+        "geometric_category": "small attached nozzle/closure detail with narrow protrusions and sparse thin fragments",
+        "geometry_description": "Minor secondary geometry concentrated around the top center in the top and front views, forming a compact insert and narrow vertical/tapered feature, with thin irregular fragments also visible across several views; it is much less spatially extensive than the main cylindrical part.",
+        "part_color_rgb": [
+          255.0,
+          255.0,
+          179.0
+        ],
+        "part_index": 1,
+        "relative_size": "very small secondary part: 16840 total indexed pixels, with thin-irregular-patch or tall-vertical-post hints and much lower coverage than part 0."
+      }
+    ]
+  },
+  "fill_mode_decision": {
+    "schema_version": "hag4r-material-fill-mode-decision-v1",
+    "inferred_object_name": "400 ml sauce-keeper squeeze bottle",
+    "predictions": [
+      {
+        "fill_mode_evidence": [
+          "Continuous tall cylindrical outline in all six views",
+          "Large body scale with rounded base and stepped shoulder, consistent with a hollow vessel wall"
+        ],
+        "fill_mode_rationale": "The dominant tall body is a container-like shell with a broad, continuous wall and rounded closed silhouette; retaining a hollow volumetric band best preserves its squeeze-bottle cavity and thin-wall behavior.",
+        "part_color_rgb": [
+          141.0,
+          211.0,
+          199.0
+        ],
+        "part_index": 0,
+        "volume_fill_mode": "hollow_wall"
+      },
+      {
+        "fill_mode_evidence": [
+          "Small compact top-centered geometry in top and front views",
+          "Narrow protruding feature and attached fragments need continuous material to avoid disappearing in volumetric meshing"
+        ],
+        "fill_mode_rationale": "The secondary indexed geometry is compact and concentrated at the top closure/nozzle, where a filled volumetric feature is more likely to retain the narrow stem and attached detail than a two-layer shell.",
+        "part_color_rgb": [
+          255.0,
+          255.0,
+          179.0
+        ],
+        "part_index": 1,
+        "volume_fill_mode": "solid_fill"
+      }
+    ]
+  },
+  "geometry_stage_notes": [
+    "Indexed geometry evidence is locked to part 0 RGB [141,211,199] and part 1 RGB [255,255,179].",
+    "Part 0 is continuous and dominant in all top/bottom/front/back/left/right segmented views.",
+    "Part 1 is a small top-centered and line-fragment secondary geometry, with lower pixel coverage in every view."
+  ],
+  "fill_mode_stage_notes": [
+    "Topology only: part 0 uses hollow_wall for the broad container shell; part 1 uses solid_fill for the compact closure/nozzle detail.",
+    "No material names, constitutive values, representation fields, or thickness values are included."
+  ],
+  "semantics_stage_notes": [
+    "Material profiles selected from the prescribed bank: thin_plastic_sheet for the translucent squeeze body and rigid_plastic_hub for the orange closure/nozzle/tether detail.",
+    "Every part_semantics binding tuple exactly matches its four numeric fields; all values are positive and Poisson ratios are strictly below 0.5."
+  ],
+  "stage_attempts": {
+    "geometry": [
+      {
+        "attempt_index": 1,
+        "error": "",
+        "stage": "part_geometry",
+        "status": "success"
+      }
+    ],
+    "fill_mode": [
+      {
+        "attempt_index": 1,
+        "error": "",
+        "stage": "fill_mode",
+        "status": "success"
+      }
+    ],
+    "semantics": [
+      {
+        "attempt_index": 1,
+        "error": "",
+        "stage": "constitutive_parameters",
+        "status": "success"
+      }
+    ],
+    "repair": [
+      {
+        "error": "",
+        "stage": "material_validation",
+        "status": "success"
+      }
+    ]
+  },
+  "predictions": [
+    {
+      "density_kg_m3": 1050,
+      "friction_coefficient": 0.35,
+      "major_material_name": "translucent polyethylene plastic",
+      "part_color_rgb": [
+        141.0,
+        211.0,
+        199.0
+      ],
+      "part_index": 0,
+      "part_name": "cloudy_translucent_squeeze_bottle_body",
+      "part_semantics": "large upright container wall with rounded base, long cylindrical sides, shoulder transition, and raised measurement graduations; cloudy milky appearance indicates a thin plastic vessel that can flex under squeezing; profile=thin_plastic_sheet; tuple density_kg_m3=1050, youngs_modulus_pa=2000000000, poisson_ratio=0.38, friction_coefficient=0.35",
+      "part_texture": "cloudy translucent milky-white plastic with smooth lightly frosted surface and raised white graduations",
+      "poisson_ratio": 0.38,
+      "youngs_modulus_pa": 2000000000,
+      "volume_fill_mode": "hollow_wall",
+      "fill_mode_rationale": "The dominant tall body is a container-like shell with a broad, continuous wall and rounded closed silhouette; retaining a hollow volumetric band best preserves its squeeze-bottle cavity and thin-wall behavior.",
+      "fill_mode_evidence": [
+        "Continuous tall cylindrical outline in all six views",
+        "Large body scale with rounded base and stepped shoulder, consistent with a hollow vessel wall"
+      ]
+    },
+    {
+      "density_kg_m3": 1100,
+      "friction_coefficient": 0.35,
+      "major_material_name": "rigid orange plastic",
+      "part_color_rgb": [
+        255.0,
+        255.0,
+        179.0
+      ],
+      "part_index": 1,
+      "part_name": "orange_ribbed_cap_nozzle_and_tether",
+      "part_semantics": "compact closure assembly attached at the bottle shoulder, including the ribbed screw cap, collar, tapered dispensing nozzle, and its thin tether loop; the small connected plastic detail is predominantly rigid and load-bearing at the closure while retaining narrow protrusions; profile=rigid_plastic_hub; tuple density_kg_m3=1100, youngs_modulus_pa=2200000000, poisson_ratio=0.37, friction_coefficient=0.35",
+      "part_texture": "bright orange glossy plastic with ribbed cap bands, smooth tapered nozzle, and thin orange tether loop",
+      "poisson_ratio": 0.37,
+      "youngs_modulus_pa": 2200000000,
+      "volume_fill_mode": "solid_fill",
+      "fill_mode_rationale": "The secondary indexed geometry is compact and concentrated at the top closure/nozzle, where a filled volumetric feature is more likely to retain the narrow stem and attached detail than a two-layer shell.",
+      "fill_mode_evidence": [
+        "Small compact top-centered geometry in top and front views",
+        "Narrow protruding feature and attached fragments need continuous material to avoid disappearing in volumetric meshing"
+      ]
+    }
+  ]
+}

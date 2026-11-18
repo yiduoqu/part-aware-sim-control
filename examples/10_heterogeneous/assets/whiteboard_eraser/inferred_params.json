@@ -1,0 +1,53 @@
+{
+  "schema_version": "generated-heterogeneous-materials-v1",
+  "inferred_object_name": "whiteboard_eraser",
+  "num_parts": 3,
+  "predictions": [
+    {
+      "part_name": "palm_grip",
+      "major_material_name": "ABS",
+      "part_color_rgb": [
+        43,
+        83,
+        118
+      ],
+      "youngs_modulus_pa": 2200000000.0,
+      "poisson_ratio": 0.37,
+      "density_kg_m3": 1100,
+      "friction_coefficient": 0.35,
+      "part_index": 0,
+      "volume_fill_mode": "solid_fill"
+    },
+    {
+      "part_name": "pad_backing",
+      "major_material_name": "ABS",
+      "part_color_rgb": [
+        72,
+        106,
+        136
+      ],
+      "youngs_modulus_pa": 2200000000.0,
+      "poisson_ratio": 0.37,
+      "density_kg_m3": 1100,
+      "friction_coefficient": 0.35,
+      "part_index": 1,
+      "volume_fill_mode": "solid_fill"
+    },
+    {
+      "part_name": "felt_foam_wiping_pad",
+      "major_material_name": "felt over compressible foam",
+      "part_color_rgb": [
+        235,
+        229,
+        208
+      ],
+      "youngs_modulus_pa": 120000.0,
+      "poisson_ratio": 0.28,
+      "density_kg_m3": 150,
+      "friction_coefficient": 0.75,
+      "part_index": 2,
+      "volume_fill_mode": "solid_fill"
+    }
+  ],
+  "notes": "Engineering starting estimates, not measured or simulation-calibrated. Rigid grouping is in asset.json."
+}

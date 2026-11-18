@@ -1,0 +1,159 @@
+{
+  "schema_version": "hag4r-agentic-gpt-staged-material-inference-v1",
+  "image_path": "/workspace/HAG4R-runpod/outputs/agentic_asset_refinement/ya20_diagno_and_reroute_Part2_9_toilet_plunger_yiduo_20260905_135243/revisions/revision_0001/omnipart/toilet_plunger/mesh_combined_part_labels_top.png",
+  "processed_image_path": "/workspace/HAG4R-runpod/outputs/agentic_asset_refinement/ya20_diagno_and_reroute_Part2_9_toilet_plunger_yiduo_20260905_135243/revisions/revision_0001/segmentation/toilet_plunger/toilet_plunger_white_bg.png",
+  "part_colors_path": "/workspace/HAG4R-runpod/outputs/agentic_asset_refinement/ya20_diagno_and_reroute_Part2_9_toilet_plunger_yiduo_20260905_135243/revisions/revision_0001/omnipart/toilet_plunger/part_labels.npz",
+  "num_parts": 2,
+  "inferred_object_name": "toilet plunger",
+  "geometry_inference": {
+    "inferred_object_name": "toilet plunger",
+    "predictions": [
+      {
+        "attachment_pattern": "Hollow bell attached at its narrow neck to the end of the long handle; open mouth projects away from the handle.",
+        "geometric_category": "wide flared hollow bell",
+        "geometry_description": "Broad compact suction-cup bell with a flared circular mouth, rolled rim, and short neck/collar junction; it appears as an irregular thin-walled patch in most views and a compact rounded feature in the dominant right view.",
+        "part_color_rgb": [
+          141.0,
+          211.0,
+          199.0
+        ],
+        "part_index": 0,
+        "relative_size": "dominant"
+      },
+      {
+        "attachment_pattern": "Rigid-looking rod joined end-to-end to the suction-cup neck and extending distally from the bell.",
+        "geometric_category": "long cylindrical rod",
+        "geometry_description": "Elongated narrow cylindrical handle spanning most of the object length, consistently rendered as a wide horizontal strip in front/back/top/bottom views and a small end feature in the left view.",
+        "part_color_rgb": [
+          255.0,
+          255.0,
+          179.0
+        ],
+        "part_index": 1,
+        "relative_size": "long dominant span"
+      }
+    ]
+  },
+  "fill_mode_decision": {
+    "schema_version": "hag4r-material-fill-mode-decision-v1",
+    "inferred_object_name": "toilet plunger",
+    "predictions": [
+      {
+        "fill_mode_evidence": [
+          "Open-mouth cavity and rolled rim are visible in the source-aligned object description.",
+          "Multi-view masks show the bell as a thin-walled flared shell rather than a filled solid."
+        ],
+        "fill_mode_rationale": "The wide bell has a visible open mouth and rolled rim, and its segmented geometry is a thin irregular band around an empty interior.",
+        "part_color_rgb": [
+          141.0,
+          211.0,
+          199.0
+        ],
+        "part_index": 0,
+        "volume_fill_mode": "hollow_wall"
+      },
+      {
+        "fill_mode_evidence": [
+          "Long cylindrical strip is continuous across the visible views.",
+          "No opening or hollow interior is evidenced for the handle."
+        ],
+        "fill_mode_rationale": "The long handle is a narrow continuous rod with no visible cavity or shell opening, so a filled volumetric representation preserves its load-bearing shape.",
+        "part_color_rgb": [
+          255.0,
+          255.0,
+          179.0
+        ],
+        "part_index": 1,
+        "volume_fill_mode": "solid_fill"
+      }
+    ]
+  },
+  "geometry_stage_notes": [
+    "Fresh material reroute preserves the two indexed parts while correcting the observed response ordering."
+  ],
+  "fill_mode_stage_notes": [
+    "Preserve hollow suction-cup wall and solid wooden handle topology while repairing constitutive mapping."
+  ],
+  "semantics_stage_notes": [
+    "Diagnostic material repair: reduce cup modulus to a soft-rubber Genesis-stable value and increase handle stiffness for the observed response ordering."
+  ],
+  "stage_attempts": {
+    "geometry": [
+      {
+        "attempt_index": 1,
+        "error": "",
+        "stage": "part_geometry",
+        "status": "success"
+      }
+    ],
+    "fill_mode": [
+      {
+        "attempt_index": 1,
+        "error": "",
+        "stage": "fill_mode",
+        "status": "success"
+      }
+    ],
+    "semantics": [
+      {
+        "attempt_index": 1,
+        "error": "",
+        "stage": "constitutive_parameters",
+        "status": "success"
+      }
+    ],
+    "repair": [
+      {
+        "error": "",
+        "stage": "material_validation",
+        "status": "success"
+      }
+    ]
+  },
+  "predictions": [
+    {
+      "density_kg_m3": 1100,
+      "friction_coefficient": 1.05,
+      "major_material_name": "rubber",
+      "part_color_rgb": [
+        141.0,
+        211.0,
+        199.0
+      ],
+      "part_index": 0,
+      "part_name": "soft_rubber_suction_cup",
+      "part_semantics": "Wide flexible hollow plunger bell with an open mouth and rolled sealing rim; diagnostic reroute softens the effective FEM response so the compliant cup is more responsive than the rigid handle under common +Y while preserving the hollow wall; profile=rubber_flexible; tuple density_kg_m3=1100, youngs_modulus_pa=1000000, poisson_ratio=0.48, friction_coefficient=1.05",
+      "part_texture": "matte black slightly tacky molded rubber with a rounded rolled rim and visible inner cavity",
+      "poisson_ratio": 0.48,
+      "youngs_modulus_pa": 1000000,
+      "volume_fill_mode": "hollow_wall",
+      "fill_mode_rationale": "The wide bell has a visible open mouth and rolled rim, and its segmented geometry is a thin irregular band around an empty interior.",
+      "fill_mode_evidence": [
+        "Open-mouth cavity and rolled rim are visible in the source-aligned object description.",
+        "Multi-view masks show the bell as a thin-walled flared shell rather than a filled solid."
+      ]
+    },
+    {
+      "density_kg_m3": 700,
+      "friction_coefficient": 0.45,
+      "major_material_name": "wood",
+      "part_color_rgb": [
+        255.0,
+        255.0,
+        179.0
+      ],
+      "part_index": 1,
+      "part_name": "rigid_wooden_handle",
+      "part_semantics": "Long cylindrical wooden rod joined to the cup neck and used for push-pull loading; diagnostic reroute raises the effective FEM stiffness and mass consistency so the rigid handle remains shape-retentive relative to the compliant cup under common +Y while preserving solid fill; profile=wooden_stick; tuple density_kg_m3=700, youngs_modulus_pa=20000000000, poisson_ratio=0.35, friction_coefficient=0.45",
+      "part_texture": "smooth pale natural-grain wood with subtle longitudinal grain and a rounded free end",
+      "poisson_ratio": 0.35,
+      "youngs_modulus_pa": 20000000000,
+      "volume_fill_mode": "solid_fill",
+      "fill_mode_rationale": "The long handle is a narrow continuous rod with no visible cavity or shell opening, so a filled volumetric representation preserves its load-bearing shape.",
+      "fill_mode_evidence": [
+        "Long cylindrical strip is continuous across the visible views.",
+        "No opening or hollow interior is evidenced for the handle."
+      ]
+    }
+  ]
+}

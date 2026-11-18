@@ -1,0 +1,26 @@
+{
+  "schema": "rigid-socket-v1",
+  "name": "socket_usb_a",
+  "units": "m",
+  "up_axis": "Z",
+  "description": "USB-A rigid socket block with a simple clearance cavity.",
+  "rigid_groups": [
+    [
+      0
+    ]
+  ],
+  "behavior_validated": false,
+  "collision_geometry": "physics/collision_mesh.obj",
+  "collision_requirement": "Preserve concave cavities; a single convex hull is unsuitable.",
+  "metadata": {
+    "connector_type": "usb_a",
+    "block_dimensions_mm": [
+      17,
+      28,
+      24
+    ],
+    "cavity_profile": "rectangle",
+    "clearance_per_side_mm": 0.5,
+    "electrical_internals": false
+  }
+}

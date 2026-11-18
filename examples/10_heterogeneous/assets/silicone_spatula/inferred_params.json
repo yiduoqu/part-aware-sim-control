@@ -1,0 +1,38 @@
+{
+  "schema_version": "generated-heterogeneous-materials-v1",
+  "inferred_object_name": "silicone_spatula",
+  "num_parts": 2,
+  "predictions": [
+    {
+      "part_name": "wooden_handle",
+      "major_material_name": "wood",
+      "part_color_rgb": [
+        205,
+        166,
+        113
+      ],
+      "youngs_modulus_pa": 10000000000.0,
+      "poisson_ratio": 0.3,
+      "density_kg_m3": 650,
+      "friction_coefficient": 0.5,
+      "part_index": 0,
+      "volume_fill_mode": "solid_fill"
+    },
+    {
+      "part_name": "flexible_silicone_head",
+      "major_material_name": "silicone",
+      "part_color_rgb": [
+        218,
+        128,
+        145
+      ],
+      "youngs_modulus_pa": 1500000.0,
+      "poisson_ratio": 0.48,
+      "density_kg_m3": 1100,
+      "friction_coefficient": 0.8,
+      "part_index": 1,
+      "volume_fill_mode": "solid_fill"
+    }
+  ],
+  "notes": "Engineering starting estimates, not measured or simulation-calibrated. Rigid grouping is in asset.json."
+}

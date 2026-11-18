@@ -1,0 +1,63 @@
+{
+  "metric_bounds": {
+    "extent": [
+      0.25096099567847774,
+      0.019463712349534035,
+      0.18165066479620878
+    ],
+    "max": [
+      0.12539710593658016,
+      0.009355701506137848,
+      0.08859949207814807
+    ],
+    "max_extent": 0.25096099567847774,
+    "min": [
+      -0.12556388974189758,
+      -0.010108010843396187,
+      -0.09305117271806072
+    ]
+  },
+  "note": "Mesh was scaled before voxelization and tetrahedralization.",
+  "output_mesh_path": "outputs/agentic_asset_refinement/dev20_diagno_and_reroute_Part2_10_class_685_usb_hub_instance_5b08a25c_yiduo_20260817_091507/revisions/revision_0001/mesh_processing/combined_to_monolithic/dev20_diagno_and_reroute_Part2_10_class_685_usb_hub_instance_5b08a25c_yiduo_20260817_091507.mesh",
+  "output_mesh_sha256": "12614f42f0da9bb66ef34405e04c555d0b29bfb1540bb828fb54606a5676240c",
+  "pre_tetrahedralization_metric_bounds": {
+    "extent": [
+      0.25,
+      0.016476878589320378,
+      0.1795868807642963
+    ],
+    "max": [
+      0.12501824384563362,
+      0.008642485230520662,
+      0.08688302617601971
+    ],
+    "max_extent": 0.25,
+    "min": [
+      -0.12498175615436638,
+      -0.007834393358799718,
+      -0.09270385458827658
+    ]
+  },
+  "scale_factor": 0.24965818830815326,
+  "scaling_mode": "pre_monolithic_target_max_dimension",
+  "schema_version": "hag4r-metric-max-dimension-scaling-v1",
+  "source_bounds": {
+    "extent": [
+      1.0013691186904907,
+      0.06599774956703186,
+      0.7193310260772705
+    ],
+    "max": [
+      0.50075763463974,
+      0.03461727127432823,
+      0.3480079174041748
+    ],
+    "max_extent": 1.0013691186904907,
+    "min": [
+      -0.5006114840507507,
+      -0.03138047829270363,
+      -0.3713231086730957
+    ]
+  },
+  "target_max_dimension_m": 0.25
+}

@@ -1,0 +1,52 @@
+{
+  "schema": "rigid-socket-v1",
+  "name": "socket_mains_snug",
+  "units": "m",
+  "up_axis": "Z",
+  "description": "Two-prong mains rigid socket block with a simple clearance cavity. Snug: 1 mm per side, for simulated contact.",
+  "rigid_groups": [
+    [
+      0
+    ]
+  ],
+  "behavior_validated": false,
+  "collision_geometry": "physics/collision_mesh.obj",
+  "tetrahedral_volume": "physics/rigid_tets.npz",
+  "mesh_resolution": {
+    "vertices": 983,
+    "tetrahedra": 3009,
+    "boundary_faces": 1816,
+    "boundary_edge_mm": {
+      "median": 2.0749999999999993,
+      "p95": 4.938908560684187,
+      "max": 5.9932734696298535
+    },
+    "tet_volume_mm3": {
+      "min": 0.006800146315871817,
+      "median": 1.5308177066602662,
+      "p95": 14.37537435754556,
+      "max": 23.413658706863895
+    },
+    "mean_ratio": {
+      "min": 0.09373130102616882,
+      "p05": 0.1885056813947351,
+      "median": 0.5514359592017173
+    },
+    "nonpositive_tetrahedra": 0,
+    "added_tetrahedra": 48,
+    "refinement_batches": 2,
+    "maximum_boundary_edge_mm": 5.9932734696298535
+  },
+  "collision_requirement": "Preserve concave cavities; a single convex hull is unsuitable.",
+  "metadata": {
+    "connector_type": "mains",
+    "block_dimensions_mm": [
+      21,
+      28,
+      24
+    ],
+    "cavity_profile": "two slots",
+    "clearance_per_side_mm": 1.0,
+    "electrical_internals": false
+  }
+}

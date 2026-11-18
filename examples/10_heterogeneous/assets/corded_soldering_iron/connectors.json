@@ -1,0 +1,47 @@
+{
+  "schema": "mechanical-mating-frames-v1",
+  "units": "m",
+  "convention": "+X points from male shoulder into socket; Y/Z define profile orientation",
+  "male_ends": [
+    {
+      "id": "male_0",
+      "connector_type": "station",
+      "rigid_parts": [
+        3,
+        4
+      ],
+      "T_asset_from_mating_frame": [
+        [
+          -1.0,
+          0.0,
+          0.0,
+          -0.3085
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.08
+        ],
+        [
+          0.0,
+          0.0,
+          -1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "tip_length_m": 0.011,
+      "canonical_geometry_sha256": "700ffdbc3f04281dd88c34b41e666a84d56fa414a386d8f6e013eacf4e2301cc",
+      "matching_fixture": "../socket_station",
+      "seated_shoulder_x_in_socket_m": -0.0005
+    }
+  ],
+  "female_ports": [],
+  "electrical_geometry": false
+}

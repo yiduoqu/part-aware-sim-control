@@ -1,0 +1,57 @@
+{
+  "schema": "rigid-cloth-attachments-v1",
+  "mode": "fixed_material_attachment",
+  "coordinates": "body local; all body rest poses identity in asset frame",
+  "seams": [
+    {
+      "seam_id": 0,
+      "name": "sheet_0_longitudinal_root",
+      "body_id": 1,
+      "vertex_count": 26
+    },
+    {
+      "seam_id": 1,
+      "name": "sheet_1_longitudinal_root",
+      "body_id": 1,
+      "vertex_count": 26
+    },
+    {
+      "seam_id": 2,
+      "name": "sheet_2_longitudinal_root",
+      "body_id": 1,
+      "vertex_count": 26
+    },
+    {
+      "seam_id": 3,
+      "name": "sheet_3_longitudinal_root",
+      "body_id": 1,
+      "vertex_count": 26
+    },
+    {
+      "seam_id": 4,
+      "name": "sheet_4_longitudinal_root",
+      "body_id": 1,
+      "vertex_count": 26
+    },
+    {
+      "seam_id": 5,
+      "name": "sheet_5_longitudinal_root",
+      "body_id": 1,
+      "vertex_count": 26
+    },
+    {
+      "seam_id": 6,
+      "name": "sheet_6_longitudinal_root",
+      "body_id": 1,
+      "vertex_count": 26
+    },
+    {
+      "seam_id": 7,
+      "name": "sheet_7_longitudinal_root",
+      "body_id": 1,
+      "vertex_count": 26
+    }
+  ],
+  "exclude_attached_particle_body_contacts": true,
+  "notes": "Permanent seam/fastened rest state. No active buckle latch or fabric detachment behavior implemented."
+}

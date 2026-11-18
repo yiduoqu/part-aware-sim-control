@@ -5,6 +5,9 @@
 RoboSimStudio is an open, interactive simulation toolkit for rebuilding real
 robot manipulation tasks in simulation, by hand or with a coding agent.
 
+For this project's part-aware manipulation work, see the
+[shared object asset catalog](examples/10_heterogeneous/assets/README.md).
+
 <p align="center">
   <img alt="Twenty robot manipulation tasks built with RoboSimStudio, playing side by side" src=".github/media/splash.webp" width="100%" />
 </p>

@@ -1,0 +1,42 @@
+{
+  "schema": "rigid-cloth-materials-v1",
+  "parts": [
+    {
+      "part_id": 0,
+      "name": "eight microfiber cloth panels",
+      "physics": "cloth_membrane",
+      "material": "microfiber polyester",
+      "color_rgb": [
+        211,
+        70,
+        73
+      ]
+    },
+    {
+      "part_id": 1,
+      "name": "grip neck and slim central connector",
+      "physics": "rigid",
+      "material": "ABS",
+      "color_rgb": [
+        54,
+        62,
+        69
+      ],
+      "density_kg_m3": 1100
+    }
+  ],
+  "cloth": {
+    "shell": "membrane",
+    "areal_density": 0.28,
+    "thickness": 0.0008,
+    "tri_ke": 4000.0,
+    "tri_ka": 4000.0,
+    "tri_kd": 0.02,
+    "edge_ke": 0.0004,
+    "edge_kd": 0.0001,
+    "particle_radius": 0.0004,
+    "zero_rest_angle": false,
+    "friction": 0.5
+  },
+  "notes": "Engineering estimates; not measured or simulation-calibrated."
+}

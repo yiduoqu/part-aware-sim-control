@@ -1,0 +1,32 @@
+{
+  "asset": "cloth_cleaning_wand",
+  "representation": "rigid_plus_cloth",
+  "static_validation_passed": true,
+  "cloth_vertices": 3168,
+  "cloth_triangles": 5632,
+  "cloth_components": 8,
+  "all_cloth_components_attached": true,
+  "rigid_cloth_sampled_penetrations": 0,
+  "cloth_panel_edge_crossings": 0,
+  "rigid_cloth_edge_crossings": 0,
+  "visual_thickness_m": 0.0008,
+  "cloth_boundary_edges": 688,
+  "min_triangle_area_m2": 4.261363461927146e-06,
+  "cloth_area_m2": 0.029216801630004847,
+  "cloth_mass_kg": 0.008180704456401358,
+  "attachment_count": 208,
+  "free_cloth_vertices": 2960,
+  "rigid_bodies": [
+    {
+      "body_id": 1,
+      "watertight": true,
+      "components": 1,
+      "attached_vertices": 208,
+      "max_attachment_surface_distance_m": 1.3836018393809146e-07
+    }
+  ],
+  "visual_binding_max_error_m": 1.862645149230957e-09,
+  "glb_roundtrip_passed": true,
+  "simulation_run": false,
+  "loader_compatibility": "Documented rigid-cloth schema; scene adapter deferred. Volume-only tet loader is not applicable."
+}

@@ -1,0 +1,63 @@
+{
+  "metric_bounds": {
+    "extent": [
+      0.07445800510749787,
+      0.20365280485539805,
+      0.06429338711085972
+    ],
+    "max": [
+      0.038148296554342924,
+      0.10152593827634225,
+      0.032362315518106186
+    ],
+    "max_extent": 0.20365280485539805,
+    "min": [
+      -0.036309708553154935,
+      -0.10212686657905579,
+      -0.03193107159275354
+    ]
+  },
+  "note": "Mesh was scaled before voxelization and tetrahedralization.",
+  "output_mesh_path": "outputs/agentic_asset_refinement/ya20_deformable_part2_4_sauce_keeper_400ml_yiduo_20260904_150032/revisions/revision_0000/mesh_processing/combined_to_monolithic/ya20_deformable_part2_4_sauce_keeper_400ml_yiduo_20260904_150032.mesh",
+  "output_mesh_sha256": "e1bbeda5aa14edd5aa5a2877424cef17ff11ed32bab70647983404c2bb08bab3",
+  "pre_tetrahedralization_metric_bounds": {
+    "extent": [
+      0.07098561576143164,
+      0.2,
+      0.059459621603626195
+    ],
+    "max": [
+      0.03692848104879811,
+      0.10008589006995397,
+      0.029651041213964672
+    ],
+    "max_extent": 0.2,
+    "min": [
+      -0.03405713471263353,
+      -0.09991410993004604,
+      -0.029808580389661526
+    ]
+  },
+  "scale_factor": 0.20010362865791287,
+  "scaling_mode": "pre_monolithic_target_max_dimension",
+  "schema_version": "hag4r-metric-max-dimension-scaling-v1",
+  "source_bounds": {
+    "extent": [
+      0.3547442704439163,
+      0.999482125043869,
+      0.2971441447734833
+    ],
+    "max": [
+      0.18454678356647491,
+      0.5001702904701233,
+      0.14817842841148376
+    ],
+    "max_extent": 0.999482125043869,
+    "min": [
+      -0.1701974868774414,
+      -0.4993118345737457,
+      -0.1489657163619995
+    ]
+  },
+  "target_max_dimension_m": 0.2
+}

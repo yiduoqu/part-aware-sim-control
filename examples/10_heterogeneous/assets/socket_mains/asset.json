@@ -1,0 +1,52 @@
+{
+  "schema": "rigid-socket-v1",
+  "name": "socket_mains",
+  "units": "m",
+  "up_axis": "Z",
+  "description": "Two-prong mains rigid socket block with a simple clearance cavity.",
+  "rigid_groups": [
+    [
+      0
+    ]
+  ],
+  "behavior_validated": false,
+  "collision_geometry": "physics/collision_mesh.obj",
+  "tetrahedral_volume": "physics/rigid_tets.npz",
+  "mesh_resolution": {
+    "vertices": 1036,
+    "tetrahedra": 3161,
+    "boundary_faces": 1902,
+    "boundary_edge_mm": {
+      "median": 1.7108787215930883,
+      "p95": 4.98221838140401,
+      "max": 5.995040455840156
+    },
+    "tet_volume_mm3": {
+      "min": 0.006800146315871817,
+      "median": 1.3557974632750602,
+      "p95": 14.57957669121528,
+      "max": 27.4191040893021
+    },
+    "mean_ratio": {
+      "min": 0.08537803502130967,
+      "p05": 0.2018095344632528,
+      "median": 0.5414581229058262
+    },
+    "nonpositive_tetrahedra": 0,
+    "added_tetrahedra": 37,
+    "refinement_batches": 2,
+    "maximum_boundary_edge_mm": 5.995040455840156
+  },
+  "collision_requirement": "Preserve concave cavities; a single convex hull is unsuitable.",
+  "metadata": {
+    "connector_type": "mains",
+    "block_dimensions_mm": [
+      21,
+      28,
+      24
+    ],
+    "cavity_profile": "two slots",
+    "clearance_per_side_mm": 0.5,
+    "electrical_internals": false
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "appearance_manifest_path": "outputs/agentic_asset_refinement/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415/revisions/revision_0001/omnipart/cookie/appearance/appearance_manifest.json",
+  "heterogeneous_params_path": "outputs/agentic_asset_refinement/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415/revisions/revision_0001/mesh_processing/assign_monolithic_mesh_params/heterogeneous_params.npz",
+  "inferred_material_path": "outputs/agentic_asset_refinement/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415/revisions/revision_0001/material_inference/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415.json",
+  "metric_mesh_scaling_path": "outputs/agentic_asset_refinement/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415/revisions/revision_0001/mesh_processing/combined_to_monolithic/metric_mesh_scaling.json",
+  "monolithic_mesh_path": "outputs/agentic_asset_refinement/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415/revisions/revision_0001/mesh_processing/combined_to_monolithic/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415.mesh",
+  "output_dir": "outputs/agentic_asset_refinement/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415/revisions/revision_0001/mesh_processing/post_mesh_texture",
+  "schema_version": "hag4r-post-mesh-texture-request-v1"
+}

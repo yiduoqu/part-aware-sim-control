@@ -1,0 +1,81 @@
+{
+  "schema": "rigid-cloth-asset-v2",
+  "name": "cloth_cleaning_wand",
+  "description": "Star-shaped cloth duster: eight medium sheets attached along a slim central connector, with free outer edges and tips.",
+  "representation": "rigid_meshes_plus_cloth_mid_surface",
+  "units": "m",
+  "up_axis": "Z",
+  "deformable_parts": [
+    0
+  ],
+  "rigid_groups": [
+    [
+      1
+    ]
+  ],
+  "rigid_bodies": [
+    {
+      "body_id": 1,
+      "part_id": 1,
+      "mesh": "physics/rigid_1.obj",
+      "tetrahedral_volume": "physics/rigid_1_tets.npz",
+      "mesh_resolution": {
+        "vertices": 2728,
+        "tetrahedra": 10095,
+        "boundary_faces": 3850,
+        "boundary_edge_mm": {
+          "median": 3.720312500000002,
+          "p95": 5.465322089319165,
+          "max": 5.965505146255429
+        },
+        "tet_volume_mm3": {
+          "min": 4.6439045393780376e-05,
+          "median": 7.249066165608433,
+          "p95": 15.248241893475324,
+          "max": 27.566097274706593
+        },
+        "mean_ratio": {
+          "min": 0.12395110848394761,
+          "p05": 0.4355855654246434,
+          "median": 0.791222353283527
+        },
+        "nonpositive_tetrahedra": 0,
+        "added_tetrahedra": 374,
+        "refinement_batches": 2,
+        "maximum_boundary_edge_mm": 5.965505146255429
+      },
+      "rest_position_m": [
+        0,
+        0,
+        0
+      ],
+      "rest_quaternion_xyzw": [
+        0,
+        0,
+        0,
+        1
+      ]
+    }
+  ],
+  "cloth_mesh": "physics/cloth.obj",
+  "attachments": "physics/attachments.npz",
+  "integration_status": "Mesh asset only. A scene adapter must load the cloth and apply attachment seams.",
+  "visual_cloth_thickness_m": 0.0008,
+  "visual_binding": "position plus signed deformed-normal offset",
+  "behavior_validated": false,
+  "metadata": {
+    "reference_url": "https://www.oxo.com/microfiber-delicate-duster.html",
+    "overall_length_mm": 290,
+    "support_diameter_mm": 8,
+    "support_length_mm": 105,
+    "sheet_length_mm": 125,
+    "sheet_radial_width_mm": 30,
+    "cloth_sheet_count": 8,
+    "sheet_thickness_mm": 0.8,
+    "cloth_components_expected": 8,
+    "cross_section": "eight-point star",
+    "root_seam_clearance_mm": 0.0001,
+    "exclude_attached_particle_body_contacts": true,
+    "simplifications": "User-specified star arrangement of eight medium cloth sheets. OXO hand/delicate dusters inform the grip and cloth-tool concept; their microfiber construction is not copied. Each continuous panel attaches along its inner root edge; outer edges and the last 27 mm of the tip are free. No fringe cuts or hairlike strips. A closed 0.8 mm visual skin follows the membrane normals. Filter attached root particles against their bound body during future integration."
+  }
+}

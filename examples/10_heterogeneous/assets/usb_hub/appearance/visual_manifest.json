@@ -1,0 +1,196 @@
+{
+  "binding_validation": {
+    "atlas_bilinear_padding": true,
+    "atlas_padding_pixels": 8,
+    "atlas_resolution": 1024,
+    "binding_method": "exact_xatlas_vmapping_to_final_tet_vertex",
+    "boundary_face_count": 5282,
+    "coordinate_frame": "metric_gltf_y_up",
+    "internal_face_count": 16663,
+    "max_rest_alignment_error_m": 7.450580596923828e-09,
+    "physics_vertex_count": 3022,
+    "seam_duplicate_vertex_count": 1370,
+    "surface_vertex_count": 2615,
+    "tet_count": 9652,
+    "visual_vertex_count": 3985
+  },
+  "bundle_files": {
+    "albedo.png": {
+      "path": "albedo.png",
+      "sha256": "d043ab69f8951de41cb94f23ffea5e5ff1a2b68f9cf173690b16aedea2a0c5ad",
+      "size_bytes": 587013
+    },
+    "post_mesh_texture_request.json": {
+      "path": "post_mesh_texture_request.json",
+      "sha256": "ef26932ba2fbb27d663513754c884dd3418353d85eddc429b936d00345306516",
+      "size_bytes": 1604
+    },
+    "qa/confidence.png": {
+      "path": "qa/confidence.png",
+      "sha256": "7fece7848ddb7ac9c912feadbf199c195bf6bc4a9b73c57e61aba849cefe69dd",
+      "size_bytes": 409651
+    },
+    "qa/fill_provenance.png": {
+      "path": "qa/fill_provenance.png",
+      "sha256": "aed84e43e44f26f8c4ebeede108a8e16cd6e4f63132b7d185fc3d20a944970dc",
+      "size_bytes": 74411
+    },
+    "qa/observed_coverage.png": {
+      "path": "qa/observed_coverage.png",
+      "sha256": "7b8586349a4ff1ad76b5f600f92831feced2c847908b77df467b9b76f2a2891f",
+      "size_bytes": 39011
+    },
+    "qa/report.json": {
+      "path": "qa/report.json",
+      "sha256": "b48d4065e1e6324da9e2b8b0a08650a6b3155d8ef80dbf7cafe78cd634c4494b",
+      "size_bytes": 3024
+    },
+    "qa/rest_pose_render.png": {
+      "path": "qa/rest_pose_render.png",
+      "sha256": "c76953d50b589f50eb778177f90844559a02c7042d2d7a1488f0b471f76b3f08",
+      "size_bytes": 37584
+    },
+    "visual_mesh.glb": {
+      "path": "visual_mesh.glb",
+      "sha256": "4c8743cda4a6b11454ec58d941157ca666d14cb94a5945f6fa17c4c1e9740936",
+      "size_bytes": 731424
+    },
+    "visual_to_physics.npz": {
+      "path": "visual_to_physics.npz",
+      "sha256": "2c7d0347211dc73808d096d01e058bda34a06384628d37f5786263620cdc4c3f",
+      "size_bytes": 123451
+    }
+  },
+  "exact_binding": {
+    "atlas_bilinear_padding": true,
+    "atlas_fix_winding": false,
+    "atlas_padding_pixels": 8,
+    "atlas_resolution": 1024,
+    "binding_method": "exact_xatlas_vmapping_to_final_tet_vertex",
+    "boundary_face_count": 5282,
+    "coordinate_frame": "metric_gltf_y_up",
+    "internal_face_count": 16663,
+    "max_rest_alignment_error_m": 7.450580596923828e-09,
+    "physics_vertex_count": 3022,
+    "seam_duplicate_vertex_count": 1370,
+    "surface_vertex_count": 2615,
+    "tet_count": 9652,
+    "visual_vertex_count": 3985
+  },
+  "glb": {
+    "face_count": 5282,
+    "max_rest_alignment_error_m": 7.450580596923828e-09,
+    "primitive_count": 1,
+    "texture_resolution": 1024,
+    "uv_count": 3985,
+    "vertex_count": 3985
+  },
+  "inputs": {
+    "appearance_manifest_path": {
+      "path": "outputs/agentic_asset_refinement/dev20_diagno_and_reroute_Part2_10_class_685_usb_hub_instance_5b08a25c_yiduo_20260817_091507/revisions/revision_0001/omnipart/026/appearance/appearance_manifest.json",
+      "sha256": "b9aa210f8bc9eab3215de52393564a966302bde0217b6f8c47d910a4a81f15ad",
+      "size_bytes": 6268
+    },
+    "heterogeneous_params_path": {
+      "path": "outputs/agentic_asset_refinement/dev20_diagno_and_reroute_Part2_10_class_685_usb_hub_instance_5b08a25c_yiduo_20260817_091507/revisions/revision_0001/mesh_processing/assign_monolithic_mesh_params/heterogeneous_params.npz",
+      "sha256": "673d52126a6ee06ca0488e48a7a31cdf103da97dfa2542dddede5c4c13a7403d",
+      "size_bytes": 311208
+    },
+    "inferred_material_path": {
+      "path": "outputs/agentic_asset_refinement/dev20_diagno_and_reroute_Part2_10_class_685_usb_hub_instance_5b08a25c_yiduo_20260817_091507/revisions/revision_0001/material_inference/dev20_diagno_and_reroute_Part2_10_class_685_usb_hub_instance_5b08a25c_yiduo_20260817_091507.json",
+      "sha256": "d1efc934ca5514b35eba3b8b01d080e9fb9bfc28a621513c19260631ad27b7db",
+      "size_bytes": 11044
+    },
+    "metric_mesh_scaling_path": {
+      "path": "outputs/agentic_asset_refinement/dev20_diagno_and_reroute_Part2_10_class_685_usb_hub_instance_5b08a25c_yiduo_20260817_091507/revisions/revision_0001/mesh_processing/combined_to_monolithic/metric_mesh_scaling.json",
+      "sha256": "b45d5591aa928995701d6e614accce367dc044e0dea353794be4bb8b769379a2",
+      "size_bytes": 1768
+    },
+    "monolithic_mesh_path": {
+      "path": "outputs/agentic_asset_refinement/dev20_diagno_and_reroute_Part2_10_class_685_usb_hub_instance_5b08a25c_yiduo_20260817_091507/revisions/revision_0001/mesh_processing/combined_to_monolithic/dev20_diagno_and_reroute_Part2_10_class_685_usb_hub_instance_5b08a25c_yiduo_20260817_091507.mesh",
+      "sha256": "12614f42f0da9bb66ef34405e04c555d0b29bfb1540bb828fb54606a5676240c",
+      "size_bytes": 400650
+    }
+  },
+  "pbr": {
+    "base_color_texture": "albedo.png",
+    "double_sided": true,
+    "metallic": 0.0,
+    "roughness": 1.0
+  },
+  "request": {
+    "path": "post_mesh_texture_request.json",
+    "schema_version": "hag4r-post-mesh-texture-request-v1"
+  },
+  "schema_version": "hag4r-post-mesh-texture-visual-v1",
+  "statistics": {
+    "global": {
+      "chart_interior_texel_count": 582795,
+      "gutter_fraction": 0.3062757113472746,
+      "gutter_texel_count": 257301,
+      "nearest_filled_fraction": 0.15579234550742543,
+      "nearest_filled_texel_count": 90795,
+      "observed_fraction": 0.8442076544925746,
+      "observed_texel_count": 492000,
+      "part_color_filled_fraction": 0.0,
+      "part_color_filled_texel_count": 0
+    },
+    "per_part": [
+      {
+        "chart_interior_texel_count": 351713,
+        "gutter_fraction": 0.16801580167478827,
+        "gutter_texel_count": 71027,
+        "nearest_filled_fraction": 0.028284425085225738,
+        "nearest_filled_texel_count": 9948,
+        "observed_fraction": 0.9717155749147742,
+        "observed_texel_count": 341765,
+        "part_color_filled_fraction": 0.0,
+        "part_color_filled_texel_count": 0,
+        "part_id": 0
+      },
+      {
+        "chart_interior_texel_count": 109675,
+        "gutter_fraction": 0.4467787821314717,
+        "gutter_texel_count": 88573,
+        "nearest_filled_fraction": 0.22700706633234558,
+        "nearest_filled_texel_count": 24897,
+        "observed_fraction": 0.7729929336676544,
+        "observed_texel_count": 84778,
+        "part_color_filled_fraction": 0.0,
+        "part_color_filled_texel_count": 0,
+        "part_id": 1
+      },
+      {
+        "chart_interior_texel_count": 28445,
+        "gutter_fraction": 0.5014983964529188,
+        "gutter_texel_count": 28616,
+        "nearest_filled_fraction": 0.4733345051854456,
+        "nearest_filled_texel_count": 13464,
+        "observed_fraction": 0.5266654948145544,
+        "observed_texel_count": 14981,
+        "part_color_filled_fraction": 0.0,
+        "part_color_filled_texel_count": 0,
+        "part_id": 2
+      },
+      {
+        "chart_interior_texel_count": 92962,
+        "gutter_fraction": 0.42632692984134235,
+        "gutter_texel_count": 69085,
+        "nearest_filled_fraction": 0.4570254512596545,
+        "nearest_filled_texel_count": 42486,
+        "observed_fraction": 0.5429745487403456,
+        "observed_texel_count": 50476,
+        "part_color_filled_fraction": 0.0,
+        "part_color_filled_texel_count": 0,
+        "part_id": 3
+      }
+    ]
+  },
+  "timings_s": {
+    "bake": 30.981484637595713,
+    "boundary": 0.6592161166481674,
+    "fill": 3.055583304259926,
+    "glb_export": 5.035824310965836,
+    "unwrap": 2.436889001633972
+  }
+}

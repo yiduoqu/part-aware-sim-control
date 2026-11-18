@@ -1,0 +1,68 @@
+{
+  "schema_version": "generated-heterogeneous-materials-v1",
+  "inferred_object_name": "power_strip",
+  "num_parts": 4,
+  "predictions": [
+    {
+      "part_name": "housing",
+      "major_material_name": "ABS",
+      "part_color_rgb": [
+        228,
+        218,
+        198
+      ],
+      "youngs_modulus_pa": 2200000000.0,
+      "poisson_ratio": 0.37,
+      "density_kg_m3": 1100,
+      "friction_coefficient": 0.35,
+      "part_index": 0,
+      "volume_fill_mode": "solid_fill"
+    },
+    {
+      "part_name": "cable_and_root_strain_relief",
+      "major_material_name": "rubber",
+      "part_color_rgb": [
+        35,
+        40,
+        46
+      ],
+      "youngs_modulus_pa": 5000000.0,
+      "poisson_ratio": 0.49,
+      "density_kg_m3": 1100,
+      "friction_coefficient": 0.9,
+      "part_index": 1,
+      "volume_fill_mode": "solid_fill"
+    },
+    {
+      "part_name": "distal_collar_connector",
+      "major_material_name": "ABS",
+      "part_color_rgb": [
+        54,
+        61,
+        72
+      ],
+      "youngs_modulus_pa": 2200000000.0,
+      "poisson_ratio": 0.37,
+      "density_kg_m3": 1100,
+      "friction_coefficient": 0.35,
+      "part_index": 2,
+      "volume_fill_mode": "solid_fill"
+    },
+    {
+      "part_name": "plug",
+      "major_material_name": "steel",
+      "part_color_rgb": [
+        175,
+        185,
+        195
+      ],
+      "youngs_modulus_pa": 200000000000.0,
+      "poisson_ratio": 0.3,
+      "density_kg_m3": 7850,
+      "friction_coefficient": 0.4,
+      "part_index": 3,
+      "volume_fill_mode": "solid_fill"
+    }
+  ],
+  "notes": "Engineering starting estimates, not measured or simulation-calibrated. Rigid grouping is in asset.json."
+}

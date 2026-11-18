@@ -1,0 +1,736 @@
+{
+  "accepted_revision": null,
+  "asset_refinement_source_dir": "/workspace/HAG4R-runpod/outputs/agentic_asset_refinement/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415/revisions/revision_0001",
+  "auxiliary_source_artifacts": {
+    "cleaned_image.png": {
+      "path": "/workspace/HAG4R-runpod/outputs/agentic_asset_refinement/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415/revisions/revision_0001/image_cleanup/cookie.png",
+      "sha256": "2a59281a38413e55780bf08b36f12732e8bdc5d37736303a431c361081cc58cf",
+      "size_bytes": 977236
+    },
+    "heterogeneous_density.png": {
+      "path": "/workspace/HAG4R-runpod/outputs/agentic_asset_refinement/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415/revisions/revision_0001/mesh_processing/assign_monolithic_mesh_params/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415_target_density.png",
+      "sha256": "e3f31f13d6749a27441cd0010b1128b69519b0aeb6f5f4a413d6c13d12b786b2",
+      "size_bytes": 55671
+    },
+    "heterogeneous_part_ids.png": {
+      "path": "/workspace/HAG4R-runpod/outputs/agentic_asset_refinement/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415/revisions/revision_0001/mesh_processing/assign_monolithic_mesh_params/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415_target_part.png",
+      "sha256": "391438762797884468c54d9e54c0554c59be7193bab975b93f935d0aa458c979",
+      "size_bytes": 55584
+    },
+    "heterogeneous_youngs_modulus.png": {
+      "path": "/workspace/HAG4R-runpod/outputs/agentic_asset_refinement/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415/revisions/revision_0001/mesh_processing/assign_monolithic_mesh_params/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415_target_E.png",
+      "sha256": "c2b24c998373b785ec006b706b24d70eb9cea3510d5de6306a4a41fdb9598f51",
+      "size_bytes": 55860
+    },
+    "image_cleanup.json": {
+      "path": "/workspace/HAG4R-runpod/outputs/agentic_asset_refinement/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415/revisions/revision_0001/image_cleanup/cookie_image_cleanup.json",
+      "sha256": "ad0aaf9bb4de1dc3a52cdd977e816e36217013b977718d44b5dd1d93acaa89fb",
+      "size_bytes": 11600
+    },
+    "source_part_ids.png": {
+      "path": "/workspace/HAG4R-runpod/outputs/agentic_asset_refinement/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415/revisions/revision_0001/mesh_processing/assign_monolithic_mesh_params/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415_source_part.png",
+      "sha256": "8f803680e9ea2b2696019cf046d239bb738989db29f8261abf606dc5f86658ed",
+      "size_bytes": 49214
+    }
+  },
+  "canonical_files": [
+    "final_mesh.mesh",
+    "heterogeneous_params.npz",
+    "inferred_params.json",
+    "volume_topology.json",
+    "metric_mesh_scaling.json",
+    "final_export_manifest.json",
+    "appearance/albedo.png",
+    "appearance/post_mesh_texture_request.json",
+    "appearance/qa/confidence.png",
+    "appearance/qa/fill_provenance.png",
+    "appearance/qa/observed_coverage.png",
+    "appearance/qa/report.json",
+    "appearance/qa/rest_pose_render.png",
+    "appearance/visual_manifest.json",
+    "appearance/visual_mesh.glb",
+    "appearance/visual_to_physics.npz"
+  ],
+  "child_recommendation": "revise",
+  "child_route": "mesh_processing",
+  "diagnostic_cues": [
+    "Cookie edge crumb (canonical part 1) remains below diagnostic coverage after the current target_max_dimension_m=0.12 m repair: its high-fidelity solid-fill realization has 50 tetrahedra, the grip-root setup reports low_primitive_purity, and the single edge-band probe captured grabbed_selected_part_fraction=0.4411764705882353 (<0.50), although released RGB frames show the feature still attached. In mesh_processing, increase object-level target_max_dimension_m from 0.12 m to the next source-grounded larger metric estimate to improve local part-1 realization and target capture; keep parts 0 and 1 high fidelity and solid_fill, preserve their labels and attachment, then regenerate and validate that part 1 remains a distinct attached region with qualifying capture at or above 0.50 and coherent contact/scale. This is a local capture/coverage defect, not a claimed material failure."
+  ],
+  "diagnostic_export_policy": "export_after_revision_budget_revise",
+  "diagnostic_verdict": "revise",
+  "diagnostics_accepted": false,
+  "export_revision": "revision_0001",
+  "exported_artifacts": {
+    "appearance/albedo.png": {
+      "path": "/workspace/HAG4R-runpod/outputs/run_pipeline/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415/appearance/albedo.png",
+      "sha256": "40851e972542b393e43e77100ddeee8475ae798d7c35526facdde5f966c24c0a",
+      "size_bytes": 445122
+    },
+    "appearance/post_mesh_texture_request.json": {
+      "path": "/workspace/HAG4R-runpod/outputs/run_pipeline/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415/appearance/post_mesh_texture_request.json",
+      "sha256": "2f4ea4ea4965e755a5bdf87b56280474212ba4c6b9316de9e1cc4f43496fa3e3",
+      "size_bytes": 1391
+    },
+    "appearance/qa/confidence.png": {
+      "path": "/workspace/HAG4R-runpod/outputs/run_pipeline/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415/appearance/qa/confidence.png",
+      "sha256": "fc5b33f95b5c6be49fee802636246aa55485148a941b1e5fcff44d17a3004344",
+      "size_bytes": 633201
+    },
+    "appearance/qa/fill_provenance.png": {
+      "path": "/workspace/HAG4R-runpod/outputs/run_pipeline/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415/appearance/qa/fill_provenance.png",
+      "sha256": "4a7f330469d79770dd735ef713420927524ecd016a50aac56e34e315f44a4aad",
+      "size_bytes": 41793
+    },
+    "appearance/qa/observed_coverage.png": {
+      "path": "/workspace/HAG4R-runpod/outputs/run_pipeline/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415/appearance/qa/observed_coverage.png",
+      "sha256": "86287b0ed01ad5a4b978ce5accb23b1f2fd79439d34b71e363f922e4dd54c753",
+      "size_bytes": 28821
+    },
+    "appearance/qa/report.json": {
+      "path": "/workspace/HAG4R-runpod/outputs/run_pipeline/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415/appearance/qa/report.json",
+      "sha256": "20c5a2d70098a8ba95bed6b7ecb4a42280ecfafdb21ca6c24967b2f40ecd04d7",
+      "size_bytes": 2099
+    },
+    "appearance/qa/rest_pose_render.png": {
+      "path": "/workspace/HAG4R-runpod/outputs/run_pipeline/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415/appearance/qa/rest_pose_render.png",
+      "sha256": "8a397c6f2a3ff546cafe5950bfd40fd70cb85bed4dfe2274071bbd1ae898279d",
+      "size_bytes": 63246
+    },
+    "appearance/visual_manifest.json": {
+      "path": "/workspace/HAG4R-runpod/outputs/run_pipeline/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415/appearance/visual_manifest.json",
+      "sha256": "e3a244df6b5d5c40ccccebabd51c61f244a1a43e7c20588f160c5aebc8788281",
+      "size_bytes": 6621
+    },
+    "appearance/visual_mesh.glb": {
+      "path": "/workspace/HAG4R-runpod/outputs/run_pipeline/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415/appearance/visual_mesh.glb",
+      "sha256": "ff46dd490b944b26dcace24e9b905712cf91f76ead0b02d46914705bb711d3e6",
+      "size_bytes": 513268
+    },
+    "appearance/visual_to_physics.npz": {
+      "path": "/workspace/HAG4R-runpod/outputs/run_pipeline/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415/appearance/visual_to_physics.npz",
+      "sha256": "82a9f9eef807be7928f56d3b8397fd4389189811302797186564a9d7476eb0c8",
+      "size_bytes": 58603
+    },
+    "final_mesh.mesh": {
+      "path": "/workspace/HAG4R-runpod/outputs/run_pipeline/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415/final_mesh.mesh",
+      "sha256": "9d552c60706c3cf491cbd36a1ff99bff759dafaafcdf7268421ac272a2a75d89",
+      "size_bytes": 431392
+    },
+    "heterogeneous_params.npz": {
+      "path": "/workspace/HAG4R-runpod/outputs/run_pipeline/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415/heterogeneous_params.npz",
+      "sha256": "e267fac60628ddaff721ae37a96259fb5828e4fce75c7034ec837897a17a6a87",
+      "size_bytes": 383656
+    },
+    "inferred_params.json": {
+      "path": "/workspace/HAG4R-runpod/outputs/run_pipeline/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415/inferred_params.json",
+      "sha256": "f1d8f429aa812c58c729d5ecd6fe499e5948d3e08b7336b33f0e456d1f70fdcb",
+      "size_bytes": 8093
+    },
+    "metric_mesh_scaling.json": {
+      "path": "/workspace/HAG4R-runpod/outputs/run_pipeline/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415/metric_mesh_scaling.json",
+      "sha256": "af65c2bececccc21121bbc05d401faa58037afc5257362fb13b2bfb73af02a32",
+      "size_bytes": 1715
+    },
+    "volume_topology.json": {
+      "path": "/workspace/HAG4R-runpod/outputs/run_pipeline/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415/volume_topology.json",
+      "sha256": "5dac73000c02db624ec5fe0e78fc928378eab850773a75b68915a61c235ed00c",
+      "size_bytes": 14201
+    }
+  },
+  "metric_mesh_scaling": {
+    "metric_bounds": {
+      "extent": [
+        0.12151170149445534,
+        0.030592313036322594,
+        0.11662539839744568
+      ],
+      "max": [
+        0.0603073388338089,
+        0.015848642215132713,
+        0.058205243200063705
+      ],
+      "max_extent": 0.12151170149445534,
+      "min": [
+        -0.06120436266064644,
+        -0.01474367082118988,
+        -0.05842015519738197
+      ]
+    },
+    "note": "Mesh was scaled before voxelization and tetrahedralization.",
+    "output_mesh_path": "outputs/agentic_asset_refinement/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415/revisions/revision_0001/mesh_processing/combined_to_monolithic/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415.mesh",
+    "output_mesh_sha256": "9d552c60706c3cf491cbd36a1ff99bff759dafaafcdf7268421ac272a2a75d89",
+    "pre_tetrahedralization_metric_bounds": {
+      "extent": [
+        0.12,
+        0.027166786845901188,
+        0.11481279600958755
+      ],
+      "max": [
+        0.05973200884155408,
+        0.014362665428971877,
+        0.05728957836689437
+      ],
+      "max_extent": 0.12,
+      "min": [
+        -0.060267991158445916,
+        -0.012804121416929312,
+        -0.05752321764269317
+      ]
+    },
+    "scale_factor": 0.17326687867038118,
+    "scaling_mode": "pre_monolithic_target_max_dimension",
+    "schema_version": "hag4r-metric-max-dimension-scaling-v1",
+    "source_bounds": {
+      "extent": [
+        0.692573219537735,
+        0.1567915752530098,
+        0.6626355648040771
+      ],
+      "max": [
+        0.3447399139404297,
+        0.08289331197738647,
+        0.33064356446266174
+      ],
+      "max_extent": 0.692573219537735,
+      "min": [
+        -0.3478333055973053,
+        -0.07389826327562332,
+        -0.3319920003414154
+      ]
+    },
+    "target_max_dimension_m": 0.12
+  },
+  "run_id": "ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415",
+  "source_artifacts": {
+    "diagnostic_runtime_ownership": "/workspace/HAG4R-runpod/outputs/agentic_asset_refinement/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415/revisions/revision_0001/sim_diagnostics/runtime_ownership.json",
+    "final_mesh.mesh": {
+      "path": "/workspace/HAG4R-runpod/outputs/agentic_asset_refinement/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415/revisions/revision_0001/mesh_processing/combined_to_monolithic/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415.mesh",
+      "sha256": "9d552c60706c3cf491cbd36a1ff99bff759dafaafcdf7268421ac272a2a75d89",
+      "size_bytes": 431392
+    },
+    "heterogeneous_params.npz": {
+      "path": "/workspace/HAG4R-runpod/outputs/agentic_asset_refinement/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415/revisions/revision_0001/mesh_processing/assign_monolithic_mesh_params/heterogeneous_params.npz",
+      "sha256": "e267fac60628ddaff721ae37a96259fb5828e4fce75c7034ec837897a17a6a87",
+      "size_bytes": 383656
+    },
+    "inferred_params.json": {
+      "path": "/workspace/HAG4R-runpod/outputs/agentic_asset_refinement/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415/revisions/revision_0001/material_inference/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415.json",
+      "sha256": "f1d8f429aa812c58c729d5ecd6fe499e5948d3e08b7336b33f0e456d1f70fdcb",
+      "size_bytes": 8093
+    },
+    "metric_mesh_scaling.json": {
+      "path": "/workspace/HAG4R-runpod/outputs/agentic_asset_refinement/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415/revisions/revision_0001/mesh_processing/combined_to_monolithic/metric_mesh_scaling.json",
+      "sha256": "af65c2bececccc21121bbc05d401faa58037afc5257362fb13b2bfb73af02a32",
+      "size_bytes": 1715
+    },
+    "volume_topology.json": {
+      "path": "/workspace/HAG4R-runpod/outputs/agentic_asset_refinement/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415/revisions/revision_0001/mesh_processing/combined_to_monolithic/volume_topology.json",
+      "sha256": "5dac73000c02db624ec5fe0e78fc928378eab850773a75b68915a61c235ed00c",
+      "size_bytes": 14201
+    }
+  },
+  "source_directories": {
+    "asset_refinement": "/workspace/HAG4R-runpod/outputs/agentic_asset_refinement/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415/revisions/revision_0001",
+    "sim_diagnostics": "/workspace/HAG4R-runpod/outputs/agentic_asset_refinement/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415/revisions/revision_0001/sim_diagnostics"
+  },
+  "validation": {
+    "metric_mesh_scaling": {
+      "scale_factor": 0.17326687867038118,
+      "schema_version": "hag4r-metric-max-dimension-scaling-v1",
+      "target_max_dimension_m": 0.12
+    },
+    "params": {
+      "keys": [
+        "part_E_nu",
+        "part_colors",
+        "part_density",
+        "part_indices",
+        "part_volume_fill_mode_codes",
+        "tet_E_nu",
+        "tet_density",
+        "tet_part_labels"
+      ],
+      "tet_count": 11920
+    },
+    "volume_topology": {
+      "schema_version": "hag4r-volume-topology-v3",
+      "tet_budget_status": "within_budget",
+      "tet_count": 11920,
+      "volume_topology": "filled",
+      "warnings": []
+    }
+  },
+  "volume_topology": {
+    "array_hashes": {
+      "tet_E_nu_sha256": "2feed4b2bc8a163a603a29fd15d919f7d2cc152bffb1a119fbc7e132675a65eb",
+      "tet_density_sha256": "fc01a62f6e64029a5c3e0709c62518c51c2a8d8dc59c62702f630a928afa6b9c",
+      "tet_part_labels_sha256": "603e8089a70ac68cbc9e8dc88c1336effcaf79fc9a1c0d7b9d1f83e472d85665"
+    },
+    "contract": "per_part_filled_hollow_volumetric_meshing",
+    "heterogeneous_params_path": "outputs/agentic_asset_refinement/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415/revisions/revision_0001/mesh_processing/assign_monolithic_mesh_params/heterogeneous_params.npz",
+    "hollow_wall_band_layers": 2,
+    "mesh_path": "outputs/agentic_asset_refinement/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415/revisions/revision_0001/mesh_processing/combined_to_monolithic/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415.mesh",
+    "metric_mesh_scaling_path": "outputs/agentic_asset_refinement/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415/revisions/revision_0001/mesh_processing/combined_to_monolithic/metric_mesh_scaling.json",
+    "owner_assignment": {
+      "boundary_fallback": "nearest_occupied_voxel_only",
+      "method": "tet_centroid_occupancy_owner",
+      "nearest_occupied_voxel_fallback_count": 137,
+      "overlap_tie_break": "nearest_source_part_surface_then_smaller_part_index",
+      "overlap_tie_break_count": 36
+    },
+    "parts": [
+      {
+        "derived_voxel_band_width_m": null,
+        "fidelity_config": {
+          "absolute_cap": 10000,
+          "keep_ratio": 0.02,
+          "longest_axis_voxels": 96
+        },
+        "fill_operation": "binary_fill_holes",
+        "input_faces": 36400,
+        "mesh_fidelity": "high",
+        "occupied_voxel_count": 88757,
+        "output_faces": 728,
+        "part_color_rgb": [
+          141.0,
+          211.0,
+          199.0
+        ],
+        "part_index": 0,
+        "retained": true,
+        "source_mesh_path": "outputs/agentic_asset_refinement/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415/revisions/revision_0001/omnipart/cookie/part1.glb",
+        "target_faces": 728,
+        "tet_count": 11870,
+        "volume_fill_mode": "solid_fill",
+        "voxel_grid": {
+          "bounds_m": {
+            "max": [
+              0.05973200884155408,
+              0.014362665428971877,
+              0.05728957836689437
+            ],
+            "min": [
+              -0.060267991158445916,
+              -0.012804121416929312,
+              -0.05752321764269317
+            ]
+          },
+          "cell_count": 249984,
+          "dims": [
+            96,
+            28,
+            93
+          ],
+          "origin": [
+            -0.06572253661299136,
+            -0.018258666871474767,
+            -0.06297776309723863
+          ],
+          "pitch_m": 0.0013636363636363635
+        }
+      },
+      {
+        "derived_voxel_band_width_m": null,
+        "fidelity_config": {
+          "absolute_cap": 10000,
+          "keep_ratio": 0.02,
+          "longest_axis_voxels": 96
+        },
+        "fill_operation": "binary_fill_holes",
+        "input_faces": 38412,
+        "mesh_fidelity": "high",
+        "occupied_voxel_count": 99348,
+        "output_faces": 768,
+        "part_color_rgb": [
+          255.0,
+          255.0,
+          179.0
+        ],
+        "part_index": 1,
+        "retained": true,
+        "source_mesh_path": "outputs/agentic_asset_refinement/ya20_diagno_and_reroute_Part1_1_cookie_guanxiong_20260905_035415/revisions/revision_0001/omnipart/cookie/part2.glb",
+        "target_faces": 769,
+        "tet_count": 50,
+        "volume_fill_mode": "solid_fill",
+        "voxel_grid": {
+          "bounds_m": {
+            "max": [
+              -0.0492053526971865,
+              -0.000955812976052525,
+              0.032960859896085444
+            ],
+            "min": [
+              -0.051186484248975456,
+              -0.0046880950824653884,
+              0.0288799904952476
+            ]
+          },
+          "cell_count": 435744,
+          "dims": [
+            51,
+            89,
+            96
+          ],
+          "origin": [
+            -0.051371978312649905,
+            -0.004873589146139836,
+            0.028694496431573152
+          ],
+          "pitch_m": 4.637351591861185e-05
+        }
+      }
+    ],
+    "schema_version": "hag4r-volume-topology-v3",
+    "surface_combination": {
+      "dependency_versions": {
+        "manifold3d": "3.4.1",
+        "trimesh": "4.11.5"
+      },
+      "input_count": 2,
+      "inputs": [
+        {
+          "absolute_volume_m3": 0.00022293075991526717,
+          "bounds_m": [
+            [
+              -0.06120436311668995,
+              -0.014743670748556436,
+              -0.05842015406762557
+            ],
+            [
+              0.06030733911644484,
+              0.015848641298724268,
+              0.05820524236669641
+            ]
+          ],
+          "face_count": 728,
+          "finite": true,
+          "nonempty": true,
+          "positive_volume": true,
+          "signed_volume_m3": 0.00022293075991526717,
+          "surface_shell_count": 1,
+          "surface_shells": [
+            {
+              "absolute_volume_m3": 0.00022293075991526717,
+              "bounds_m": [
+                [
+                  -0.06120436311668995,
+                  -0.014743670748556436,
+                  -0.05842015406762557
+                ],
+                [
+                  0.06030733911644484,
+                  0.015848641298724268,
+                  0.05820524236669641
+                ]
+              ],
+              "face_count": 728,
+              "signed_volume_m3": 0.00022293075991526717,
+              "vertex_count": 366,
+              "watertight": true,
+              "winding_consistent": true
+            }
+          ],
+          "triangular": true,
+          "valid": true,
+          "vertex_count": 366,
+          "watertight": true,
+          "winding_consistent": true
+        },
+        {
+          "absolute_volume_m3": 9.630455874919133e-09,
+          "bounds_m": [
+            [
+              -0.051221988972100646,
+              -0.004692442599582758,
+              0.028894844512065282
+            ],
+            [
+              -0.04920256727108234,
+              -0.0009456074305961659,
+              0.03299853837776931
+            ]
+          ],
+          "face_count": 768,
+          "finite": true,
+          "nonempty": true,
+          "positive_volume": true,
+          "signed_volume_m3": 9.630455874919133e-09,
+          "surface_shell_count": 1,
+          "surface_shells": [
+            {
+              "absolute_volume_m3": 9.630455874919133e-09,
+              "bounds_m": [
+                [
+                  -0.051221988972100646,
+                  -0.004692442599582758,
+                  0.028894844512065282
+                ],
+                [
+                  -0.04920256727108234,
+                  -0.0009456074305961659,
+                  0.03299853837776931
+                ]
+              ],
+              "face_count": 768,
+              "signed_volume_m3": 9.630455874919133e-09,
+              "vertex_count": 386,
+              "watertight": true,
+              "winding_consistent": true
+            }
+          ],
+          "triangular": true,
+          "valid": true,
+          "vertex_count": 386,
+          "watertight": true,
+          "winding_consistent": true
+        }
+      ],
+      "output": {
+        "absolute_volume_m3": 0.00022293229886253128,
+        "bounds_m": [
+          [
+            -0.06120436266064644,
+            -0.01474367082118988,
+            -0.05842015519738197
+          ],
+          [
+            0.0603073388338089,
+            0.015848642215132713,
+            0.058205243200063705
+          ]
+        ],
+        "face_count": 1170,
+        "finite": true,
+        "nonempty": true,
+        "positive_volume": true,
+        "signed_volume_m3": 0.00022293229886253128,
+        "surface_shell_count": 1,
+        "surface_shells": [
+          {
+            "absolute_volume_m3": 0.00022293229886253128,
+            "bounds_m": [
+              [
+                -0.06120436266064644,
+                -0.01474367082118988,
+                -0.05842015519738197
+              ],
+              [
+                0.0603073388338089,
+                0.015848642215132713,
+                0.058205243200063705
+              ]
+            ],
+            "face_count": 1170,
+            "signed_volume_m3": 0.00022293229886253128,
+            "vertex_count": 587,
+            "watertight": true,
+            "winding_consistent": true
+          }
+        ],
+        "triangular": true,
+        "valid": true,
+        "vertex_count": 587,
+        "watertight": true,
+        "winding_consistent": true
+      },
+      "runtime_s": 0.07669925782829523,
+      "strategy": "manifold_union"
+    },
+    "tet_budget_limit": 40000,
+    "tet_budget_status": "within_budget",
+    "tet_count": 11920,
+    "tet_validation": {
+      "post_serialization": {
+        "absolute_determinant_min": 7.236587669675901e-11,
+        "bbox_diagonal_m": 0.17117963304188058,
+        "boundary_surface_component_count": 1,
+        "boundary_triangle_count": 2792,
+        "components": [
+          {
+            "bounds_m": [
+              [
+                -0.06120436266064644,
+                -0.01474367082118988,
+                -0.05842015519738197
+              ],
+              [
+                0.0603073388338089,
+                0.015848642215132713,
+                0.058205243200063705
+              ]
+            ],
+            "centroid_m": [
+              -0.0010983347821230725,
+              0.00029764248156620817,
+              -0.0003804924081842087
+            ],
+            "component_id": 0,
+            "is_main_component": true,
+            "nearest_distance_to_main_component_m": 0.0,
+            "part_label_distribution": {
+              "0": 11870,
+              "1": 50
+            },
+            "tet_count": 11920,
+            "vertex_count": 2811,
+            "volume_m3": 0.00022283159716825546
+          }
+        ],
+        "determinant_max": -7.236587669675901e-11,
+        "determinant_min": -7.85097374023916e-07,
+        "duplicate_tet_count": 0,
+        "expected_material_labels": [
+          0,
+          1
+        ],
+        "face_connected_component_count": 1,
+        "failures": [],
+        "finite_points": true,
+        "genesis_determinant_threshold": 1e-12,
+        "genesis_invalid_tet_count": 0,
+        "indices_in_range": true,
+        "material_array_length_valid": true,
+        "material_label_coverage_mode": "exact",
+        "material_label_coverage_valid": true,
+        "missing_material_labels": [],
+        "non_manifold_tet_face_count": 0,
+        "point_count": 2811,
+        "present_material_labels": [
+          0,
+          1
+        ],
+        "repeated_vertex_tet_count": 0,
+        "tet_count": 11920,
+        "unexpected_material_labels": [],
+        "valid": true,
+        "warnings": [],
+        "wrong_orientation_tet_count": 0
+      },
+      "post_tetrahedralization": {
+        "absolute_determinant_min": 7.236587669675901e-11,
+        "bbox_diagonal_m": 0.17117963304188058,
+        "boundary_surface_component_count": 1,
+        "boundary_triangle_count": 2792,
+        "components": [
+          {
+            "bounds_m": [
+              [
+                -0.06120436266064644,
+                -0.01474367082118988,
+                -0.05842015519738197
+              ],
+              [
+                0.0603073388338089,
+                0.015848642215132713,
+                0.058205243200063705
+              ]
+            ],
+            "centroid_m": [
+              -0.0010983347821230725,
+              0.00029764248156620817,
+              -0.0003804924081842087
+            ],
+            "component_id": 0,
+            "is_main_component": true,
+            "nearest_distance_to_main_component_m": 0.0,
+            "part_label_distribution": {},
+            "tet_count": 11920,
+            "vertex_count": 2811,
+            "volume_m3": 0.00022283159716825546
+          }
+        ],
+        "determinant_max": -7.236587669675901e-11,
+        "determinant_min": -7.85097374023916e-07,
+        "duplicate_tet_count": 0,
+        "expected_material_labels": [],
+        "face_connected_component_count": 1,
+        "failures": [],
+        "finite_points": true,
+        "genesis_determinant_threshold": 1e-12,
+        "genesis_invalid_tet_count": 0,
+        "indices_in_range": true,
+        "material_array_length_valid": true,
+        "material_label_coverage_mode": "exact",
+        "material_label_coverage_valid": true,
+        "missing_material_labels": [],
+        "non_manifold_tet_face_count": 0,
+        "point_count": 2811,
+        "present_material_labels": [],
+        "repeated_vertex_tet_count": 0,
+        "tet_count": 11920,
+        "unexpected_material_labels": [],
+        "valid": true,
+        "warnings": [],
+        "wrong_orientation_tet_count": 0
+      },
+      "pre_serialization": {
+        "absolute_determinant_min": 7.236587669675901e-11,
+        "bbox_diagonal_m": 0.17117963304188058,
+        "boundary_surface_component_count": 1,
+        "boundary_triangle_count": 2792,
+        "components": [
+          {
+            "bounds_m": [
+              [
+                -0.06120436266064644,
+                -0.01474367082118988,
+                -0.05842015519738197
+              ],
+              [
+                0.0603073388338089,
+                0.015848642215132713,
+                0.058205243200063705
+              ]
+            ],
+            "centroid_m": [
+              -0.0010983347821230725,
+              0.00029764248156620817,
+              -0.0003804924081842087
+            ],
+            "component_id": 0,
+            "is_main_component": true,
+            "nearest_distance_to_main_component_m": 0.0,
+            "part_label_distribution": {
+              "0": 11870,
+              "1": 50
+            },
+            "tet_count": 11920,
+            "vertex_count": 2811,
+            "volume_m3": 0.00022283159716825546
+          }
+        ],
+        "determinant_max": -7.236587669675901e-11,
+        "determinant_min": -7.85097374023916e-07,
+        "duplicate_tet_count": 0,
+        "expected_material_labels": [
+          0,
+          1
+        ],
+        "face_connected_component_count": 1,
+        "failures": [],
+        "finite_points": true,
+        "genesis_determinant_threshold": 1e-12,
+        "genesis_invalid_tet_count": 0,
+        "indices_in_range": true,
+        "material_array_length_valid": true,
+        "material_label_coverage_mode": "exact",
+        "material_label_coverage_valid": true,
+        "missing_material_labels": [],
+        "non_manifold_tet_face_count": 0,
+        "point_count": 2811,
+        "present_material_labels": [
+          0,
+          1
+        ],
+        "repeated_vertex_tet_count": 0,
+        "tet_count": 11920,
+        "unexpected_material_labels": [],
+        "valid": true,
+        "warnings": [],
+        "wrong_orientation_tet_count": 0
+      }
+    },
+    "volume_topology": "filled",
+    "warnings": []
+  }
+}

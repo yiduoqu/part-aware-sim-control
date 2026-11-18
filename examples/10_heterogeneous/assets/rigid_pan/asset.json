@@ -1,0 +1,64 @@
+{
+  "schema": "rigid-mesh-v1",
+  "name": "rigid_pan",
+  "units": "m",
+  "up_axis": "Z",
+  "description": "Simple rigid frying pan: 240 mm open bowl, flat 4 mm base, flared sides and fixed rounded handle.",
+  "rigid_groups": [
+    [
+      0
+    ]
+  ],
+  "deformable_parts": [],
+  "behavior_validated": false,
+  "collision_geometry": "physics/collision_mesh.obj",
+  "tetrahedral_volume": "physics/rigid_tets.npz",
+  "mesh_resolution": {
+    "vertices": 11482,
+    "tetrahedra": 34518,
+    "boundary_faces": 21906,
+    "boundary_edge_mm": {
+      "median": 3.6418962805662813,
+      "p95": 5.668541641753691,
+      "max": 5.99995844408276
+    },
+    "tet_volume_mm3": {
+      "min": 5.7057357036209335e-06,
+      "median": 7.247883041724872,
+      "p95": 14.119703868610163,
+      "max": 34.03604993702512
+    },
+    "mean_ratio": {
+      "min": 0.04168599481059286,
+      "p05": 0.4750669139347673,
+      "median": 0.7364432710761492
+    },
+    "nonpositive_tetrahedra": 0,
+    "added_tetrahedra": 8849,
+    "refinement_batches": 3,
+    "maximum_boundary_edge_mm": 5.99995844408276
+  },
+  "collision_requirement": "Preserve the open concave bowl; a single convex hull would fill it.",
+  "metadata": {
+    "bowl_outer_diameter_mm": 240,
+    "rim_height_mm": 38,
+    "base_thickness_mm": 4,
+    "handle_direction": "+X",
+    "support_plane_z_m": 0,
+    "reference_url": "https://www.ikea.com/gb/en/p/hemlagad-frying-pan-non-stick-coating-black-60580893/",
+    "design_notes": "Original simplified geometry inspired by a conventional 24 cm frying pan; dimensions are design choices, not an exact product replica. One fixed rigid assembly, no thermal model.",
+    "bounds_mm": [
+      [
+        -120.0,
+        -120.0,
+        0.0
+      ],
+      [
+        292.5256,
+        120.0,
+        57.0955
+      ]
+    ],
+    "approximate_mass_kg": 0.729626491801763
+  }
+}

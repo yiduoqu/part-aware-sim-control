@@ -1,0 +1,103 @@
+{
+  "confidence_normalization": "round(255*clip(confidence/max_confidence,0,1)); all black when max_confidence=0",
+  "degenerate_projected_triangle_count": 0,
+  "fill_provenance_palette_rgb": {
+    "gutter": [
+      220,
+      0,
+      220
+    ],
+    "nearest": [
+      0,
+      96,
+      255
+    ],
+    "observed": [
+      0,
+      200,
+      0
+    ],
+    "part_color": [
+      255,
+      160,
+      0
+    ],
+    "unmapped": [
+      0,
+      0,
+      0
+    ]
+  },
+  "images": {
+    "confidence": "confidence.png",
+    "fill_provenance": "fill_provenance.png",
+    "observed_coverage": "observed_coverage.png",
+    "rest_pose_render": "rest_pose_render.png"
+  },
+  "max_confidence": 11.802041053771973,
+  "observed_texel_count": 492000,
+  "schema_version": "hag4r-post-mesh-texture-qa-v1",
+  "statistics": {
+    "global": {
+      "chart_interior_texel_count": 582795,
+      "gutter_fraction": 0.3062757113472746,
+      "gutter_texel_count": 257301,
+      "nearest_filled_fraction": 0.15579234550742543,
+      "nearest_filled_texel_count": 90795,
+      "observed_fraction": 0.8442076544925746,
+      "observed_texel_count": 492000,
+      "part_color_filled_fraction": 0.0,
+      "part_color_filled_texel_count": 0
+    },
+    "per_part": [
+      {
+        "chart_interior_texel_count": 351713,
+        "gutter_fraction": 0.16801580167478827,
+        "gutter_texel_count": 71027,
+        "nearest_filled_fraction": 0.028284425085225738,
+        "nearest_filled_texel_count": 9948,
+        "observed_fraction": 0.9717155749147742,
+        "observed_texel_count": 341765,
+        "part_color_filled_fraction": 0.0,
+        "part_color_filled_texel_count": 0,
+        "part_id": 0
+      },
+      {
+        "chart_interior_texel_count": 109675,
+        "gutter_fraction": 0.4467787821314717,
+        "gutter_texel_count": 88573,
+        "nearest_filled_fraction": 0.22700706633234558,
+        "nearest_filled_texel_count": 24897,
+        "observed_fraction": 0.7729929336676544,
+        "observed_texel_count": 84778,
+        "part_color_filled_fraction": 0.0,
+        "part_color_filled_texel_count": 0,
+        "part_id": 1
+      },
+      {
+        "chart_interior_texel_count": 28445,
+        "gutter_fraction": 0.5014983964529188,
+        "gutter_texel_count": 28616,
+        "nearest_filled_fraction": 0.4733345051854456,
+        "nearest_filled_texel_count": 13464,
+        "observed_fraction": 0.5266654948145544,
+        "observed_texel_count": 14981,
+        "part_color_filled_fraction": 0.0,
+        "part_color_filled_texel_count": 0,
+        "part_id": 2
+      },
+      {
+        "chart_interior_texel_count": 92962,
+        "gutter_fraction": 0.42632692984134235,
+        "gutter_texel_count": 69085,
+        "nearest_filled_fraction": 0.4570254512596545,
+        "nearest_filled_texel_count": 42486,
+        "observed_fraction": 0.5429745487403456,
+        "observed_texel_count": 50476,
+        "part_color_filled_fraction": 0.0,
+        "part_color_filled_texel_count": 0,
+        "part_id": 3
+      }
+    ]
+  }
+}

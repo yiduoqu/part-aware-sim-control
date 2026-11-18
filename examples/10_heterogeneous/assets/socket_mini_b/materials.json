@@ -1,0 +1,23 @@
+{
+  "parts": [
+    {
+      "part_id": 0,
+      "name": "rigid_socket_block",
+      "physics": "rigid",
+      "material": "ABS",
+      "density_kg_m3": 1100
+    }
+  ],
+  "appearance_colors_rgb": [
+    [
+      144,
+      181,
+      193
+    ],
+    [
+      58,
+      79,
+      92
+    ]
+  ]
+}
