@@ -1713,6 +1713,146 @@
       }
     },
     {
+      "id": "retractable_stamp",
+      "path": "retractable_stamp",
+      "kind": "labelled-tet-v1",
+      "source": "generated_tool_assets (procedural geometry, Manifold union + TetGen, centroid part labels)",
+      "import_status": "generated",
+      "description": "Round pocket-style push-down stamp with an open sleeve, a bonded compliant return collar and a mirrored numeral die.",
+      "vertices": 10821,
+      "tetrahedra": 44280,
+      "bounds_m": [
+        [
+          -0.016,
+          -0.016,
+          0.0
+        ],
+        [
+          0.016,
+          0.016,
+          0.07
+        ]
+      ],
+      "extent_m": [
+        0.032,
+        0.032,
+        0.07
+      ],
+      "source_mass_kg": 0.035508012722333934,
+      "source_stiffness_ratio": 11000.0,
+      "parts": [
+        {
+          "id": 0,
+          "name": "top_cap",
+          "tetrahedra": 6656,
+          "youngs_modulus_pa": 2200000000.0,
+          "poisson_ratio": 0.37,
+          "density_kg_m3": 1100.0
+        },
+        {
+          "id": 1,
+          "name": "plunger",
+          "tetrahedra": 2680,
+          "youngs_modulus_pa": 2200000000.0,
+          "poisson_ratio": 0.37,
+          "density_kg_m3": 1100.0
+        },
+        {
+          "id": 2,
+          "name": "outer_sleeve",
+          "tetrahedra": 3600,
+          "youngs_modulus_pa": 2200000000.0,
+          "poisson_ratio": 0.37,
+          "density_kg_m3": 1100.0
+        },
+        {
+          "id": 3,
+          "name": "return_collar",
+          "tetrahedra": 16320,
+          "youngs_modulus_pa": 200000.0,
+          "poisson_ratio": 0.2,
+          "density_kg_m3": 200.0
+        },
+        {
+          "id": 4,
+          "name": "foam_cushion",
+          "tetrahedra": 6264,
+          "youngs_modulus_pa": 300000.0,
+          "poisson_ratio": 0.25,
+          "density_kg_m3": 120.0
+        },
+        {
+          "id": 5,
+          "name": "rubber_die",
+          "tetrahedra": 8760,
+          "youngs_modulus_pa": 1500000.0,
+          "poisson_ratio": 0.47,
+          "density_kg_m3": 1100.0
+        }
+      ],
+      "checks": {
+        "labelled_tet_loader_passed": true,
+        "no_duplicate_tetrahedra": true,
+        "source_hashes_match": true
+      },
+      "rigid_groups": [
+        [
+          0,
+          1
+        ],
+        [
+          2
+        ]
+      ],
+      "used_by": [],
+      "behavior_validated_at_source": false,
+      "limitations": "Source estimates; tune per scene.",
+      "readme": "SOURCE.md",
+      "preview": "previews/retractable_stamp.png",
+      "files": {
+        "appearance/albedo.png": {
+          "sha256": "42138c3848ca777fd2e3fe6132386eadac239947274048d11d6b17535fd01fac",
+          "size_bytes": 325
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "e5d6274e5e4c7176402b90e417f69f8b881ce53f0ae3f6e6c33a388df6eed1b9",
+          "size_bytes": 1415208
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "9f39d1fb967e3764125ab3335da072e7970a65068d3f67d1dc88fe901fce140c",
+          "size_bytes": 260832
+        },
+        "asset.json": {
+          "sha256": "c120705b34ef30bd64f76cf1c9a9a15560a2ca065f981391aab27b716296848a",
+          "size_bytes": 1476
+        },
+        "final_export_manifest.json": {
+          "sha256": "3d75db9451d1c01f8460b9bc2179f1fac4cd563b69e5c5ea974412be2b1e3f68",
+          "size_bytes": 7029
+        },
+        "final_mesh.mesh": {
+          "sha256": "acc6f5c191e5b6c09ec2723280b2ef05d3dcd6da7dc731ea2834167619073ae1",
+          "size_bytes": 1411796
+        },
+        "heterogeneous_params.npz": {
+          "sha256": "9d80f57ab78e673224adac893264b1278e07947403a2360cca952a7b7e646c28",
+          "size_bytes": 4364
+        },
+        "inferred_params.json": {
+          "sha256": "48eceaea9ce4388fc12a79cf10aec2ae3396345108ee79035378c0143cd4a466",
+          "size_bytes": 2312
+        },
+        "metric_mesh_scaling.json": {
+          "sha256": "b01b9fd4f1800c48599e2ade47de00ca19842fea7740c5f9c44d671e68506769",
+          "size_bytes": 969
+        },
+        "volume_topology.json": {
+          "sha256": "cd59f108c04dc5f42d8b140eeb200a20f53e29b2867b8ca781c9b335376afcd0",
+          "size_bytes": 3283
+        }
+      }
+    },
+    {
       "id": "rigid_pan",
       "path": "rigid_pan",
       "kind": "rigid-mesh-v1",

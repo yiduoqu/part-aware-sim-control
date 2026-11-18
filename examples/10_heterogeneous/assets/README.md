@@ -47,6 +47,7 @@ generated copy has a suffix: `usb_hub_gen` sits next to the original `usb_hub`, 
 | [gap_sponge_wand](gap_sponge_wand/SOURCE.md) | tet + rigid groups | 14,813 | 235 x 18 x 69 | - |
 | [handled_fabric_bag](handled_fabric_bag/SOURCE.md) | cloth + rigid | - | 480 x 284 x 398 | - |
 | [power_strip](power_strip/SOURCE.md) | tet + rigid groups | 35,632 | 772 x 48 x 28 | `cable_retrieve`, `cable_scene` |
+| [retractable_stamp](retractable_stamp/SOURCE.md) | tet + rigid groups | 44,280 | 32 x 32 x 70 | - |
 | [rigid_pan](rigid_pan/SOURCE.md) | rigid mesh | - | 413 x 240 x 57 | - |
 | [silicone_spatula](silicone_spatula/SOURCE.md) | tet + rigid groups | 29,121 | 295 x 65 x 14 | - |
 | [socket_mains](socket_mains/SOURCE.md) | rigid socket | - | 21 x 28 x 24 | - |

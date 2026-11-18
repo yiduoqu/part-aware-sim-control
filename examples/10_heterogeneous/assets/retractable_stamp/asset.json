@@ -1,0 +1,51 @@
+{
+  "name": "retractable_stamp",
+  "description": "Round pocket-style push-down stamp with an open sleeve, a bonded compliant return collar and a mirrored numeral die.",
+  "units": "m",
+  "up_axis": "Z",
+  "construction": "Conforming layered sections and transition slabs, tetrahedral prism subdivision, centroid material classification and a texture-mapped exact boundary.",
+  "rigid_groups": [
+    [
+      0,
+      1
+    ],
+    [
+      2
+    ]
+  ],
+  "source_assets": [
+    {
+      "type": "user_supplied_reference_photo",
+      "filename": "codex-clipboard-eeb54766-c4b7-41cc-b2cd-4f0393c21d31.png",
+      "sha256": "8d772d6b4c9a0993fd225f86eccebc46106cb819648ff4c83c7a371ce5827196"
+    }
+  ],
+  "behavior_validated": false,
+  "metadata": {
+    "origin": "Center of open bottom rim",
+    "height_mm": 70,
+    "stroke_direction": [
+      0,
+      0,
+      -1
+    ],
+    "relief_tip_rest_z_mm": 3,
+    "relief_digit_height_mm": 7,
+    "relief_digit_stroke_mm": 3,
+    "ring_width_mm": 2.5,
+    "minimum_relief_gap_mm": 2.5,
+    "nominal_radial_clearances_mm": {
+      "plunger_to_sleeve": 2,
+      "foam_to_sleeve": 3,
+      "die_to_sleeve": 3,
+      "plunger_to_collar": 1
+    },
+    "rib_count": 40,
+    "reference_format": "generated_tool_assets/assets/sponge_wand",
+    "material_values": "User-specified starting estimates",
+    "geometry_simplifications": [
+      "Bottom cover omitted",
+      "Bonded elastomer return collar replaces coil and sliding fit"
+    ]
+  }
+}

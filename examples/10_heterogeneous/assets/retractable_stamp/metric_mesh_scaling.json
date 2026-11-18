@@ -1,0 +1,48 @@
+{
+  "schema_version": "procedural-metric-mesh-scaling-v1",
+  "scaling_mode": "millimetres_to_metres_at_export",
+  "source_units": "mm",
+  "output_units": "m",
+  "source_bounds": {
+    "min": [
+      -16.0,
+      -16.0,
+      0.0
+    ],
+    "max": [
+      16.0,
+      16.0,
+      70.0
+    ],
+    "extent": [
+      32.0,
+      32.0,
+      70.0
+    ],
+    "max_extent": 70.0
+  },
+  "metric_bounds": {
+    "min": [
+      -0.016,
+      -0.016,
+      0.0
+    ],
+    "max": [
+      0.016,
+      0.016,
+      0.07
+    ],
+    "extent": [
+      0.032,
+      0.032,
+      0.07
+    ],
+    "max_extent": 0.07
+  },
+  "scale_factor": 0.001,
+  "import_scale": 1.0,
+  "target_max_dimension_m": 0.07,
+  "output_mesh_path": "final_mesh.mesh",
+  "output_mesh_sha256": "acc6f5c191e5b6c09ec2723280b2ef05d3dcd6da7dc731ea2834167619073ae1",
+  "note": "The construction dimensions were in millimetres. The stored Medit coordinates already include the conversion to metres. Import at scale 1."
+}
