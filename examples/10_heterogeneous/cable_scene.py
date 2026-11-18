@@ -136,12 +136,14 @@ def episode(
     control_hz: int,
     follow,
     task_row,
+    stop=None,
 ):
     """Step ``steps`` frames, writing ``trajectory.npz``, ``diagnostics.json`` and ``overview.mp4``.
 
     ``follow(frame)`` drives the arm before each frame and returns the route's frames so far;
     ``task_row(frame, local, body_q)`` adds the task's own fields to each frame's row (``local``: the
     object's particles in the bench frame). ``soft`` are the soft labels, whose strain is measured.
+    ``stop(row)``, when given, ends the run early once it returns true (a blown-up state).
     Returns the rows, the run's seconds and any video error.
     """
     import arm_gripper
@@ -171,7 +173,10 @@ def episode(
             owned = q[particles]
             edges = owned[tets[:, 1:]] - owned[tets[:, :1]]
             # The cable's strain: each tet's largest principal stretch; its 99th percentile skips slivers.
-            stretch = np.linalg.svd(rest_inv @ edges[soft], compute_uv=False).max(axis=1)
+            finite = bool(np.isfinite(owned).all())
+            stretch = (
+                np.linalg.svd(rest_inv @ edges[soft], compute_uv=False).max(axis=1) if finite else np.full(1, np.nan)
+            )
             count = int(contacts.soft_contact_count.numpy()[0])
             shapes = contacts.soft_contact_shape.numpy()[: min(count, contacts.soft_contact_max)]
             row = {
@@ -188,6 +193,9 @@ def episode(
             }
             trajectory.add(row["time_s"], owned, body_q)
             rows.append(row)
+            if stop is not None and stop(row):
+                print(json.dumps({"stopped_at_frame": frame + 1}), flush=True)
+                break
             if videos is not None and frame % render_every == 0:
                 videos.append_frames({camera.name: sim.render(camera)})
             if frame % 30 == 0 or frame == steps - 1:

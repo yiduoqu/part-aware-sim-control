@@ -1,0 +1,22 @@
+{
+  "name": "cloth_duster_fem",
+  "description": "Star-shaped cloth duster: eight medium sheets attached along a slim central connector, with free outer edges and tips. Cloth as a 2.5 mm solid shell of tets.",
+  "units": "m",
+  "up_axis": "Z",
+  "construction": "cloth_to_tets.py: thickened mid-surface and rigid meshes, union, TetGen",
+  "rigid_groups": [
+    [
+      1
+    ]
+  ],
+  "source_assets": [
+    "cloth_cleaning_wand"
+  ],
+  "behavior_validated": false,
+  "metadata": {
+    "thickness_m": 0.0025,
+    "cloth_young_pa": 500000.0,
+    "cloth_faces": 5632,
+    "tets": 28667
+  }
+}
