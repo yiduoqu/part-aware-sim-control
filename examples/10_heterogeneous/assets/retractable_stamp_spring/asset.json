@@ -1,0 +1,61 @@
+{
+  "name": "retractable_stamp",
+  "description": "Guided push-down stamp with a central shaft, telescoping skirt and functional steel helical return spring.",
+  "units": "m",
+  "up_axis": "Z",
+  "construction": "Conforming six-material tetrahedral volume with flat spring-end lands bonded to the cap and sleeve seats. The shaft and guide have independent free surfaces.",
+  "rigid_groups": [
+    [
+      0,
+      1
+    ],
+    [
+      2
+    ]
+  ],
+  "source_assets": [
+    {
+      "role": "exterior",
+      "filename": "codex-clipboard-eeb54766-c4b7-41cc-b2cd-4f0393c21d31.png",
+      "sha256": "8d772d6b4c9a0993fd225f86eccebc46106cb819648ff4c83c7a371ce5827196"
+    },
+    {
+      "role": "mechanism_reference",
+      "filename": "codex-clipboard-b1c5ab9d-13b4-4040-a055-61582eeb0917.png",
+      "sha256": "e0cff7f933578b89c6eea28900e7d873f477ff6ee3b6e0671029fa5d75bfdbeb"
+    }
+  ],
+  "behavior_validated": false,
+  "metadata": {
+    "revision": "guided_helical_spring",
+    "rest_recess_mm": 3,
+    "first_geometric_touch_mm": 3,
+    "mechanical_stop_mm": 4.5,
+    "nominal_shaft_radius_mm": 4,
+    "guide_bore_radius_mm": 5,
+    "spring_mean_radius_mm": 7.5,
+    "spring_wire_profile": "1.2 mm high by 1.2 mm wide octagonal straight-sided wire",
+    "turns": 3.5,
+    "flat_end_turns_each": 0.25,
+    "spring_seat_z_mm": [
+      22,
+      40
+    ],
+    "tilt_restraint": "The concentric shaft/bore and skirt/shroud form two clearance guides. An ideal prismatic axis is assumed in the bench test.",
+    "part_3_change": "Label 3 now contains a bonded steel spring. Remove old collar material overrides and collar-specific radial tests when integrating.",
+    "mandrel_and_sleeve_clearance_mm": 1,
+    "carrier_and_sleeve_clearance_mm": 2,
+    "die_and_sleeve_clearance_mm": 3,
+    "cap_skirt_to_shroud_nominal_gap_mm": 0.75,
+    "stroke_direction": [
+      0,
+      0,
+      -1
+    ],
+    "behavior_validation": {
+      "scope": "ideal axial guided, force-driven reduced-order FEM contact/release bench",
+      "report": "../verification/press_test.json",
+      "full_newton_scene_validated": false
+    }
+  }
+}

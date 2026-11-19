@@ -1,0 +1,29 @@
+{
+  "schema_version": "procedural-metric-mesh-scaling-v1",
+  "source_units": "mm",
+  "output_units": "m",
+  "scale_factor": 0.001,
+  "import_scale": 1,
+  "scaling_mode": "millimetres_to_metres_at_export",
+  "output_mesh_path": "final_mesh.mesh",
+  "output_mesh_sha256": "e88f644ca5d8fff12b68417ea4063f7c30ff581b5417ca8f461a92c0d6f5d279",
+  "metric_bounds": {
+    "min": [
+      -0.016,
+      -0.016,
+      0.0
+    ],
+    "max": [
+      0.016,
+      0.016,
+      0.07
+    ],
+    "extent": [
+      0.032,
+      0.032,
+      0.07
+    ],
+    "max_extent": 0.07
+  },
+  "target_max_dimension_m": 0.07
+}

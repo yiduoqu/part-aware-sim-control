@@ -49,17 +49,17 @@
       "volume_fill_mode": "solid_fill"
     },
     {
-      "part_name": "return_collar",
-      "major_material_name": "soft elastomer foam",
+      "part_name": "return_spring",
+      "major_material_name": "spring steel",
       "part_color_rgb": [
-        144,
-        143,
-        142
+        138,
+        153,
+        166
       ],
-      "youngs_modulus_pa": 200000.0,
-      "poisson_ratio": 0.2,
-      "density_kg_m3": 200.0,
-      "friction_coefficient": 0.6,
+      "youngs_modulus_pa": 200000000000.0,
+      "poisson_ratio": 0.3,
+      "density_kg_m3": 7850.0,
+      "friction_coefficient": 0.2,
       "part_index": 3,
       "volume_fill_mode": "solid_fill"
     },

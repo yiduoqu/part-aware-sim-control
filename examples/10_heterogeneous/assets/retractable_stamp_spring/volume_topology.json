@@ -1,0 +1,102 @@
+{
+  "schema_version": "procedural-volume-topology-v1",
+  "mesh_path": "final_mesh.mesh",
+  "heterogeneous_params_path": "heterogeneous_params.npz",
+  "metric_mesh_scaling_path": "metric_mesh_scaling.json",
+  "contract": "single face-connected volume",
+  "owner_assignment": "centroids checked against stepped radial / axial material domains",
+  "tet_budget_limit": 45000,
+  "tet_count": 43392,
+  "tet_validation": {
+    "vertices": 11429,
+    "tetrahedra": 43392,
+    "rest_bounds_m": [
+      [
+        -0.016,
+        -0.016,
+        0.0
+      ],
+      [
+        0.016,
+        0.016,
+        0.07
+      ]
+    ],
+    "mass_kg": 0.03235492319928443,
+    "counts": [
+      6880,
+      1904,
+      8832,
+      10752,
+      6264,
+      8760
+    ],
+    "surface_edge_max_mm": [
+      4.198519070607784,
+      3.9959885618638418,
+      4.26226148877311,
+      0.9999085806709624,
+      1.3341942439811516,
+      1.4744344002494156
+    ],
+    "min_tet_volume_m3": 1.2512946523611528e-11,
+    "binding_error_m": 3.5925440749164665e-09,
+    "boundary_faces": 15024,
+    "shared_interface_faces": {
+      "0-1": 40,
+      "0-3": 32,
+      "1-4": 696,
+      "2-3": 32,
+      "4-5": 696
+    },
+    "clawhauser_loader_passed": true
+  },
+  "parts": [
+    {
+      "part_name": "top_cap",
+      "part_index": 0,
+      "tet_count": 6880,
+      "volume_fill_mode": "solid_fill"
+    },
+    {
+      "part_name": "plunger",
+      "part_index": 1,
+      "tet_count": 1904,
+      "volume_fill_mode": "solid_fill"
+    },
+    {
+      "part_name": "outer_sleeve",
+      "part_index": 2,
+      "tet_count": 8832,
+      "volume_fill_mode": "solid_fill"
+    },
+    {
+      "part_name": "return_spring",
+      "part_index": 3,
+      "tet_count": 10752,
+      "volume_fill_mode": "solid_fill"
+    },
+    {
+      "part_name": "foam_cushion",
+      "part_index": 4,
+      "tet_count": 6264,
+      "volume_fill_mode": "solid_fill"
+    },
+    {
+      "part_name": "rubber_die",
+      "part_index": 5,
+      "tet_count": 8760,
+      "volume_fill_mode": "solid_fill"
+    }
+  ],
+  "rigid_groups": [
+    [
+      0,
+      1
+    ],
+    [
+      2
+    ]
+  ],
+  "rest_intersection_check": "AABB candidate pairs 3028623, intersection violations 0"
+}

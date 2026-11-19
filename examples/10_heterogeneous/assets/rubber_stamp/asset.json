@@ -1,0 +1,117 @@
+{
+  "name": "rubber_stamp",
+  "description": "Traditional hand stamp with a dark stained turned beech grip, pale beech mount, charcoal foam cushion and red border-and-bars die.",
+  "units": "m",
+  "up_axis": "Z",
+  "construction": "Single conforming tetrahedral solid with bonded interfaces. Alternating five-tet cells in the relief, die backing and cushion. Coarse transition blocks, lofted axial sections, rounded perimeter and local edge bisection in the wood.",
+  "rigid_groups": [
+    [
+      0,
+      1
+    ]
+  ],
+  "source_assets": [
+    {
+      "type": "user_supplied_reference_photo",
+      "filename": "codex-clipboard-df5d38ec-c39a-4149-9463-e99af8d36fa9.png",
+      "sha256": "c47ebe04081b4ea6f860d98dae98dad9c980392f288ccb570affe1f07fe211bd"
+    }
+  ],
+  "behavior_validated": false,
+  "metadata": {
+    "origin": "Centre of the contact footprint at z=0",
+    "stamp_direction": [
+      0,
+      0,
+      -1
+    ],
+    "medit_cell_reference": "part_index + 1",
+    "binding_index_base": 0,
+    "volume_fill_code": {
+      "0": "solid_fill"
+    },
+    "color_space": "sRGB 0-255",
+    "handle_axial_profile_z_radius_mm": [
+      [
+        21.0,
+        11.4
+      ],
+      [
+        23.0,
+        11.58
+      ],
+      [
+        27.0,
+        11.3
+      ],
+      [
+        31.0,
+        11.03
+      ],
+      [
+        34.0,
+        11.0
+      ],
+      [
+        37.0,
+        11.12
+      ],
+      [
+        40.0,
+        11.58
+      ],
+      [
+        42.5,
+        12.35
+      ],
+      [
+        45.0,
+        13.6
+      ],
+      [
+        47.4,
+        15.0
+      ],
+      [
+        49.1,
+        15.74
+      ],
+      [
+        51.0,
+        16.0
+      ],
+      [
+        54.5,
+        16.0
+      ],
+      [
+        58.0,
+        16.0
+      ],
+      [
+        61.5,
+        15.95
+      ],
+      [
+        63.3,
+        15.76
+      ],
+      [
+        64.6,
+        15.28
+      ],
+      [
+        65.5,
+        14.25
+      ],
+      [
+        66.0,
+        12.6
+      ]
+    ],
+    "overall_height_m": 0.066,
+    "relief_pattern": "Rectangular border and three parallel bars",
+    "material_source": "User-specified starting estimates",
+    "appearance": "Photo-guided synthetic albedo. The metal label holder and lettering are omitted. GLB has an identity node in physics Z-up coordinates."
+  }
+}

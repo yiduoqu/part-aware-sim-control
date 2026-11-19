@@ -1,0 +1,62 @@
+{
+  "schema_version": "procedural-final-export-manifest-v1",
+  "asset_name": "retractable_stamp",
+  "revision": "guided_helical_spring",
+  "exported_artifacts": {
+    "SOURCE.md": {
+      "path": "SOURCE.md",
+      "size_bytes": 6635,
+      "sha256": "91906b8c7ea347f73d1209d54aa49d7bc7cd7dbdd1b60e00a1a2b60c6d68272b"
+    },
+    "appearance/albedo.png": {
+      "path": "appearance/albedo.png",
+      "size_bytes": 327,
+      "sha256": "8a727b2042b71522fec8e217b3275e5ae49d3e55134268a6c9508961924d648b"
+    },
+    "appearance/visual_mesh.glb": {
+      "path": "appearance/visual_mesh.glb",
+      "size_bytes": 1624296,
+      "sha256": "f33fdc10605ccc2932f7a3091b1c0267061e22e71c07227298e6e68e0261067b"
+    },
+    "appearance/visual_to_physics.npz": {
+      "path": "appearance/visual_to_physics.npz",
+      "size_bytes": 308424,
+      "sha256": "19c8a5ca03ad019344629a22439d8b46c117fe583b4a01d546608fefe73519da"
+    },
+    "asset.json": {
+      "path": "asset.json",
+      "size_bytes": 2113,
+      "sha256": "008e50722f7529e16d8737fc9c8841295433a64d0fb31901d2d4fd208ba2a1dc"
+    },
+    "final_mesh.mesh": {
+      "path": "final_mesh.mesh",
+      "size_bytes": 1407579,
+      "sha256": "e88f644ca5d8fff12b68417ea4063f7c30ff581b5417ca8f461a92c0d6f5d279"
+    },
+    "heterogeneous_params.npz": {
+      "path": "heterogeneous_params.npz",
+      "size_bytes": 4329,
+      "sha256": "f25f335e77104f26c15c62492389ecbbda31d273595492b57bf5d7f4d710b22e"
+    },
+    "inferred_params.json": {
+      "path": "inferred_params.json",
+      "size_bytes": 2312,
+      "sha256": "2d96a70d567ce2aac38bc50bd0978394cccf3eab41368b1369698a1a51dc91a1"
+    },
+    "metric_mesh_scaling.json": {
+      "path": "metric_mesh_scaling.json",
+      "size_bytes": 597,
+      "sha256": "aa362eefdd3696fa86b25ec64993ffa78e2bb03b597d599f4595abd80e9a890b"
+    },
+    "volume_topology.json": {
+      "path": "volume_topology.json",
+      "size_bytes": 2206,
+      "sha256": "fa6910da3a6786feb4ab4248e94d59479d7bec8d940220eac1b2823a94f8503e"
+    }
+  },
+  "validation": {
+    "clawhauser_loader_passed": true,
+    "reduced_guided_press_cycle_passed": true,
+    "full_solver_behavior_validated": false
+  }
+}

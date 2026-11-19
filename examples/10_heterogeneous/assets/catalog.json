@@ -1713,14 +1713,14 @@
       }
     },
     {
-      "id": "retractable_stamp",
-      "path": "retractable_stamp",
+      "id": "retractable_stamp_spring",
+      "path": "retractable_stamp_spring",
       "kind": "labelled-tet-v1",
       "source": "generated_tool_assets (procedural geometry, Manifold union + TetGen, centroid part labels)",
       "import_status": "generated",
-      "description": "Round pocket-style push-down stamp with an open sleeve, a bonded compliant return collar and a mirrored numeral die.",
-      "vertices": 10821,
-      "tetrahedra": 44280,
+      "description": "Guided push-down stamp with a central shaft, telescoping skirt and functional steel helical return spring.",
+      "vertices": 11429,
+      "tetrahedra": 43392,
       "bounds_m": [
         [
           -0.016,
@@ -1738,13 +1738,13 @@
         0.032,
         0.07
       ],
-      "source_mass_kg": 0.035508012722333934,
-      "source_stiffness_ratio": 11000.0,
+      "source_mass_kg": 0.03235492319928443,
+      "source_stiffness_ratio": 666666.6666666666,
       "parts": [
         {
           "id": 0,
           "name": "top_cap",
-          "tetrahedra": 6656,
+          "tetrahedra": 6880,
           "youngs_modulus_pa": 2200000000.0,
           "poisson_ratio": 0.37,
           "density_kg_m3": 1100.0
@@ -1752,7 +1752,7 @@
         {
           "id": 1,
           "name": "plunger",
-          "tetrahedra": 2680,
+          "tetrahedra": 1904,
           "youngs_modulus_pa": 2200000000.0,
           "poisson_ratio": 0.37,
           "density_kg_m3": 1100.0
@@ -1760,18 +1760,18 @@
         {
           "id": 2,
           "name": "outer_sleeve",
-          "tetrahedra": 3600,
+          "tetrahedra": 8832,
           "youngs_modulus_pa": 2200000000.0,
           "poisson_ratio": 0.37,
           "density_kg_m3": 1100.0
         },
         {
           "id": 3,
-          "name": "return_collar",
-          "tetrahedra": 16320,
-          "youngs_modulus_pa": 200000.0,
-          "poisson_ratio": 0.2,
-          "density_kg_m3": 200.0
+          "name": "return_spring",
+          "tetrahedra": 10752,
+          "youngs_modulus_pa": 200000000000.0,
+          "poisson_ratio": 0.3,
+          "density_kg_m3": 7850.0
         },
         {
           "id": 4,
@@ -1804,51 +1804,53 @@
           2
         ]
       ],
-      "used_by": [],
+      "used_by": [
+        "stamp_press.py"
+      ],
       "behavior_validated_at_source": false,
       "limitations": "Source estimates; tune per scene.",
       "readme": "SOURCE.md",
-      "preview": "previews/retractable_stamp.png",
+      "preview": "previews/retractable_stamp_spring.png",
       "files": {
         "appearance/albedo.png": {
-          "sha256": "42138c3848ca777fd2e3fe6132386eadac239947274048d11d6b17535fd01fac",
-          "size_bytes": 325
+          "sha256": "8a727b2042b71522fec8e217b3275e5ae49d3e55134268a6c9508961924d648b",
+          "size_bytes": 327
         },
         "appearance/visual_mesh.glb": {
-          "sha256": "e5d6274e5e4c7176402b90e417f69f8b881ce53f0ae3f6e6c33a388df6eed1b9",
-          "size_bytes": 1415208
+          "sha256": "f33fdc10605ccc2932f7a3091b1c0267061e22e71c07227298e6e68e0261067b",
+          "size_bytes": 1624296
         },
         "appearance/visual_to_physics.npz": {
-          "sha256": "9f39d1fb967e3764125ab3335da072e7970a65068d3f67d1dc88fe901fce140c",
-          "size_bytes": 260832
+          "sha256": "19c8a5ca03ad019344629a22439d8b46c117fe583b4a01d546608fefe73519da",
+          "size_bytes": 308424
         },
         "asset.json": {
-          "sha256": "c120705b34ef30bd64f76cf1c9a9a15560a2ca065f981391aab27b716296848a",
-          "size_bytes": 1476
+          "sha256": "008e50722f7529e16d8737fc9c8841295433a64d0fb31901d2d4fd208ba2a1dc",
+          "size_bytes": 2113
         },
         "final_export_manifest.json": {
-          "sha256": "3d75db9451d1c01f8460b9bc2179f1fac4cd563b69e5c5ea974412be2b1e3f68",
-          "size_bytes": 7029
+          "sha256": "6606655309171cbcc8a9b15c1182303a922770cec59c8cdf4b417d06b853a30e",
+          "size_bytes": 2168
         },
         "final_mesh.mesh": {
-          "sha256": "acc6f5c191e5b6c09ec2723280b2ef05d3dcd6da7dc731ea2834167619073ae1",
-          "size_bytes": 1411796
+          "sha256": "e88f644ca5d8fff12b68417ea4063f7c30ff581b5417ca8f461a92c0d6f5d279",
+          "size_bytes": 1407579
         },
         "heterogeneous_params.npz": {
-          "sha256": "9d80f57ab78e673224adac893264b1278e07947403a2360cca952a7b7e646c28",
-          "size_bytes": 4364
+          "sha256": "f25f335e77104f26c15c62492389ecbbda31d273595492b57bf5d7f4d710b22e",
+          "size_bytes": 4329
         },
         "inferred_params.json": {
-          "sha256": "48eceaea9ce4388fc12a79cf10aec2ae3396345108ee79035378c0143cd4a466",
+          "sha256": "2d96a70d567ce2aac38bc50bd0978394cccf3eab41368b1369698a1a51dc91a1",
           "size_bytes": 2312
         },
         "metric_mesh_scaling.json": {
-          "sha256": "b01b9fd4f1800c48599e2ade47de00ca19842fea7740c5f9c44d671e68506769",
-          "size_bytes": 969
+          "sha256": "aa362eefdd3696fa86b25ec64993ffa78e2bb03b597d599f4595abd80e9a890b",
+          "size_bytes": 597
         },
         "volume_topology.json": {
-          "sha256": "cd59f108c04dc5f42d8b140eeb200a20f53e29b2867b8ca781c9b335376afcd0",
-          "size_bytes": 3283
+          "sha256": "fa6910da3a6786feb4ab4248e94d59479d7bec8d940220eac1b2823a94f8503e",
+          "size_bytes": 2206
         }
       }
     },
@@ -1929,6 +1931,115 @@
         "validation.json": {
           "sha256": "1e699a08b5a8340f6eb8f6171b54d0e65d45991ab7e88ebc538129e6e0454dd9",
           "size_bytes": 981
+        }
+      }
+    },
+    {
+      "id": "rubber_stamp",
+      "path": "rubber_stamp",
+      "kind": "labelled-tet-v1",
+      "source": "generated_tool_assets (procedural geometry, Manifold union + TetGen, centroid part labels)",
+      "import_status": "generated",
+      "description": "Traditional hand stamp with a dark stained turned beech grip, pale beech mount, charcoal foam cushion and red border-and-bars die.",
+      "vertices": 9312,
+      "tetrahedra": 39275,
+      "bounds_m": [
+        [
+          -0.032,
+          -0.016,
+          0.0
+        ],
+        [
+          0.032,
+          0.016,
+          0.066
+        ]
+      ],
+      "extent_m": [
+        0.064,
+        0.032,
+        0.066
+      ],
+      "source_mass_kg": 0.0392235729657313,
+      "source_stiffness_ratio": 33333.333333333336,
+      "parts": [
+        {
+          "id": 0,
+          "name": "wooden_handle",
+          "tetrahedra": 3927,
+          "youngs_modulus_pa": 10000000000.0,
+          "poisson_ratio": 0.3,
+          "density_kg_m3": 650.0
+        },
+        {
+          "id": 1,
+          "name": "wooden_mount",
+          "tetrahedra": 6728,
+          "youngs_modulus_pa": 10000000000.0,
+          "poisson_ratio": 0.3,
+          "density_kg_m3": 650.0
+        },
+        {
+          "id": 2,
+          "name": "foam_cushion",
+          "tetrahedra": 11340,
+          "youngs_modulus_pa": 300000.0,
+          "poisson_ratio": 0.25,
+          "density_kg_m3": 120.0
+        },
+        {
+          "id": 3,
+          "name": "rubber_die",
+          "tetrahedra": 17280,
+          "youngs_modulus_pa": 1500000.0,
+          "poisson_ratio": 0.47,
+          "density_kg_m3": 1100.0
+        }
+      ],
+      "checks": {
+        "labelled_tet_loader_passed": true,
+        "no_duplicate_tetrahedra": true,
+        "source_hashes_match": true
+      },
+      "rigid_groups": [
+        [
+          0,
+          1
+        ]
+      ],
+      "used_by": [],
+      "behavior_validated_at_source": false,
+      "limitations": "Source estimates; tune per scene.",
+      "readme": "SOURCE.md",
+      "preview": "previews/rubber_stamp.png",
+      "files": {
+        "appearance/albedo.png": {
+          "sha256": "fbf552d392a869f521bb92d2415243938d657e20d9e34a69d1d35188e00a6599",
+          "size_bytes": 1015149
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "55080dbf3300d3525ff9dc1bcbbac31856248bf5d5bc924565ce2719c787b4a0",
+          "size_bytes": 1241656
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "641247e28010748c3be275158ead7d5201fdd317e771bbb359692ac5d77ddd54",
+          "size_bytes": 80423
+        },
+        "asset.json": {
+          "sha256": "1bd83355d10b00b3bd26acafae4b0ec688d142fe0a0792a0f840a3961a956bc3",
+          "size_bytes": 2307
+        },
+        "final_mesh.mesh": {
+          "sha256": "5a24523fbe47a585699efa20d93877db5473f001e83ddff4ecacf640df5d1543",
+          "size_bytes": 1406715
+        },
+        "heterogeneous_params.npz": {
+          "sha256": "6033293c025488bd0c02e166eb62d76f75fb1244e1ff24ec154a9d2e160897f1",
+          "size_bytes": 4053
+        },
+        "inferred_params.json": {
+          "sha256": "9cebf3f51fc58712b34da17a28498cb27ff852de41a1995fadb17aa8d81a8bf5",
+          "size_bytes": 1585
         }
       }
     },
