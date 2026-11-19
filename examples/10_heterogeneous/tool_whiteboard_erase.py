@@ -20,8 +20,8 @@ import arm_gripper
 import cable_scene
 import numpy as np
 import tool_scene
-from clawhauser_scene import REFERENCE
 from loop_geometry import smooth
+from scipy.spatial import cKDTree
 
 CENTRE = np.array((0.0, -0.10))
 """The board's and the marks' centre [m, bench frame]: clear of the arm's riser."""
@@ -46,7 +46,8 @@ T_UP = (T_END + 0.2, T_END + 0.8)
 DURATION = T_UP[1] + 0.4
 SETTLE = 0.4
 SQUEEZE = 0.016
-TILE, SPACING = 0.005, 0.0035
+TILE, SPACING, INK = 0.0012, 0.0005, 0.0018
+"""The mark tile [m], the centreline's sample spacing, and the marker's half width."""
 
 
 def marks() -> np.ndarray:
@@ -72,12 +73,10 @@ def marks() -> np.ndarray:
             n = max(2, int(np.linalg.norm(b - a) / SPACING))
             points += list(a + (b - a) * np.linspace(0, 1, n, endpoint=False)[:, None])
         points.append(line[-1])
-    points = np.asarray(points) + rng.normal(0, 0.0003, (len(points), 2))
-    keep = []
-    for p in points:
-        if all(np.linalg.norm(p - q) > 0.8 * SPACING for q in keep):
-            keep.append(p)
-    return np.asarray(keep)
+    line = np.asarray(points) + rng.normal(0, 0.0003, (len(points), 2))
+    lattice = np.mgrid[line[:, 0].min() : line[:, 0].max() : TILE, line[:, 1].min() : line[:, 1].max() : TILE]
+    lattice = lattice.reshape(2, -1).T
+    return lattice[cKDTree(line).query(lattice)[0] < INK]
 
 
 def route(centre0, grasp, offset, press):
@@ -106,20 +105,25 @@ def run(out: Path, asset, args) -> dict:
     pose = (pose[0], pose[1], pose[2] + BOARD_TOP)
     centres = CENTRE + marks()
 
+    def world(record):
+        """The mark record in the world frame, as Blender replays it."""
+        record["stain_points"] = record["stain_points"] + surface[:2]
+        record["stain_z"] = record["stain_z"] + surface[2]
+        return record
+
     def extras(scene):
         scene.add(tool_scene.whiteboard(at=CENTRE, size=BOARD, thickness=BOARD_TOP))
-        return stain.specs()
+        return []
 
     stain = tool_scene.StainMap(
         points=centres,
         z=BOARD_TOP,
-        radius=REFERENCE.particle_radius,
-        contact_ke=REFERENCE.contact_ke,
+        radius=tool_scene.SETTINGS.particle_radius,
+        contact_ke=tool_scene.SETTINGS.contact_ke,
         tile=TILE,
         force_min=args.force_min,
         reach=args.reach_mm * 1e-3,
-        half_z=0.00005,
-    )
+            )
     sim, obj, camera, vertices, _, labels, settings = tool_scene.build_scene(
         asset,
         name="tool_whiteboard_erase",
@@ -128,7 +132,6 @@ def run(out: Path, asset, args) -> dict:
         camera=((0.45, -0.55, 0.40), (0.0, -0.10, 0.03)),
         **{k: getattr(args, k) for k in ("solver", "iterations", "mu", "grip_mu", "force_limit", "self_contact")},
     )
-    stain.make_live(sim)
     entity = obj.entity
     src_tets = entity.source_tets
     soft = cable_scene.soft_labels(asset, labels)
@@ -176,9 +179,7 @@ def run(out: Path, asset, args) -> dict:
     def task_row(frame, local, body_q):
         pressed = local[soft_nodes]
         if frame >= settle:
-            new = stain.update(pressed)
-            if len(new):
-                stain.hide(sim, new)
+            stain.update(pressed, (frame + 1) / tool_scene.CONTROL_HZ)
         return {"erased_fraction": stain.fraction_erased()}
 
     rows, elapsed, video_error = cable_scene.episode(
@@ -192,6 +193,7 @@ def run(out: Path, asset, args) -> dict:
         control_hz=tool_scene.CONTROL_HZ,
         follow=follow,
         task_row=task_row,
+        extra=world(stain.record()),
     )
     score = stain.fraction_erased()
     result = {
@@ -223,7 +225,7 @@ def main() -> None:
     parser.add_argument("--render-every", type=int, default=0)
     parser.add_argument("--press-mm", type=float, default=1.5, help="how far the hand is lowered past first touch [mm]")
     parser.add_argument("--force-min", type=float, default=0.2, help="per-particle contact force that rubs a mark [N]")
-    parser.add_argument("--reach-mm", type=float, default=8.0, help="how far from a pressed node a mark is rubbed [mm]")
+    parser.add_argument("--reach-mm", type=float, default=2.0, help="how far from a pressed node a mark is rubbed [mm], about half the felt nodes' spacing")
     tool_scene.add_arguments(parser)
     args = parser.parse_args()
     run(args.out, cable_scene.with_levers(tool_scene.TOOLS["whiteboard_eraser"], args), args)
