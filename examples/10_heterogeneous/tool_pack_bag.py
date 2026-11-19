@@ -311,14 +311,15 @@ def run(out: Path, args) -> dict:
             r.marks[f"{name}_release"] = r.end
             r.go(0.8, (drop[0], drop[1], max(z, top_here)))
         b = m["bag"]
-        hover = b["point"] + (0.0, 0.0, 0.04 * k)
+        point = b["point"] + (0.0, 0.0, arm_gripper.PAD_RISE)  # the pads' centre on the tube, not its lower edge
+        hover = point + (0.0, 0.0, 0.04 * k)
         r.go(2.5, hover, tilt=bag_tilt, gap=b["half"] + 0.012 * k, yaw=np.pi / 2)
         r.marks["bag_hover_end"] = r.end
-        r.go(0.9, b["point"])
+        r.go(0.9, point)
         r.go(0.8, gap=b["half"] - 0.012 * k)
         r.go(args.pre_lift_hold)
         r.marks["lift_start"] = r.end
-        r.go(args.lift_s, b["point"] + (0.0, 0.0, args.lift))
+        r.go(args.lift_s, point + (0.0, 0.0, args.lift))
         r.go(args.hold)
         return r
 
