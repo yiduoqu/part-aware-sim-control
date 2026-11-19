@@ -23,8 +23,8 @@ import numpy as np
 import tool_scene
 import tool_sponge_wipe as wipe
 
-DUSTER = tool_scene._tool("cloth_duster_fem", 1.0e5, 200.0, handle=1, pad=-1, pitch_deg=-8.0)
-"""Soft cloth (E 1e5, softer than the asset's 5e5); lying, it rests on its butt and two panels."""
+DUSTER = tool_scene._tool("cloth_duster_fem", 4.0e3, 3000.0, handle=1, pad=-1, pitch_deg=-8.0)
+"""Floppy cloth (E 4e3, the asset has 5e5), damped (3000 Pa*s) to stay stable; lying, it rests on its butt and two panels."""
 # Rolled half a panel spacing about its axis: balanced on one panel's edge, the head topples sideways and flattens.
 DUSTER = dataclasses.replace(
     DUSTER, quat=tuple(arm_gripper.quat_multiply(DUSTER.quat, arm_gripper.axis_angle_quat((1.0, 0.0, 0.0), np.pi / 8)))
@@ -37,7 +37,7 @@ def main() -> None:
     parser.add_argument("--asset", default="cloth_duster_fem")
     wipe.add_arguments(parser)
     parser.add_argument("--grooves", type=int, default=1, help="pass over the first N grooves")
-    parser.set_defaults(force_limit=120.0, grip_mu=2.5, grip_frac=0.25, tilt_deg=15.0, press_mm=10.0, crumbs=24)
+    parser.set_defaults(force_limit=120.0, grip_mu=2.5, grip_frac=0.25, tilt_deg=30.0, press_mm=10.0, crumbs=24)
     args = parser.parse_args()
     asset = cable_scene.with_levers(dataclasses.replace(DUSTER, grip_frac=args.grip_frac), args)
     print(json.dumps({"grasp": tool_scene.grasp_handle(asset, *cable_scene.load(asset))}), flush=True)
@@ -46,10 +46,20 @@ def main() -> None:
 
     def clear(p):
         seen.append(p)
-        return ~wipe.in_groove(p, x_max=wipe.PLATE_X1, half_y=0.5 * wipe.SPAN)
+        return ~wipe.in_groove(p, x_max=wipe.PLATE_X1, half_y=0.5 * wipe.SPAN, y=args.plate_y)
 
     base = wipe.wipe(args)
-    sweep = dataclasses.replace(base, name="dust", ys=base.ys[: args.grooves], clear=clear, lay_front=0.09)
+    # The soft head hangs as low as the bench: it lands wholly on the plate (it is 0.13 m long) and leaves past its end.
+    head = 0.13
+    sweep = dataclasses.replace(
+        base,
+        name="dust",
+        ys=base.ys[: args.grooves],
+        clear=clear,
+        lay_front=0.09,
+        start_front=wipe.X0 + head,
+        end_front=wipe.PLATE_X1 + head,
+    )
     result = wipe.run(args.out, asset, args, sweep)
     if not result:
         return
