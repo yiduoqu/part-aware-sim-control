@@ -32,7 +32,7 @@ import robosimstudio as rss
 
 CONTROL_HZ = tool_scene.CONTROL_HZ
 SUBSTEPS = tool_scene.SUBSTEPS
-BAG = hetero_scene.HeteroAsset("cloth_bag_fem", hetero_scene.TURN_Z, 1.0e5, 1000.0, None)
+BAG = hetero_scene.HeteroAsset("cloth_bag_fem_coarse", hetero_scene.TURN_Z, 1.0e5, 1000.0, None)
 """Soft cloth (E 1e5, damping 1000 Pa*s): the bag may sag, the frame keeps the mouth open. Turned a quarter about z, so the handle's arch lies along x and the bag is narrow in x."""
 BAG_AT = (0.22, -0.12)
 """The bag's centre [m, bench frame]: where the hand-down arm reaches the handle apex."""
@@ -133,10 +133,10 @@ def item_specs(args, settings, scene):
                     asset, quat=tuple(float(c) for c in arm_gripper.quat_multiply(tilt, asset.quat))
                 )
                 turned = arm_gripper._rotate(np.asarray(asset.quat), vertices)
-                # The low end just inside the base board's -y edge (0.181 m from the centre), 5 mm over the board (6 mm thick).
+                # The low end just inside the base board's -y edge (0.181 m from the centre), 5 mm over the board (15 mm thick).
                 x = args.bag_at[0] + (PRE[name][0] - BAG_AT[0]) * k - turned[:, 0].mean()
                 y = args.bag_at[1] - 0.17 * k - turned[:, 1].min()
-                pose = (x, y, 0.006 * k + 0.005 - turned[:, 2].min())
+                pose = (x, y, 0.015 * k + 0.005 - turned[:, 2].min())
             spec = hetero_scene.spec(
                 asset, vertices, tets, labels, name=name, pose=pose, settings=settings, mu=args.mu,
                 overrides=asset.overrides(), scale=scale,

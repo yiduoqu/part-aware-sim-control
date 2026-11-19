@@ -118,6 +118,7 @@ def convert(
     pad_edge: float,
     pad_bodies: tuple,
     pad_box: tuple,
+    thicken: dict,
 ):
     meta = json.loads((source / "asset.json").read_text())
     materials = json.loads((source / "materials.json").read_text())["cloth"]
@@ -130,6 +131,13 @@ def convert(
     for body in meta["rigid_bodies"]:
         v, f = trimesh.load(source / body["mesh"], force="mesh", process=False).vertices, None
         solid = trimesh.load(source / body["mesh"], force="mesh", process=False)
+        if body["body_id"] in thicken:  # scale z about the bottom face: the underside stays, the part grows upward
+            z0, z1 = solid.bounds[:, 2]
+            grow = (thicken[body["body_id"]] - 1) * (z1 - z0)  # the cloth above rides up, fading out at its top
+            vertices = vertices.copy()
+            vertices[:, 2] += grow * np.clip((vertices[:, 2].max() - vertices[:, 2]) / (vertices[:, 2].max() - z1), 0, 1)
+            solid.vertices[:, 2] = z0 + (solid.vertices[:, 2] - z0) * thicken[body["body_id"]]
+            print(f"body {body['body_id']} z extent {(z1 - z0) * 1e3:g} -> {(z1 - z0) * thicken[body['body_id']] * 1e3:g} mm", flush=True)
         if rigid_faces and len(solid.faces) > rigid_faces:
             v, f = fast_simplification.simplify(solid.vertices, solid.faces.astype(np.int32), target_count=rigid_faces)
             solid = trimesh.Trimesh(v, f, process=True)
@@ -144,6 +152,7 @@ def convert(
         near = distance < SINK
         vertices[near] = closest[near] - solid.face_normals[tri[near]] * SINK
         seam |= near
+    print("seam vertices", int(seam.sum()), flush=True)
     keep = ~seam[faces].all(axis=1)
     faces = faces[keep]
     normals = trimesh.Trimesh(vertices, faces, process=False).vertex_normals
@@ -264,9 +273,13 @@ def main() -> None:
     )
     parser.add_argument("--ratio", type=float, default=3.0, help="TetGen radius-edge ratio bound")
     parser.add_argument("--dihedral", type=float, default=10.0, help="TetGen minimum dihedral [deg]")
+    parser.add_argument(
+        "--thicken", type=float, nargs=2, action="append", default=[], metavar=("ID", "FACTOR"),
+        help="scale rigid body ID's z extent by FACTOR about its bottom face",
+    )  # fmt: skip
     a = parser.parse_args()
     nodes, tets, labels = convert(a.source, a.out, thickness=a.thickness, young=a.young, cloth_faces=a.cloth_faces,
-                                  rigid_faces=a.rigid_faces, ratio=a.ratio, dihedral=a.dihedral, sliver=a.sliver, pad_edge=a.pad_edge, pad_bodies=(1,), pad_box=(a.pad_box[:3], a.pad_box[3:]))  # fmt: skip
+                                  rigid_faces=a.rigid_faces, ratio=a.ratio, dihedral=a.dihedral, sliver=a.sliver, pad_edge=a.pad_edge, pad_bodies=(1,), pad_box=(a.pad_box[:3], a.pad_box[3:]), thicken={int(i): f for i, f in a.thicken})  # fmt: skip
     volume = np.linalg.det(nodes[tets[:, 1:]] - nodes[tets[:, :1]]) / 6
     print({"tets": len(tets), "vertices": len(nodes), "by_label": {int(k): int((labels == k).sum()) for k in np.unique(labels)},
            "min_volume_m3": float(volume.min())})  # fmt: skip
