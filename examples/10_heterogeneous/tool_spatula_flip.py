@@ -2,7 +2,7 @@
 """TT4b: flip a soft pancake with the silicone spatula.
 
 The spatula (picked up as in :mod:`tool_spatula_cook`) slides its head under a soft disc lying in the
-pan, lifts it, and snaps the wrist so the head tips up and the pancake turns over. Success is the
+pan, then turns the head about the pancake's far edge (held by the pan's fillet) so the pancake tips over. Success is the
 pancake's normal turned more than 120 degrees from where it started, with the pancake still in the pan.
 
 Run on a CUDA node with RoboSimStudio on PYTHONPATH.
@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import argparse
 import dataclasses
+import functools
 import json
 from pathlib import Path
 
@@ -45,13 +46,21 @@ RADIUS, THICK, EDGE = 0.045, 0.008, 0.0025
 DISC_AT = (0.04, 0.06)
 """The pancake sits at the far side of the flat floor, the rising fillet its stop."""
 START_X, UNDER_X = -0.045, 0.075
-SLIDE_TILT, LIFT_TILT, LIFT_H = np.radians(30.0), np.radians(-4.0), 0.07
-"""The slide's held tilt (steep enough for the handle to pass over the near rim), the level tilt and head height after the lift."""
-FLICKS = np.radians((-60.0, -45.0, -30.0, -20.0))
-"""Wrist flick angles, tried in turn: the first the arm can follow is used."""
+SLIDE_TILT = np.radians(30.0)
+"""The slide's held tilt, steep enough for the handle to pass over the near rim."""
 PRESS = PAN_FLOOR - 0.030
 """The slide's commanded depth, deep enough to bend the head flat on the floor (the rim allows it once the tip is in)."""
-SLIDE, LIFT, FLICK, BACK = (5.8, 8.0), (8.0, 9.6), (9.6, 10.05), (10.05, 11.4)
+PIVOT = np.array((DISC_AT[0] + RADIUS + 0.015, PAN_FLOOR + 0.004))
+"""The head turns about this line (x, z) [m] along y, 15 mm past the pancake's far edge against the fillet, so it
+also pushes the standing pancake forward over that edge."""
+ARCS = np.radians((34.0, 32.0, 30.0))
+"""How far the head turns about the pivot, tried in turn: the first the arm can follow is used (it follows up to
+about 35 degrees, a 65 degree tool tilt)."""
+PUSH = 0.020
+"""After a hold at the arc's top (the pancake settles on the head) the head shoves this far forward [m] (and 5 mm up)
+in 0.3 s, flinging the standing pancake over its far edge
+(past about 21 mm the head comes within 5 mm of the far fillet)."""
+SLIDE, ARC, SHOVE = (5.8, 8.0), (8.0, 9.2), (9.6, 9.9)
 HEAD_LEN, HEAD_HALF, HEAD_THICK = 0.104, 0.034, 0.014
 """The spatula head's length, half width and thickness [m]."""
 RIMS = ((0.100, 0.0176), (0.105, 0.0255), (0.110, 0.035), (0.115, 0.038))
@@ -97,12 +106,19 @@ def rim_low(x: float, tilt: float, clear: float) -> float:
 
 
 def keyframes(tip0: np.ndarray, low0: float, level: float, variant: int = 0):
-    """Lift, carry over the pan, lower steeply, ease to the slide tilt and slide under the disc, lift and level,
-    snap the tip up, then settle the spatula flat over the pan; the head keeps the tool over the near rim throughout."""
+    """Lift, carry over the pan, lower steeply, ease to the slide tilt and slide under the disc, turn the head with the
+    pancake on it about the pancake's far edge until it stands, push it over that edge and hold."""
     lift, over = (2.0, 3.2), (3.4, 5.0)
-    flick_tilt = FLICKS[variant]
     start = np.array((START_X, PAN_AT[1]))
-    under = np.array((UNDER_X, PAN_AT[1]))
+    profile = head_profile()
+    # The slide's end pose with the head resting on the floor, its tip node and the arc from there.
+    rest = turn_xz(profile, SLIDE_TILT)
+    tip_arc = np.array((UNDER_X, PAN_FLOOR + 0.003 - rest[:, 1].min()))
+
+    def arc(phi: float):
+        """Tip node (x, z), head's lowest z and tilt with the slide's end pose turned ``phi`` about the pivot."""
+        tip = PIVOT + turn_xz(tip_arc - PIVOT, phi)
+        return tip, tip[1] + turn_xz(profile, SLIDE_TILT + phi)[:, 1].min(), SLIDE_TILT + phi
 
     def target(t: float):
         if t < over[0]:
@@ -118,25 +134,37 @@ def keyframes(tip0: np.ndarray, low0: float, level: float, variant: int = 0):
             s = smooth(t, SLIDE[0], SLIDE[0] + 0.8)
             tilt = ENTRY_TILT + (SLIDE_TILT - ENTRY_TILT) * s
             return np.array((x, PAN_AT[1])), max(LOW + (PRESS - LOW) * s, rim_low(x, tilt, 0.010)), tilt
-        if t < LIFT[1]:
-            s = smooth(t, *LIFT)
-            tilt = SLIDE_TILT + s * (LIFT_TILT - SLIDE_TILT)
-            # Level the head under the friction angle on the floor first, so the pancake rides up on it.
-            return under, max(PRESS + (LIFT_H - PRESS) * s**2, rim_low(UNDER_X, tilt, 0.017)), tilt
-        if t < FLICK[1]:
-            s = smooth(t, *FLICK)
-            x, tilt = UNDER_X - 0.03 * s, LIFT_TILT + s * (flick_tilt - LIFT_TILT)
-            return np.array((x, PAN_AT[1])), max(LIFT_H + 0.02 * s, rim_low(x, tilt, 0.008)), tilt
-        s = smooth(t, *BACK)
-        x, tilt = UNDER_X - 0.03 * (1 - s), flick_tilt * (1 - s)
-        low = (LIFT_H + 0.02) * (1 - s) + (LOW + 0.012) * s
-        return np.array((x, PAN_AT[1])), max(low, rim_low(x, tilt, 0.008)), tilt
+        if t < ARC[1]:
+            tip, low, tilt = arc(ARCS[variant] * smooth(t, *ARC))
+            # Ease the slide's press off over the arc's start.
+            low += (PRESS - (PAN_FLOOR + 0.003)) * (1.0 - smooth(t, ARC[0], ARC[0] + 0.3))
+            return np.array((tip[0], PAN_AT[1])), low, tilt
+        tip, low, tilt = arc(ARCS[variant])
+        s = smooth(t, *SHOVE)
+        # Then hold: pulling back lets the pancake fall back, and the arm cannot lift the head at this tilt.
+        return np.array((tip[0] + PUSH * s, PAN_AT[1])), low + 0.005 * s, tilt
 
     return target
 
 
+def turn_xz(p: np.ndarray, angle: float) -> np.ndarray:
+    """Points (x, z) turned ``angle`` [rad] about +y, the tool's tilt axis (positive turns +x down)."""
+    c, s = np.cos(angle), np.sin(angle)
+    p = np.asarray(p, dtype=np.float64)
+    return np.stack((c * p[..., 0] + s * p[..., 1], c * p[..., 1] - s * p[..., 0]), axis=-1)
+
+
+@functools.cache
+def head_profile() -> np.ndarray:
+    """The spatula head's nodes in the x-z plane at rest, relative to its tip node (the one ``hand_motion`` aims) [m]."""
+    vertices, tets, labels = cable_scene.load(HOLDER)
+    rest = arm_gripper._rotate(np.asarray(HOLDER.quat), vertices)
+    head = rest[np.unique(tets[np.isin(labels, cable_scene.soft_labels(HOLDER, labels))])]
+    return (head - head[np.argmax(head[:, 0])])[:, [0, 2]]
+
+
 def rim_clearance(asset) -> float:
-    """The least gap [m] between the tool's underside and the pan's fillet and rim over every flick variant's plan, every 50 ms.
+    """The least gap [m] between the tool's underside and the pan's fillet and rim over every arc variant's plan, every 50 ms.
 
     The tool is placed rigidly as ``hand_motion`` places it (a pressed head only bends up, so this is conservative).
     """
@@ -155,7 +183,7 @@ def rim_clearance(asset) -> float:
     )
     y_off = rest[tip, 1] - 0.5 * (rest[head, 1].min() + rest[head, 1].max())
     least = np.inf
-    for variant in range(len(FLICKS)):
+    for variant in range(len(ARCS)):
         target = keyframes(rest[tip, :2], float(rest[head, 2].min()), 0.0, variant)
         for t in np.arange(2.0, DURATION, 0.05):
             xy, low, tilt = target(t)
@@ -235,11 +263,12 @@ def main() -> None:
         "name": "tool_spatula_flip",
         "extras": extras,
         "keyframes": keyframes,
-        "variants": len(FLICKS),
+        "variants": len(ARCS),
         "duration": DURATION,
         "camera": CAMERA,
         "measure": measure,
         "verdict": verdict,
+        "objects": lambda: {"pancake": pancake[0].entity},
     }
     result = {**run(args.out, asset, args, task), **extra}
     (args.out / "result.json").write_text(json.dumps(result, indent=2) + "\n")
