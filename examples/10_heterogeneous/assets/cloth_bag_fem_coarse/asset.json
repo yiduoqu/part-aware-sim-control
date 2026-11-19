@@ -19,7 +19,7 @@
   "metadata": {
     "thickness_m": 0.003,
     "cloth_young_pa": 100000.0,
-    "cloth_faces": 1088,
-    "tets": 40904
+    "cloth_faces": 2928,
+    "tets": 48225
   }
 }

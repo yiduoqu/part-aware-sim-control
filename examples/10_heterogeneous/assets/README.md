@@ -42,7 +42,7 @@ generated copy has a suffix: `usb_hub_gen` sits next to the original `usb_hub`, 
 | [buckled_strap](buckled_strap/SOURCE.md) | cloth + rigid | - | 282 x 47 x 122 | - |
 | [charger](charger/SOURCE.md) | tet + rigid groups | 18,156 | 324 x 45 x 27 | `cable_hang_stick`, `cable_scene`, `cable_sort_plug`, `cable_tray_multi`, `cable_untangle_sort` |
 | [cloth_bag_fem](cloth_bag_fem/SOURCE.md) | tet + rigid groups | 111,476 | 480 x 284 x 398 | - |
-| [cloth_bag_fem_coarse](cloth_bag_fem_coarse/SOURCE.md) | tet + rigid groups | 40,904 | 480 x 284 x 398 | `tool_pack_bag` |
+| [cloth_bag_fem_coarse](cloth_bag_fem_coarse/SOURCE.md) | tet + rigid groups | 48,225 | 480 x 284 x 398 | `tool_pack_bag` |
 | [cloth_cleaning_wand](cloth_cleaning_wand/SOURCE.md) | cloth + rigid | - | 290 x 68 x 68 | - |
 | [cloth_duster_fem](cloth_duster_fem/SOURCE.md) | tet + rigid groups | 28,667 | 290 x 68 x 68 | `tool_duster` |
 | [coiled_usb_cable](coiled_usb_cable/SOURCE.md) | tet + rigid groups | 71,030 | 242 x 34 x 48 | `cable_scene`, `cable_untangle_sort` |
