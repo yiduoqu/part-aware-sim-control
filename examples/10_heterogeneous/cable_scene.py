@@ -95,8 +95,25 @@ def soft_labels(asset: CableAsset, labels: np.ndarray) -> np.ndarray:
     return np.setdiff1d(np.unique(labels), rigid)
 
 
-def spec(asset: CableAsset, vertices, tets, labels, *, name: str, pose, settings, mu: float, overrides=()):
-    """The object's :class:`rigid_part_body.RigidPartSoftSpec`, with the asset's levers applied."""
+def spec(
+    asset: CableAsset,
+    vertices,
+    tets,
+    labels,
+    *,
+    name: str,
+    pose,
+    settings,
+    mu: float,
+    overrides=(),
+    scale: float = 1.0,
+    part_stiffness_scale: float = 1.0e-3,
+    attach_stiffness: float = 1.0e4,
+):
+    """The object's :class:`rigid_part_body.RigidPartSoftSpec`, with the asset's levers applied, its mesh scaled ``scale``.
+
+    ``part_stiffness_scale`` and ``attach_stiffness`` are the rigid parts' tet stiffness fraction and node ties [N/m].
+    """
     groups = asset.groups()
     levers = [(p, "youngs_modulus_pa", asset.cable_young) for p in soft_labels(asset, labels)]
     levers += [(p, "damping_pa_s", asset.cable_damping) for p in soft_labels(asset, labels)]
@@ -109,12 +126,15 @@ def spec(asset: CableAsset, vertices, tets, labels, *, name: str, pose, settings
     return rigid_part_body.RigidPartSoftSpec(
         rigid_parts=groups,
         attach_damping=asset.attach_damping,
+        attach_stiffness=attach_stiffness,
+        part_stiffness_scale=part_stiffness_scale,
         name=name,
         mesh_path=str(asset.path / "final_mesh.mesh"),
         params_path=str(asset.path / "heterogeneous_params.npz"),
         materials_path=str(asset.path / "inferred_params.json"),
         pose=pose,
         quat=asset.quat,
+        scale=scale,
         contact_ke=settings.contact_ke,
         contact_kd=settings.contact_kd,
         contact_mu=mu,
@@ -137,6 +157,8 @@ def episode(
     follow,
     task_row,
     stop=None,
+    objects=None,
+    extra=None,
 ):
     """Step ``steps`` frames, writing ``trajectory.npz``, ``diagnostics.json`` and ``overview.mp4``.
 
@@ -144,6 +166,8 @@ def episode(
     ``task_row(frame, local, body_q)`` adds the task's own fields to each frame's row (``local``: the
     object's particles in the bench frame). ``soft`` are the soft labels, whose strain is measured.
     ``stop(row)``, when given, ends the run early once it returns true (a blown-up state).
+    ``objects`` ({name: entity}): the scene's other soft bodies, each recorded to ``trajectory_<name>.npz``.
+    ``extra``: arrays the task adds to ``trajectory.npz``, read when it is saved.
     Returns the rows, the run's seconds and any video error.
     """
     import arm_gripper
@@ -157,6 +181,7 @@ def episode(
     rest_inv = np.linalg.inv((q0[tets[:, 1:]] - q0[tets[:, :1]])[soft])
     surface = np.asarray(sim_surface(), dtype=np.float64)
     rows, trajectory = [], Trajectory(sim, entity)
+    others = {name: (other, Trajectory(sim, other)) for name, other in (objects or {}).items()}
     videos, video_error = None, None
     if render_every:
         from robosimstudio.core.render.video import VideoSet
@@ -192,6 +217,8 @@ def episode(
                 **rigid_part_body.frame_record(entity, owned, body_q),
             }
             trajectory.add(row["time_s"], owned, body_q)
+            for other, recording in others.values():
+                recording.add(row["time_s"], q[other.particles], body_q)
             rows.append(row)
             if stop is not None and stop(row):
                 print(json.dumps({"stopped_at_frame": frame + 1}), flush=True)
@@ -207,7 +234,9 @@ def episode(
             except Exception as exc:
                 video_error = repr(exc)
     elapsed = time.perf_counter() - started
-    trajectory.save(out / "trajectory.npz")
+    trajectory.save(out / "trajectory.npz", extra)
+    for name, (_, recording) in others.items():
+        recording.save(out / f"trajectory_{name}.npz")
     (out / "diagnostics.json").write_text(json.dumps(rows, indent=2) + "\n")
     return rows, elapsed, video_error
 

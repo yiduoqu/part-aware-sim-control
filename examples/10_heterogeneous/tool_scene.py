@@ -29,6 +29,8 @@ from robosimstudio.specs import AssetSpec, StaticSpec
 
 SUBSTEPS = 40
 CONTROL_HZ = REFERENCE.control_hz
+SETTINGS = dataclasses.replace(REFERENCE, substeps=SUBSTEPS, particle_radius=0.001)
+"""Soft-body settings of the tool family: 1 mm contact balls so soft objects rest ~1 mm off the floor."""
 
 
 @dataclasses.dataclass(frozen=True)
@@ -222,6 +224,7 @@ class StainMap:
         self.z, self.tile, self.reach, self.half_z = z, tile, 0.6 * tile if reach is None else reach, half_z
         self.depth = radius - force_min / contact_ke
         self.erased = np.zeros(len(self.points), dtype=bool)
+        self.erase_time = np.full(len(self.points), np.nan)
         self.last = None
 
     def specs(self) -> list:
@@ -237,8 +240,8 @@ class StainMap:
             for i, (x, y) in enumerate(self.points)
         ]
 
-    def update(self, soft: np.ndarray, rub: float = 0.0002) -> np.ndarray:
-        """Erase the marks the soft particles ``soft`` (bench frame, (n, 3)) press and rub; returns the new ones."""
+    def update(self, soft: np.ndarray, time: float = np.nan, rub: float = 0.0002) -> np.ndarray:
+        """Erase the marks the soft particles ``soft`` (bench frame, (n, 3)) press and rub at ``time`` [s]; returns the new ones."""
         pressed = soft[soft[:, 2] - self.z < self.depth, :2]
         moved = self.last is None or np.linalg.norm(pressed.mean(axis=0) - self.last) >= rub if len(pressed) else False
         self.last = pressed.mean(axis=0) if len(pressed) else None
@@ -247,7 +250,17 @@ class StainMap:
         near = (np.linalg.norm(self.points[:, None] - pressed[None], axis=2) < self.reach).any(axis=1)
         new = np.flatnonzero(near & ~self.erased)
         self.erased[new] = True
+        self.erase_time[new] = time
         return new
+
+    def record(self) -> dict:
+        """The marks for ``trajectory.npz``: tile ``i`` is the shape ``stain<i>``; ``stain_erase_time`` [s] is NaN if never erased."""
+        return {
+            "stain_points": self.points,
+            "stain_tile": np.float64(self.tile),
+            "stain_z": np.float64(self.z),
+            "stain_erase_time": self.erase_time,
+        }
 
     def fraction_erased(self) -> float:
         return float(self.erased.mean())
@@ -436,7 +449,7 @@ def build_scene(
     ``camera`` is ``(eye, look_at)`` in the bench frame. Returns ``(sim, obj, camera, vertices, tets, labels, settings)``.
     """
     vertices, tets, labels = cable_scene.load(asset)
-    settings = dataclasses.replace(REFERENCE, substeps=SUBSTEPS)
+    settings = SETTINGS
     physics = arrangement(
         settings,
         claw="arm",

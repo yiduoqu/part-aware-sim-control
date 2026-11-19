@@ -130,7 +130,7 @@ def build_scene(
     iron = json.loads((asset.path / "connectors.json").read_text())
     geometry = layout(vertices, tets, labels, iron["male_ends"][0], connectors["female_ports"][0], plug_radius, bends)
     geometry["socket"] = SOCKETS[socket]
-    settings = dataclasses.replace(REFERENCE, substeps=SUBSTEPS)
+    settings = dataclasses.replace(tool_scene.SETTINGS, substeps=SUBSTEPS)
     physics = arrangement(
         settings,
         claw="arm",
@@ -370,7 +370,7 @@ def main() -> None:
         asset,
         steps=args.steps,
         render_every=args.render_every,
-        config=tool_scene.config(args, asset, dataclasses.replace(REFERENCE, substeps=SUBSTEPS)),
+        config=tool_scene.config(args, asset, dataclasses.replace(tool_scene.SETTINGS, substeps=SUBSTEPS)),
         solver=args.solver,
         iterations=args.iterations,
         mu=args.mu,

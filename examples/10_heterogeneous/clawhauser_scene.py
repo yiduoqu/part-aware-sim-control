@@ -199,7 +199,7 @@ class Trajectory:
     for a static), ``shape_type`` (``newton.GeoType``), ``shape_scale``, ``shape_color``,
     ``shape_visible``, ``shape_label``, and ``mesh_<i>_vertices`` / ``mesh_<i>_faces`` for each
     visible mesh shape ``i`` (vertices unscaled). A shape's world pose is ``body_q[body]`` times
-    its transform.
+    its transform. ``extra`` arrays are saved as they are (a task's own records).
     """
 
     def __init__(self, sim, entity) -> None:
@@ -212,7 +212,7 @@ class Trajectory:
         self.body_q.append(np.asarray(body_q, dtype=np.float32))
         self.joint_q.append(self.sim.pipeline.state_0.joint_q.numpy().astype(np.float32))
 
-    def save(self, path: Path) -> None:
+    def save(self, path: Path, extra: dict | None = None) -> None:
         import newton
 
         tets = np.asarray(self.entity.source_tets)
@@ -243,6 +243,7 @@ class Trajectory:
             shape_visible=visible,
             shape_label=np.asarray([str(label) for label in model.shape_label]),
             **meshes,
+            **(extra or {}),
         )
 
 
