@@ -21,7 +21,6 @@ import cable_scene
 import numpy as np
 import rigid_part_body
 import tool_scene
-from clawhauser_scene import REFERENCE
 from loop_geometry import smooth
 from scipy.spatial.transform import Rotation
 from tool_asset_check import kabsch
@@ -37,7 +36,7 @@ HOVER, PAD_DROP = 0.04, 0.0225
 """The pads hover this far over the grip, and the hand's tool point sits this high [m] when the pad bottoms are 2.5 mm over the bench."""
 PHASES = {"descend": (0.55, 1.0), "close": (1.1, 1.7), "lift": (2.0, 3.2)}
 SQUEEZE = 0.016
-SETTINGS = dataclasses.replace(REFERENCE, substeps=tool_scene.SUBSTEPS)
+SETTINGS = tool_scene.SETTINGS
 HOLDER = dataclasses.replace(tool_scene.TOOLS["silicone_spatula"], grip_frac=0.2)
 """The spatula, gripped near the butt of its handle."""
 SPATULA_AT = (0.0, -0.15)
@@ -304,7 +303,8 @@ def keyframes(tip0: np.ndarray, low0: float, level: float, variant: int = 0):
             return start, carry + (LOW - carry) * smooth(t, *down), entry
         if t < up[0]:
             xy = start + (end - start) * smooth(t, *push)
-            tilt = entry + (min(entry, rim_tilt(xy[0])) - entry) * smooth(t, push[0], push[0] + 0.8)
+            # Push forward steeply through the food first, then flatten toward the rim tilt.
+            tilt = entry + (min(entry, rim_tilt(xy[0])) - entry) * smooth(t, push[0] + 1.8, push[0] + 2.6)
             return xy, LOW, tilt
         return end, LOW + 0.06 * smooth(t, *up), rim_tilt(END_X)
 
@@ -426,6 +426,7 @@ def run(out: Path, asset, args, task: dict) -> dict:
         control_hz=tool_scene.CONTROL_HZ,
         follow=follow,
         task_row=task_row,
+        objects=task["objects"](),
     )
     final = task["measure"](sim)
     result = {
@@ -475,6 +476,7 @@ def main() -> None:
         "variants": 4,
         "pile_rear": min(x for x, _ in CUBE_AT) - 0.5 * CUBE,
         "measure": lambda sim: judge_food(food_positions(sim, cubes, crumb_names)),
+        "objects": lambda: {f"food{i}": cube.entity for i, cube in enumerate(cubes)},
         "verdict": lambda final, rows: (
             final["moved_fraction"],
             bool(final["moved_fraction"] >= 0.7 and final["out_of_pan"] == 0),
