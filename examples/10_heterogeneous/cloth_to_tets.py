@@ -6,7 +6,7 @@ solids; their boolean union is tetrahedralized with TetGen, tets labelled by cen
 Cloth vertices on a rigid mesh (the seams) are first sunk ``SINK`` into it, so the shell fuses with it, and a
 triangle whose three corners all sit on rigid meshes is dropped (it would lie inside).
 
-Run with the extras: ``uv run --with tetgen --with fast-simplification python cloth_to_tets.py <source> <out>``.
+Run with the extras: ``uv run --with tetgen --with fast-simplification --with pymeshlab python cloth_to_tets.py <source> <out>``.
 """
 
 from __future__ import annotations
@@ -18,6 +18,8 @@ from pathlib import Path
 
 import fast_simplification
 import numpy as np
+import pymeshlab
+import scipy.sparse.csgraph
 import scipy.spatial
 import tetgen
 import trimesh
@@ -111,6 +113,7 @@ def convert(
     thickness: float,
     young: float,
     cloth_faces: int,
+    cloth_edge: float,
     rigid_faces: int,
     ratio: float,
     dihedral: float,
@@ -124,7 +127,12 @@ def convert(
     materials = json.loads((source / "materials.json").read_text())["cloth"]
     mesh = np.load(source / "physics/cloth_mesh.npz")
     vertices, faces = mesh["rest_vertices_m"], mesh["triangles"].astype(np.int32)
-    if cloth_faces and len(faces) > cloth_faces:
+    if cloth_edge:  # isotropic remesh: uniform edges, creases and boundary kept
+        ms = pymeshlab.MeshSet()
+        ms.add_mesh(pymeshlab.Mesh(vertices, faces))
+        ms.meshing_isotropic_explicit_remeshing(iterations=5, targetlen=pymeshlab.PureValue(cloth_edge))
+        vertices, faces = ms.current_mesh().vertex_matrix(), ms.current_mesh().face_matrix().astype(np.int32)
+    elif cloth_faces and len(faces) > cloth_faces:
         vertices, faces = fast_simplification.simplify(vertices, faces, target_count=cloth_faces, agg=3)
         faces = faces.astype(np.int32)
     rigids = {}
@@ -196,6 +204,21 @@ def convert(
     good = (6 * np.sqrt(2) * volume / edges.max(axis=1) ** 3 > sliver) & (volume > MIN_VOLUME)
     print("slivers dropped", int((~good).sum()), "of", len(tets), flush=True)
     tets = tets[good]
+    # Dropped slivers can leave a few tets hanging off by an edge: keep the largest face-connected piece.
+    faces_of = np.sort(tets[:, [[1, 2, 3], [0, 2, 3], [0, 1, 3], [0, 1, 2]]].reshape(-1, 3), axis=1)
+    _, face_id, count = np.unique(faces_of, axis=0, return_inverse=True, return_counts=True)
+    owner = np.repeat(np.arange(len(tets)), 4)
+    first = np.full(face_id.max() + 1, -1)
+    pairs = []
+    for t, f in zip(owner, face_id.ravel()):
+        if first[f] >= 0:
+            pairs.append((first[f], t))
+        first[f] = t
+    pairs = np.array(pairs)
+    graph = scipy.sparse.coo_matrix((np.ones(len(pairs)), pairs.T), shape=(len(tets),) * 2)
+    _, piece = scipy.sparse.csgraph.connected_components(graph, directed=False)
+    print("disconnected tets dropped", int((piece != np.bincount(piece).argmax()).sum()), flush=True)
+    tets = tets[piece == np.bincount(piece).argmax()]
     used = np.unique(tets)
     nodes, tets = nodes[used], np.searchsorted(used, tets).astype(np.int32)
     centroid = nodes[tets].mean(axis=1)
@@ -261,6 +284,7 @@ def main() -> None:
     parser.add_argument("--thickness", type=float, default=0.0025)
     parser.add_argument("--young", type=float, default=5.0e5)
     parser.add_argument("--cloth-faces", type=int, default=0, help="decimate the cloth to this many triangles")
+    parser.add_argument("--cloth-edge", type=float, default=0.0, help="remesh the cloth isotropically to this edge length [m]")
     parser.add_argument("--rigid-faces", type=int, default=0, help="decimate each rigid mesh to this many triangles")
     parser.add_argument("--sliver", type=float, default=SLIVER, help="drop tets under this quality")
     parser.add_argument("--pad-edge", type=float, default=0.008, help="longest surface edge of the held part [m]")
@@ -278,7 +302,7 @@ def main() -> None:
         help="scale rigid body ID's z extent by FACTOR about its bottom face",
     )  # fmt: skip
     a = parser.parse_args()
-    nodes, tets, labels = convert(a.source, a.out, thickness=a.thickness, young=a.young, cloth_faces=a.cloth_faces,
+    nodes, tets, labels = convert(a.source, a.out, thickness=a.thickness, young=a.young, cloth_faces=a.cloth_faces, cloth_edge=a.cloth_edge,
                                   rigid_faces=a.rigid_faces, ratio=a.ratio, dihedral=a.dihedral, sliver=a.sliver, pad_edge=a.pad_edge, pad_bodies=(1,), pad_box=(a.pad_box[:3], a.pad_box[3:]), thicken={int(i): f for i, f in a.thicken})  # fmt: skip
     volume = np.linalg.det(nodes[tets[:, 1:]] - nodes[tets[:, :1]]) / 6
     print({"tets": len(tets), "vertices": len(nodes), "by_label": {int(k): int((labels == k).sum()) for k in np.unique(labels)},

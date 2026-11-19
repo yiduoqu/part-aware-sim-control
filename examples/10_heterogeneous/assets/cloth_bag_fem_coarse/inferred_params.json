@@ -13,7 +13,7 @@
       ],
       "youngs_modulus_pa": 100000.0,
       "poisson_ratio": 0.3,
-      "density_kg_m3": 116.66666666666666,
+      "density_kg_m3": 70.0,
       "friction_coefficient": 0.5,
       "part_index": 0,
       "volume_fill_mode": "solid_fill"
