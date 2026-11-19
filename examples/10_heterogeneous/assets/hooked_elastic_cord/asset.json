@@ -1,0 +1,41 @@
+{
+  "name": "hooked_elastic_cord",
+  "description": "A 250 mm \u00d7 \u00d84 mm silicone cord has 10 mm tapers, 24 \u00d7 12 \u00d7 8 mm ABS grips and \u00d86 mm hooks with 8 mm nominal inner radii.",
+  "units": "m",
+  "up_axis": "Z",
+  "generator": "generate_hooked_elastic_cord.py (OpenCASCADE boolean solids, TetGen volume with shared part interfaces, Netgen interior optimisation, centroid part labels)",
+  "construction": "Boolean union surface, TetGen volume, centroid part labels",
+  "rigid_groups": [
+    [
+      0
+    ],
+    [
+      2
+    ]
+  ],
+  "source_assets": [],
+  "behavior_validated": false,
+  "metadata": {
+    "cord_diameter_mm": 4,
+    "cord_free_length_mm": 250,
+    "taper_length_mm": 10,
+    "taper_end_diameter_mm": 5.6,
+    "grip_length_mm": 24,
+    "grip_width_mm": 12,
+    "grip_height_mm": 8,
+    "grip_chamfer_mm": 0.75,
+    "hook_section_diameter_mm": 6,
+    "hook_inner_radius_mm": 8,
+    "hook_tip_angle_deg": 33,
+    "surface_edge_mm": 1.55,
+    "max_tet_volume_mm3": 1.0,
+    "bight_center_abs_x_mm": 170.0,
+    "cord_grip_interface_abs_x_mm": 135.0,
+    "override_levers": [
+      "hook youngs_modulus_pa -> 1e8 for <=100x effective contrast",
+      "part 1 youngs_modulus_pa",
+      "part 1 damping_pa_s"
+    ],
+    "tuning_status": "No simulation retuning performed; source estimates only."
+  }
+}

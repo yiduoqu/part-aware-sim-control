@@ -1,0 +1,23 @@
+{
+  "schema_version": "generated-heterogeneous-materials-v1",
+  "inferred_object_name": "soap_bar",
+  "num_parts": 1,
+  "predictions": [
+    {
+      "part_name": "soap",
+      "major_material_name": "bar soap",
+      "part_color_rgb": [
+        238,
+        229,
+        205
+      ],
+      "youngs_modulus_pa": 50000000.0,
+      "poisson_ratio": 0.4,
+      "density_kg_m3": 1050.0,
+      "friction_coefficient": 0.35,
+      "part_index": 0,
+      "volume_fill_mode": "solid_fill"
+    }
+  ],
+  "notes": "Engineering starting estimates, not measured or simulation-calibrated."
+}

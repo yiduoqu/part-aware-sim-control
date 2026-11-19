@@ -1593,6 +1593,225 @@
       }
     },
     {
+      "id": "hinged_soap_case",
+      "path": "hinged_soap_case",
+      "kind": "labelled-tet-v1",
+      "source": "generate_hinged_soap_case.py (procedural grid of hexahedra cut into tetrahedra, cell part labels)",
+      "import_status": "generated",
+      "description": "100 x 64 x 32 mm travel soap case, closed: a tray and a lid of about the same depth joined by a thin web on one long side, with a thumb tab on the other.",
+      "vertices": 10872,
+      "tetrahedra": 41856,
+      "bounds_m": [
+        [
+          -0.05,
+          -0.034,
+          0.0
+        ],
+        [
+          0.05,
+          0.04,
+          0.032
+        ]
+      ],
+      "extent_m": [
+        0.1,
+        0.07400000000000001,
+        0.032
+      ],
+      "source_mass_kg": 0.038814015483133596,
+      "source_stiffness_ratio": 37.5,
+      "parts": [
+        {
+          "id": 0,
+          "name": "base_tray",
+          "tetrahedra": 18720,
+          "youngs_modulus_pa": 1500000000.0,
+          "poisson_ratio": 0.42,
+          "density_kg_m3": 910.0
+        },
+        {
+          "id": 1,
+          "name": "lid",
+          "tetrahedra": 21408,
+          "youngs_modulus_pa": 1500000000.0,
+          "poisson_ratio": 0.42,
+          "density_kg_m3": 910.0
+        },
+        {
+          "id": 2,
+          "name": "living_hinge",
+          "tetrahedra": 1344,
+          "youngs_modulus_pa": 40000000.0,
+          "poisson_ratio": 0.42,
+          "density_kg_m3": 910.0
+        },
+        {
+          "id": 3,
+          "name": "lid_tab",
+          "tetrahedra": 384,
+          "youngs_modulus_pa": 1500000000.0,
+          "poisson_ratio": 0.42,
+          "density_kg_m3": 910.0
+        }
+      ],
+      "checks": {
+        "labelled_tet_loader_passed": true,
+        "no_duplicate_tetrahedra": true,
+        "source_hashes_match": true
+      },
+      "rigid_groups": [
+        [
+          0
+        ],
+        [
+          1,
+          3
+        ]
+      ],
+      "used_by": [
+        "soap_case_open.py"
+      ],
+      "behavior_validated_at_source": false,
+      "limitations": "Source estimates; no latch or lip, no simulation run. Needs lid-to-tray contact and a per-scene hinge stiffness.",
+      "readme": "SOURCE.md",
+      "preview": "previews/hinged_soap_case.png",
+      "files": {
+        "appearance/albedo.png": {
+          "sha256": "5f979dac0082736b6de72ec6cfbaa908ecb90bd09f1eb9e2cb056e1ba0ec2dd2",
+          "size_bytes": 285
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "12faac2d56a540d6c941db9620def6efb925d14866bc582077d961c96220fc82",
+          "size_bytes": 1087768
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "223aada3c9e8c469c5eb427a0c1f462d02a6e093d6958d3f4da70473c21960fd",
+          "size_bytes": 322932
+        },
+        "asset.json": {
+          "sha256": "dbaf5298dd49d8f8d0454caf4d0345c0441db292d766be285ed759d2573d68a5",
+          "size_bytes": 1032
+        },
+        "final_mesh.mesh": {
+          "sha256": "de528b871ca46da987ac5f6f9b452fc6c2ad47ca21dd95e210af632a2bfaffa7",
+          "size_bytes": 1170765
+        },
+        "heterogeneous_params.npz": {
+          "sha256": "66692f0f364870017ba9957d9ef145ecc6fcee184f69c6caa520ecf34348d0ca",
+          "size_bytes": 6333
+        },
+        "inferred_params.json": {
+          "sha256": "e791b7f372f7f3868701eab035750ee532315a71fe753dd1b3bb98897a41f918",
+          "size_bytes": 1802
+        }
+      }
+    },
+    {
+      "id": "hooked_elastic_cord",
+      "path": "hooked_elastic_cord",
+      "kind": "labelled-tet-v1",
+      "source": "generate_hooked_elastic_cord.py (OpenCASCADE boolean solids, TetGen volume with shared part interfaces, Netgen interior optimisation, centroid part labels)",
+      "import_status": "generated",
+      "description": "A 250 mm \u00d7 \u00d84 mm silicone cord has 10 mm tapers, 24 \u00d7 12 \u00d7 8 mm ABS grips and \u00d86 mm hooks with 8 mm nominal inner radii.",
+      "vertices": 5884,
+      "tetrahedra": 20049,
+      "bounds_m": [
+        [
+          -0.183993622428,
+          -0.00896125544797,
+          -0.004
+        ],
+        [
+          0.183993622428,
+          0.0139907575965,
+          0.004
+        ]
+      ],
+      "extent_m": [
+        0.367987244856,
+        0.022952013044469997,
+        0.008
+      ],
+      "source_mass_kg": 0.011065230770989238,
+      "source_stiffness_ratio": 2200.0,
+      "parts": [
+        {
+          "id": 0,
+          "name": "hook_a",
+          "tetrahedra": 7260,
+          "youngs_modulus_pa": 2200000000.0,
+          "poisson_ratio": 0.37,
+          "density_kg_m3": 1100.0
+        },
+        {
+          "id": 1,
+          "name": "elastic_cord",
+          "tetrahedra": 5459,
+          "youngs_modulus_pa": 1000000.0,
+          "poisson_ratio": 0.49,
+          "density_kg_m3": 1100.0
+        },
+        {
+          "id": 2,
+          "name": "hook_b",
+          "tetrahedra": 7330,
+          "youngs_modulus_pa": 2200000000.0,
+          "poisson_ratio": 0.37,
+          "density_kg_m3": 1100.0
+        }
+      ],
+      "checks": {
+        "labelled_tet_loader_passed": true,
+        "no_duplicate_tetrahedra": true,
+        "source_hashes_match": true
+      },
+      "rigid_groups": [
+        [
+          0
+        ],
+        [
+          2
+        ]
+      ],
+      "used_by": [
+        "hooked_cord_peg_stretch.py"
+      ],
+      "behavior_validated_at_source": false,
+      "limitations": "No simulation retuning performed; source estimates only.",
+      "readme": "SOURCE.md",
+      "preview": "previews/hooked_elastic_cord.png",
+      "files": {
+        "appearance/albedo.png": {
+          "sha256": "98ecf8fa4c692e330f2fbbaa1c2ddd125f87b1d920d17850e80fd6a95fc458bd",
+          "size_bytes": 256
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "029a013f4b1549eda839201dd9ebc7fd1d810251811b7be2fde4486c6a601282",
+          "size_bytes": 626184
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "55d1395064a8f65ae1e3bc877576a729a2f63c9273c506e11435a4057469149f",
+          "size_bytes": 228170
+        },
+        "asset.json": {
+          "sha256": "cc7a17423f4848ebb9cf7ca0063fc10966ff6eaf57705caaf7c5c3b52dfe8268",
+          "size_bytes": 1334
+        },
+        "final_mesh.mesh": {
+          "sha256": "8b201d6977b859839a5227a80abde6326e234f45a62ddbc1da40d75be91ddf1d",
+          "size_bytes": 713098
+        },
+        "heterogeneous_params.npz": {
+          "sha256": "0b5faac45ae937235f4eb36967720471c190f017445665f4ff39bb0101134ba0",
+          "size_bytes": 2938
+        },
+        "inferred_params.json": {
+          "sha256": "6f97abfaaad1e66c55d42ff43556e079de8e385d3190a0ba484bd13eca2b4a6b",
+          "size_bytes": 1332
+        }
+      }
+    },
+    {
       "id": "power_strip",
       "path": "power_strip",
       "kind": "labelled-tet-v1",
@@ -1886,7 +2105,9 @@
           0
         ]
       ],
-      "used_by": [],
+      "used_by": [
+        "spatula_pan_press.py"
+      ],
       "behavior_validated_at_source": false,
       "limitations": "Source estimates; tune per scene.",
       "readme": "SOURCE.md",
@@ -2007,7 +2228,10 @@
           1
         ]
       ],
-      "used_by": [],
+      "used_by": [
+        "rubber_stamp_arm_press.py",
+        "rubber_stamp_press.py"
+      ],
       "behavior_validated_at_source": false,
       "limitations": "Source estimates; tune per scene.",
       "readme": "SOURCE.md",
@@ -2099,7 +2323,11 @@
           0
         ]
       ],
-      "used_by": [],
+      "used_by": [
+        "spatula_pan_arm_scrape.py",
+        "spatula_pan_press.py",
+        "spatula_s0.py"
+      ],
       "behavior_validated_at_source": false,
       "limitations": "Source estimates; tune per scene.",
       "readme": "SOURCE.md",
@@ -2132,6 +2360,92 @@
         "inferred_params.json": {
           "sha256": "c3d4d9fc1d78bd8baa1d65036f29d0232b8a5cfc098120d04955b57fea0109e2",
           "size_bytes": 987
+        }
+      }
+    },
+    {
+      "id": "soap_bar",
+      "path": "soap_bar",
+      "kind": "labelled-tet-v1",
+      "source": "generate_soap_bar.py (procedural grid of hexahedra cut into tetrahedra, cell part labels)",
+      "import_status": "generated",
+      "description": "90 x 55 x 25 mm bar of soap with rounded plan corners, to go in hinged_soap_case.",
+      "vertices": 2835,
+      "tetrahedra": 13440,
+      "bounds_m": [
+        [
+          -0.045,
+          -0.0275,
+          0.0
+        ],
+        [
+          0.045,
+          0.0275,
+          0.025
+        ]
+      ],
+      "extent_m": [
+        0.09,
+        0.055,
+        0.025
+      ],
+      "source_mass_kg": 0.12762511521818332,
+      "source_stiffness_ratio": 1.0,
+      "parts": [
+        {
+          "id": 0,
+          "name": "soap",
+          "tetrahedra": 13440,
+          "youngs_modulus_pa": 50000000.0,
+          "poisson_ratio": 0.4,
+          "density_kg_m3": 1050.0
+        }
+      ],
+      "checks": {
+        "labelled_tet_loader_passed": true,
+        "no_duplicate_tetrahedra": true,
+        "source_hashes_match": true
+      },
+      "rigid_groups": [
+        [
+          0
+        ]
+      ],
+      "used_by": [
+        "soap_case_open.py"
+      ],
+      "behavior_validated_at_source": false,
+      "limitations": "Source estimates; run as one rigid body.",
+      "readme": "SOURCE.md",
+      "preview": "previews/soap_bar.png",
+      "files": {
+        "appearance/albedo.png": {
+          "sha256": "7dff85341592ea4d3121ebc7e3a2a571d0777fc95ae72213167a3e4a419a153e",
+          "size_bytes": 186
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "9f193e6538ae67577aa5207180a1c234e41d7edebc51052bbd23126289d80288",
+          "size_bytes": 160276
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "b4a09f8901d5d7dfe72e64732d2fa8ee2fd923947b6ebc40fa49e73c9f2d37d9",
+          "size_bytes": 46840
+        },
+        "asset.json": {
+          "sha256": "49aa36e7f465ff589cec02baad12948073dd33dc330c075a954176fcca51aa26",
+          "size_bytes": 657
+        },
+        "final_mesh.mesh": {
+          "sha256": "884cd5d892700d1c95b51095d09acfaf3b9ae4109aaf8f48939bbc0098e5b190",
+          "size_bytes": 359614
+        },
+        "heterogeneous_params.npz": {
+          "sha256": "6e261a0feb3207bece5b30a30e1d3773dc953adfece381a30672b1b1df2e53fb",
+          "size_bytes": 2454
+        },
+        "inferred_params.json": {
+          "sha256": "620b302e0b0ecc3004fef978638d099f3ee62d988fe0d65fa159cbf0755c857e",
+          "size_bytes": 577
         }
       }
     },
