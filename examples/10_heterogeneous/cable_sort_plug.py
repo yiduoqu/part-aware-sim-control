@@ -42,10 +42,18 @@ OUTPUT = Path(__file__).resolve().parents[2] / "outputs" / "cable_sort_plug"
 CONTROL_HZ = REFERENCE.control_hz
 SUBSTEPS = plug.SUBSTEPS
 SOCKET_FIXTURES = "socket_usb_{}_{}"
-PICKS = {"charger": ("c", (0.27, 0.04)), "hub": ("a", (0.14, 0.04))}
-"""The plugs in picking order: the socket's connector letter and where the plug's shoulder is
-``PRE_INSERT`` short of the seat [m, bench frame]. The charger's, the bottom cable's, goes to the far
-socket so the hub's carry does not cross it; both lie 0.2-0.4 m from where each plug starts."""
+SOCKETS_LEFT = np.array((-0.048, -0.036))
+"""Both sockets shifted 6 cm toward the camera's image-left (-0.8, -0.6 in the bench frame) [m]."""
+PICKS = {
+    "splitter": (1, (0.27 + SOCKETS_LEFT[0], 0.04 + SOCKETS_LEFT[1])),
+    "hub": (0, (0.14 + SOCKETS_LEFT[0], 0.04 + SOCKETS_LEFT[1])),
+}
+"""The plugs in picking order: the male end's index and where the plug's shoulder is ``PRE_INSERT`` short
+of the seat [m, bench frame]. Both are USB-A (the splitter's second end; its charger stays as a
+distractor, USB-C is too small to plug). The splitter's, the bottom cable's, goes to the far socket so
+the hub's carry does not cross it."""
+PLUG_LABELS = {"splitter": (3, 4)}
+"""A plug's (collar, tip) labels where not the hub's ``plug.COLLAR, plug.TIP``: the splitter's USB-A end's housing and metal."""
 OBJECTS = {n: pile.OBJECTS[n] for n in ("splitter", "charger", "hub")}
 PHASES = {**plug.PHASES, "open": (10.1, 11.9), "withdraw": (12.7, 13.7)}
 """The plug-in's windows with a slow release. The command closes 16 mm past the plug, so the pads let go only late in
@@ -73,17 +81,17 @@ def duration() -> float:
     return BLOCKS[-1] + WITHDRAWN + TAIL
 
 
-def read_plug(asset, vertices, tets, labels, item, pose, quat, kind: str, plug_at, socket: str, radius: float) -> tuple:
+def read_plug(asset, vertices, tets, labels, item, pose, quat, end: int, plug_at, socket: str, radius: float, parts) -> tuple:
     """One pick's plug, socket and seated pose: where its shoulder and axes lie before it is laid, and its socket."""
-    meta = json.loads((asset.path / "connectors.json").read_text())["male_ends"][0]
-    mesh, connectors = cable_scene.fixture(SOCKET_FIXTURES.format(kind, socket))
+    meta = json.loads((asset.path / "connectors.json").read_text())["male_ends"][end]
+    mesh, connectors = cable_scene.fixture(SOCKET_FIXTURES.format("a", socket))
     t_male = np.asarray(meta["T_asset_from_mating_frame"])
     # Flat, plug along +y, as the single plug-in lays it: the collar's reach across and its face ahead of the shoulder.
     base = arm_gripper._rotate(np.asarray(asset.quat), vertices)
     shoulder0 = arm_gripper._rotate(np.asarray(asset.quat), t_male[None, :3, 3])[0]
-    collar = base[np.unique(tets[labels == plug.COLLAR])]
+    collar = base[np.unique(tets[labels == parts[0]])]
     band = collar[np.abs(collar[:, 1] - (shoulder0[1] - plug.GRASP_BEHIND)) < 0.004]
-    tip = vertices[np.unique(tets[labels == plug.TIP])]
+    tip = vertices[np.unique(tets[labels == parts[1]])]
     geometry = plug.socket_pose(
         connectors["female_ports"][0], meta, float(collar[:, 1].max() - shoulder0[1]), radius, plug_at
     )
@@ -93,11 +101,11 @@ def read_plug(asset, vertices, tets, labels, item, pose, quat, kind: str, plug_a
             "tip_profile_m": [float(np.ptp(tip[:, 1])), float(np.ptp(tip[:, 2]))],
             "grip_centre_m": [0.0, 0.0, float(ParallelGripperSpec.pad_half_height + 0.001)],
             "shoulder_settled_m": [0.0, 0.0, 0.0],
-            "socket": SOCKET_FIXTURES.format(kind, socket),
+            "socket": SOCKET_FIXTURES.format("a", socket),
         }
     )
     rest = {
-        "nodes": np.unique(tets[np.isin(labels, plug.PLUG)]),
+        "nodes": np.unique(tets[np.isin(labels, parts)]),
         "shoulder": arm_gripper._rotate(np.asarray(quat), t_male[None, :3, 3])[0] + pose,
         "axes": Rotation.from_quat(quat).as_matrix() @ t_male[:3, :3],
     }
@@ -137,9 +145,10 @@ def build_scene(
         quat = arm_gripper.quat_multiply(arm_gripper.axis_angle_quat((0.0, 0.0, 1.0), item.yaw), asset.quat)
         pose = objects[name]["pose"]
         if name in PICKS:
-            kind, plug_at = PICKS[name]
+            end, plug_at = PICKS[name]
             geoms[name], rests[name], mesh = read_plug(
-                asset, vertices, tets, labels, item, np.asarray(pose), quat, kind, plug_at, socket, plug_radius
+                asset, vertices, tets, labels, item, np.asarray(pose), quat, end, plug_at, socket, plug_radius,
+                PLUG_LABELS.get(name, plug.PLUG),
             )
             # The block on a slab of its footprint, as a static triangle mesh that keeps its cavity.
             block = np.load(mesh.with_suffix(".npz"))["vertices_m"]
@@ -189,7 +198,7 @@ def build_scene(
         "friction": cable_scene.set_friction(sim, solver, settings, mu=mu, grip_mu=grip_mu),
         "socket_mesh_shapes": plug.socket_shapes(sim),
         "plug_thin_particles": {
-            n: cable_scene.set_part_radius(sim, entities[n], plug.PLUG, plug_radius) for n in PICKS
+            n: cable_scene.set_part_radius(sim, entities[n], PLUG_LABELS.get(n, plug.PLUG), plug_radius) for n in PICKS
         },
         "laid": pile.lay_pile(sim, entities, objects),
     }
@@ -500,7 +509,7 @@ def main() -> None:
                 for n, o in OBJECTS.items()
             },
             "objects": {n: [*o[:4], list(o.through), *o[5:]] for n, o in OBJECTS.items()},
-            "picks": {n: [k, list(at)] for n, (k, at) in PICKS.items()},
+            "picks": {n: [k, [float(c) for c in at]] for n, (k, at) in PICKS.items()},
         },
         socket=args.socket,
         plug_radius=args.plug_radius,
