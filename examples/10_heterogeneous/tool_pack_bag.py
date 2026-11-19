@@ -311,16 +311,21 @@ def run(out: Path, args) -> dict:
             r.marks[f"{name}_release"] = r.end
             r.go(0.8, (drop[0], drop[1], max(z, top_here)))
         b = m["bag"]
-        point = b["point"] + (0.0, 0.0, arm_gripper.PAD_RISE)  # the pads' centre on the tube, not its lower edge
-        hover = point + (0.0, 0.0, 0.04 * k)
+        # The pads' centre on the tube, not its lower edge.
+        point = b["point"] + np.array((0.0, 0.0, arm_gripper.PAD_RISE))
+        hover = point + np.array((0.0, 0.0, 0.04 * k))
         r.go(2.5, hover, tilt=bag_tilt, gap=b["half"] + 0.012 * k, yaw=np.pi / 2)
         r.marks["bag_hover_end"] = r.end
         r.go(0.9, point)
         r.go(0.8, gap=b["half"] - 0.012 * k)
         r.go(args.pre_lift_hold)
         r.marks["lift_start"] = r.end
-        r.go(args.lift_s, point + (0.0, 0.0, args.lift))
+        r.go(args.lift_s, point + np.array((0.0, 0.0, args.lift)))
         r.go(args.hold)
+        # Drop: open the pads and let the bag fall back onto the bench.
+        r.marks["drop"] = r.end
+        r.go(0.4, gap=OPEN)
+        r.go(1.5)
         return r
 
     steps_cap = {}
@@ -463,13 +468,15 @@ def run(out: Path, args) -> dict:
     )  # fmt: skip
     for name, item in items.items():
         item["trajectory"].save(out / f"trajectory_{name}.npz")
+    marks = steps_cap["marks"]
     last = rows[-1]
-    base_lift = float(last["base_z_m"] - base_rest)
-    inside_now = {n: last[n]["inside"] for n in items}
+    # Judged at the end of the hold, just before the drop.
+    held = rows[min(len(rows), max(1, round(marks["drop"] * CONTROL_HZ))) - 1]
+    base_lift = float(held["base_z_m"] - base_rest)
+    inside_now = {n: held[n]["inside"] for n in items}
     lift_fraction = float(min(1.0, max(0.0, base_lift) / 0.10))
     score = (sum(inside_now.values()) / max(1, len(items))) * lift_fraction
     parts = [k for k in rows[0] if k.startswith("part") and k.endswith("_body")]
-    marks = steps_cap["marks"]
 
     def at_time(t: float, name: str) -> dict:
         row = rows[min(len(rows), max(1, round(t * CONTROL_HZ))) - 1]
@@ -495,6 +502,7 @@ def run(out: Path, args) -> dict:
         "released_to_ring_m": {n: v["to_ring_m"] for n, v in release.items()},
         "items": list(items),
         "items_inside": inside_now,
+        "items_inside_after_drop": {n: last[n]["inside"] for n in items},
         "inside_fraction": {n: last[n]["inside_fraction"] for n in items},
         "item_inverted_max": {n: max(r[n]["inverted"] for r in rows) for n in items},
         "base_lift_m": base_lift,
