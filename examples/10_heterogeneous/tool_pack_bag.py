@@ -46,9 +46,9 @@ ITEMS = {
 }
 """Item -> asset and where its grip lands in the bench frame [m], in picking order."""
 PRE = {"sponge": (0.17, -0.12), "spatula": (0.27, -0.12)}
-"""Items that start inside the bag (centre, bench frame [m]), resting just over the collapsed cloth; the arm picks the others."""
-PRE_LIFT = 0.06
-"""How far over the bench they spawn [m]."""
+"""Items that start inside the bag (x, bench frame [m]); the arm picks the others."""
+PRE_TILT = np.radians(25.0)
+"""They lie diagonally, the -y end on the base board and the +y end up towards the rim, so they fit between the walls."""
 DROP_DY = -0.12
 """The drop's y from the bag's centre [m]: the middle of the arm's side of the mouth, clear of the handle's arch."""
 SQUEEZE = 0.016
@@ -116,20 +116,37 @@ def item_specs(args, settings, scene):
             yaw = arm_gripper.axis_angle_quat((0.0, 0.0, 1.0), np.pi / 2)
             asset = dataclasses.replace(base, quat=tuple(float(c) for c in arm_gripper.quat_multiply(yaw, base.quat)))
             vertices, tets, labels = cable_scene.load(asset)
+            pre = name in PRE and not args.pick_all
+            # Items packed in advance shrink only as far as they must to lie diagonally in the bag (0.48 m at full size):
+            # a small sponge is a few grams and its foam inverts.
+            length = np.ptp(arm_gripper._rotate(np.asarray(asset.quat), vertices)[:, 1])
+            scale = min(1.0, 0.9 * 0.48 * args.bag_scale / length) if pre else 1.0
+            vertices = vertices * scale
             grip = tool_scene.grasp_handle(asset, vertices, tets, labels)
             at = (gx - grip["point_m"][0], gy - grip["point_m"][1])
             pose = tool_scene.rest_pose(vertices, asset.quat, at=at)
-            if name in PRE and not args.pick_all:
+            if pre:
+                k = args.bag_scale
+                tilt = arm_gripper.axis_angle_quat((1.0, 0.0, 0.0), PRE_TILT)
+                asset = dataclasses.replace(
+                    asset, quat=tuple(float(c) for c in arm_gripper.quat_multiply(tilt, asset.quat))
+                )
                 turned = arm_gripper._rotate(np.asarray(asset.quat), vertices)
-                pose = (*(np.subtract(PRE[name], turned[:, :2].mean(axis=0))), pose[2] + PRE_LIFT)
-            spec = tool_scene.spec(asset, vertices, tets, labels, name=name, pose=pose, settings=settings, mu=args.mu)
-            items[name] = {"asset": asset, "rigid": asset.handle, "pre": name in PRE and not args.pick_all}
+                # The low end just inside the base board's -y edge (0.181 m from the centre), 5 mm over the board (6 mm thick).
+                x = args.bag_at[0] + (PRE[name][0] - BAG_AT[0]) * k - turned[:, 0].mean()
+                y = args.bag_at[1] - 0.17 * k - turned[:, 1].min()
+                pose = (x, y, 0.006 * k + 0.005 - turned[:, 2].min())
+            spec = cable_scene.spec(
+                asset, vertices, tets, labels, name=name, pose=pose, settings=settings, mu=args.mu,
+                overrides=asset.overrides(), scale=scale,
+            )  # fmt: skip
+            items[name] = {"asset": asset, "rigid": asset.handle, "pre": pre}
         items[name].update(labels=labels, vertices=vertices, handle=scene.add(spec))
     return items
 
 
 def build(args):
-    settings = dataclasses.replace(REFERENCE, substeps=SUBSTEPS, particle_radius=0.0015)
+    settings = dataclasses.replace(REFERENCE, substeps=args.substeps, particle_radius=0.0015)
     physics = arrangement(
         settings,
         claw="arm",
@@ -147,11 +164,23 @@ def build(args):
         BAG, cable_young=args.bag_young or BAG.cable_young, cable_damping=args.bag_damping or BAG.cable_damping
     )
     vertices, tets, labels = cable_scene.load(bag)
+    vertices = vertices * args.bag_scale
     overrides = ((1, "density_kg_m3", args.frame_density),) if args.frame_density else ()
-    pose = (BAG_AT[0], BAG_AT[1], cable_scene.PLACE_GAP)
+    pose = (args.bag_at[0], args.bag_at[1], cable_scene.PLACE_GAP)
     bag_obj = scene.add(
         cable_scene.spec(
-            bag, vertices, tets, labels, name="bag", pose=pose, settings=settings, mu=args.mu, overrides=overrides
+            bag,
+            vertices,
+            tets,
+            labels,
+            name="bag",
+            pose=pose,
+            settings=settings,
+            mu=args.mu,
+            overrides=overrides,
+            scale=args.bag_scale,
+            part_stiffness_scale=args.part_stiffness,
+            attach_stiffness=args.attach_stiffness,
         )
     )
     items = item_specs(args, settings, scene)
@@ -182,8 +211,9 @@ def run(out: Path, args) -> dict:
     btets = bag.source_tets
     frame_nodes = np.unique(btets[labels == 1])
     base_nodes = np.unique(btets[labels == 2])
-    rim_nodes = frame_nodes[vertices[frame_nodes, 2] < RIM_Z]
-    apex_nodes = frame_nodes[(vertices[frame_nodes, 2] > APEX_Z) & (np.abs(vertices[frame_nodes, 1]) < 0.012)]
+    k = args.bag_scale
+    rim_nodes = frame_nodes[vertices[frame_nodes, 2] < RIM_Z * k]
+    apex_nodes = frame_nodes[(vertices[frame_nodes, 2] > APEX_Z * k) & (np.abs(vertices[frame_nodes, 1]) < 0.012 * k)]
     half = vertices[rim_nodes, :2].max(axis=0)[::-1]
     cloth = cable_scene.soft_labels(BAG, labels)
     picked = [n for n, i in items.items() if not i.get("pre")]
@@ -248,7 +278,7 @@ def run(out: Path, args) -> dict:
         for name in picked:
             c = m[name]
             g, hover = c["point"], c["point"] + (0.0, 0.0, 0.08)
-            drop = np.array((bag_xy[0], bag_xy[1] + DROP_DY))
+            drop = np.array((bag_xy[0], bag_xy[1] + DROP_DY * k))
             if name == "hub":
                 # As in the hub-into-box task: lower until the housing is just over the pile, so it isn't dropped.
                 z = b_rim + 0.02 + g[2]
@@ -280,12 +310,12 @@ def run(out: Path, args) -> dict:
             r.marks[f"{name}_release"] = r.end
             r.go(0.8, (drop[0], drop[1], max(z, top_here)))
         b = m["bag"]
-        hover = b["point"] + (0.0, 0.0, 0.04)
-        r.go(2.5, hover, tilt=bag_tilt, gap=b["half"] + 0.012, yaw=np.pi / 2)
+        hover = b["point"] + (0.0, 0.0, 0.04 * k)
+        r.go(2.5, hover, tilt=bag_tilt, gap=b["half"] + 0.012 * k, yaw=np.pi / 2)
         r.marks["bag_hover_end"] = r.end
         r.go(0.9, b["point"])
-        r.go(0.8, gap=b["half"] - 0.012)
-        r.go(0.4)
+        r.go(0.8, gap=b["half"] - 0.012 * k)
+        r.go(args.pre_lift_hold)
         r.marks["lift_start"] = r.end
         r.go(args.lift_s, b["point"] + (0.0, 0.0, args.lift))
         r.go(args.hold)
@@ -313,7 +343,7 @@ def run(out: Path, args) -> dict:
     def plan(m: dict, settle: float, strict: bool = True):
         # The hand pitch for the bag's handle is probed on that stretch alone, then the whole route is solved.
         probe = route(m, 0.0, settle)
-        start = probe.end - (6.3 + args.lift_s + args.hold)
+        start = probe.end - (5.9 + args.pre_lift_hold + args.lift_s + args.hold)
         tilt, error = 0.0, 1e9
         angles = TILTS if args.bag_tilt_deg is None else (args.bag_tilt_deg,)
         for angle in angles:
@@ -485,7 +515,9 @@ def run(out: Path, args) -> dict:
         "elapsed_s": elapsed,
         "geometry": geometry,
         "config": json.loads(
-            json.dumps(cable_scene.config(args, BAG, dataclasses.replace(REFERENCE, substeps=SUBSTEPS)), default=str)
+            json.dumps(
+                cable_scene.config(args, BAG, dataclasses.replace(REFERENCE, substeps=args.substeps)), default=str
+            )
         ),
         "score": float(score),
         "success": bool(all(inside_now.values()) and base_lift >= 0.10),
@@ -515,6 +547,16 @@ def main() -> None:
         "--settle", type=float, default=1.0, help="the scene rests this long before the grasps are measured [s]"
     )
     parser.add_argument("--lift", type=float, default=0.15, help="how far the bag is lifted [m]")
+    parser.add_argument("--bag-scale", type=float, default=0.6, help="the bag's size (and the items packed in it)")
+    parser.add_argument(
+        "--part-stiffness",
+        type=float,
+        default=1.0e-3,
+        help="the bag's rigid frame and board tets keep this stiffness fraction",
+    )
+    parser.add_argument("--attach-stiffness", type=float, default=1.0e4, help="the bag's rigid-part node ties [N/m]")
+    parser.add_argument("--substeps", type=int, default=SUBSTEPS, help="solver substeps per frame")
+    parser.add_argument("--bag-at", type=float, nargs=2, default=BAG_AT, help="the bag's centre, bench frame [m]")
     parser.add_argument("--plan-only", action="store_true", help="plan the arm route, print its error and stop")
     parser.add_argument(
         "--bag-tilt-deg",
@@ -523,6 +565,9 @@ def main() -> None:
         help="hand pitch at the handle [deg], or 'search'",
     )
     parser.add_argument("--lift-s", type=float, default=5.0, help="how long the lift takes [s]")
+    parser.add_argument(
+        "--pre-lift-hold", type=float, default=0.4, help="the closed hand rests this long before the lift [s]"
+    )
     parser.add_argument("--hold", type=float, default=1.0, help="how long the lifted bag is held [s]")
     parser.add_argument(
         "--carry-z", type=float, default=0.46, help="pad height of a tool over the bench while carried [m]"
