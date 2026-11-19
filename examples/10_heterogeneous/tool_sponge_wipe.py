@@ -26,7 +26,7 @@ import json
 from pathlib import Path
 
 import arm_gripper
-import cable_scene
+import hetero_scene
 import numpy as np
 import tool_asset_check as check
 import tool_scene
@@ -197,8 +197,8 @@ def wipe(args) -> Sweep:
 def run(out: Path, asset, args, sweep: Sweep) -> dict:
     out.mkdir(parents=True, exist_ok=True)
     args.steps = args.steps or round((DURATION + PASS * (len(sweep.ys or (0,)) - 1)) * CONTROL_HZ)
-    surface = np.asarray(cable_scene.sim_surface(), dtype=np.float64)
-    vertices, tets, labels = cable_scene.load(asset)
+    surface = np.asarray(hetero_scene.sim_surface(), dtype=np.float64)
+    vertices, tets, labels = hetero_scene.load(asset)
     grip = tool_scene.grasp_handle(asset, vertices, tets, labels)
     # The tool lies on the bench with its sponge's front ``lay_front`` from the origin, clear of the plate.
     lying = arm_gripper._rotate(np.asarray(asset.quat), vertices)
@@ -219,13 +219,13 @@ def run(out: Path, asset, args, sweep: Sweep) -> dict:
         # Particle-shape friction mixes as sqrt(mu * shape_mu): lower it on the plate only, not the handle or pads.
         solver = arm_gripper.vbd_solver(sim.pipeline.program.solver)
         for name in plates:
-            cable_scene.set_shape_mu(sim, solver, name, args.plate_mu, args.mu)
+            hetero_scene.set_shape_mu(sim, solver, name, args.plate_mu, args.mu)
     if sweep.soft_radius:
-        cable_scene.set_part_radius(sim, obj.entity, np.unique(labels), sweep.soft_radius)
+        hetero_scene.set_part_radius(sim, obj.entity, np.unique(labels), sweep.soft_radius)
     grasp = tool_scene.grasp_handle(asset, vertices, tets, labels, pose=pose)
     entity = obj.entity
     src_tets = entity.source_tets
-    soft = cable_scene.soft_labels(asset, labels)
+    soft = hetero_scene.soft_labels(asset, labels)
     rigid = np.unique(src_tets[~np.isin(labels, soft)])
     handle = np.unique(src_tets[labels == asset.handle])
     pad = np.unique(src_tets[labels == asset.pad]) if asset.pad >= 0 else handle
@@ -400,7 +400,7 @@ def run(out: Path, asset, args, sweep: Sweep) -> dict:
             row["slip_deg"] = float(np.degrees((start["ref"][1].inv() * in_hand[1]).magnitude()))
         return row
 
-    rows, elapsed, video_error = cable_scene.episode(
+    rows, elapsed, video_error = hetero_scene.episode(
         sim,
         entity,
         camera,
@@ -503,7 +503,7 @@ def soft_sponge(asset, args):
         grip_frac=args.grip_frac,
         soft_young=tuple((label, 6.0e4) for label, _ in asset.soft_young),
     )
-    return cable_scene.with_levers(soft, args)
+    return hetero_scene.with_levers(soft, args)
 
 
 def add_arguments(parser) -> None:

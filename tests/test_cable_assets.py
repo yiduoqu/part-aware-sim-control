@@ -15,13 +15,13 @@ TIER = "fast"
 FOLDER = Path(__file__).resolve().parent.parent / "examples" / "10_heterogeneous"
 
 
-def _cable_scene():
-    """``cable_scene`` by file path, with its folder importable for ``rigid_part_body``."""
+def _module(stem: str):
+    """``stem``.py from the examples folder by file path, with the folder importable for its own imports."""
     if str(FOLDER) not in sys.path:
         sys.path.insert(0, str(FOLDER))
-    name = "_rss_cable_scene"
+    name = f"_rss_{stem}"
     if name not in sys.modules:
-        spec = importlib.util.spec_from_file_location(name, FOLDER / "cable_scene.py")
+        spec = importlib.util.spec_from_file_location(name, FOLDER / f"{stem}.py")
         module = importlib.util.module_from_spec(spec)
         sys.modules[name] = module
         spec.loader.exec_module(module)
@@ -30,15 +30,15 @@ def _cable_scene():
 
 class CableAssets(unittest.TestCase):
     def test_each_asset_loads_with_consistent_groups(self):
-        cable_scene = _cable_scene()
+        cable_scene, hetero_scene = _module("cable_scene"), _module("hetero_scene")
         for name, asset in cable_scene.ASSETS.items():
             with self.subTest(asset=name):
-                _vertices, _tets, labels = cable_scene.load(asset)
-                members = [p for g in asset.groups() for p in cable_scene._members(g)]
+                _vertices, _tets, labels = hetero_scene.load(asset)
+                members = [p for g in asset.groups() for p in hetero_scene._members(g)]
                 self.assertTrue(members)
                 self.assertEqual(len(members), len(set(members)), "groups overlap")
                 self.assertTrue(set(members) <= set(np.unique(labels).tolist()))
-                self.assertGreater(len(cable_scene.soft_labels(asset, labels)), 0)
+                self.assertGreater(len(hetero_scene.soft_labels(asset, labels)), 0)
 
     def test_socket_collision_mesh_is_well_formed(self):
         with np.load(FOLDER / "assets" / "socket_usb_a" / "physics" / "collision_mesh.npz") as mesh:

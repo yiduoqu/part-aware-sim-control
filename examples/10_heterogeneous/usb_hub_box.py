@@ -21,6 +21,7 @@ from pathlib import Path
 
 import arm_gripper
 import cable_scene
+import hetero_scene
 import numpy as np
 import rigid_part_body
 from clawhauser_scene import REFERENCE, Trajectory, arrangement, build_sim
@@ -88,7 +89,7 @@ def layout(vertices: np.ndarray, tets: np.ndarray, labels: np.ndarray, quat) -> 
     centre = np.array((0.5 * (band[:, 0].min() + band[:, 0].max()), grasp_y))
     reach = float(0.5 * (band[:, 0].max() - band[:, 0].min()))
     shift = np.asarray(GRASP_AT) - centre
-    pose = (float(shift[0]), float(shift[1]), float(-turned[:, 2].min()) + cable_scene.PLACE_GAP)
+    pose = (float(shift[0]), float(shift[1]), float(-turned[:, 2].min()) + hetero_scene.PLACE_GAP)
     root_xy = root[:2] + shift
     return {
         "pose": pose,
@@ -102,7 +103,7 @@ def layout(vertices: np.ndarray, tets: np.ndarray, labels: np.ndarray, quat) -> 
 
 
 def build_scene(
-    asset: cable_scene.CableAsset,
+    asset: hetero_scene.HeteroAsset,
     *,
     solver: str = "chebyshev",
     iterations: int,
@@ -111,7 +112,7 @@ def build_scene(
     force_limit: float,
     self_contact: bool,
 ):
-    vertices, tets, labels = cable_scene.load(asset)
+    vertices, tets, labels = hetero_scene.load(asset)
     geometry = layout(vertices, tets, labels, asset.quat)
     settings = dataclasses.replace(REFERENCE, substeps=SUBSTEPS)
     physics = arrangement(
@@ -123,7 +124,7 @@ def build_scene(
         self_contact=self_contact,
         feedback_smoothing=0.15,
         feedback_clamp=1.5,
-        rest_exclusion=cable_scene.REST_EXCLUSION,
+        rest_exclusion=hetero_scene.REST_EXCLUSION,
     )
     scene = rss.Scene(cell=CELL, physics=physics, name="usb_hub_box")
     bx, by = geometry["box_centre_m"]
@@ -150,7 +151,9 @@ def build_scene(
         extra = {"finish": finish} if finish is not None else {}
         scene.add(rss.slab(name=name, half=half, at=at, color=(0.55, 0.60, 0.65), **extra))
     obj = scene.add(
-        cable_scene.spec(asset, vertices, tets, labels, name="usb_hub", pose=geometry["pose"], settings=settings, mu=mu)
+        hetero_scene.spec(
+            asset, vertices, tets, labels, name="usb_hub", pose=geometry["pose"], settings=settings, mu=mu
+        )
     )
     arm_gripper.add_arm(scene, base_offset=arm_gripper.MOUNT, force_limit=force_limit)
     camera = scene.add(
@@ -161,7 +164,7 @@ def build_scene(
     sim = build_sim(scene, rigid_loop=False)
     solver = arm_gripper.vbd_solver(sim.pipeline.program.solver)
     geometry["arm"] = arm_gripper.check_arm(sim, limit=force_limit)
-    geometry["friction"] = cable_scene.set_friction(sim, solver, settings, mu=mu, grip_mu=grip_mu)
+    geometry["friction"] = hetero_scene.set_friction(sim, solver, settings, mu=mu, grip_mu=grip_mu)
     geometry["rigid_parts"] = {
         f"part{rp.part}": {"nodes": int(len(rp.nodes)), "mass_kg": rp.part_mass} for rp in obj.entity.rigid_parts
     }
@@ -217,7 +220,7 @@ def inside_box(points: np.ndarray, geometry: dict, surface: np.ndarray, top: flo
 
 def run(
     out: Path,
-    asset: cable_scene.CableAsset,
+    asset: hetero_scene.HeteroAsset,
     *,
     steps: int,
     render_every: int,
@@ -358,13 +361,13 @@ def main() -> None:
     parser.add_argument("--render-every", type=int, default=0)
     parser.add_argument("--solver", choices=("vbd", "chebyshev"), default="chebyshev")
     parser.add_argument("--iterations", type=int, default=80)
-    parser.add_argument("--mu", type=float, default=cable_scene.OBJECT_MU)
+    parser.add_argument("--mu", type=float, default=hetero_scene.OBJECT_MU)
     parser.add_argument("--grip-mu", type=float, default=2.0)
     parser.add_argument("--force-limit", type=float, default=30.0)
     parser.add_argument("--no-self-contact", dest="self_contact", action="store_false")
-    cable_scene.add_lever_arguments(parser)
+    hetero_scene.add_lever_arguments(parser)
     args = parser.parse_args()
-    asset = cable_scene.with_levers(cable_scene.ASSETS[args.asset], args)
+    asset = hetero_scene.with_levers(cable_scene.ASSETS[args.asset], args)
     run(
         args.out,
         asset,
@@ -376,7 +379,7 @@ def main() -> None:
         grip_mu=args.grip_mu,
         force_limit=args.force_limit,
         self_contact=args.self_contact,
-        config=cable_scene.config(args, asset, dataclasses.replace(REFERENCE, substeps=SUBSTEPS)),
+        config=hetero_scene.config(args, asset, dataclasses.replace(REFERENCE, substeps=SUBSTEPS)),
     )
 
 

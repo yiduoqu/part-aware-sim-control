@@ -17,7 +17,7 @@ import json
 from pathlib import Path
 
 import arm_gripper
-import cable_scene
+import hetero_scene
 import numpy as np
 import rigid_part_body
 import tool_scene
@@ -218,7 +218,7 @@ def scatter_crumbs(scene, n: int) -> list[str]:
 
 def food_positions(sim, cubes, crumb_names) -> np.ndarray:
     """Centres of the cubes and the crumbs [m, bench frame]."""
-    surface = np.asarray(cable_scene.sim_surface(), dtype=np.float64)
+    surface = np.asarray(hetero_scene.sim_surface(), dtype=np.float64)
     q = sim.pipeline.state_0.particle_q.numpy()
     centres = [q[c.entity.particles].mean(axis=0) for c in cubes]
     return (
@@ -316,8 +316,8 @@ def run(out: Path, asset, args, task: dict) -> dict:
     ``duration`` [s], ``camera``, ``measure(sim)`` (the task's state as a dict) and ``verdict(state, rows)`` (score, success)."""
     out.mkdir(parents=True, exist_ok=True)
     colour_tool((0.82, 0.50, 0.38))
-    surface = np.asarray(cable_scene.sim_surface(), dtype=np.float64)
-    vertices, tets, labels = cable_scene.load(asset)
+    surface = np.asarray(hetero_scene.sim_surface(), dtype=np.float64)
+    vertices, tets, labels = hetero_scene.load(asset)
     grip = tool_scene.grasp_handle(asset, vertices, tets, labels)
     pose = tool_scene.rest_pose(
         vertices, asset.quat, at=(SPATULA_AT[0] - grip["point_m"][0], SPATULA_AT[1] - grip["point_m"][1])
@@ -332,7 +332,7 @@ def run(out: Path, asset, args, task: dict) -> dict:
     )
     entity = obj.entity
     src_tets = entity.source_tets
-    soft = cable_scene.soft_labels(asset, labels)
+    soft = hetero_scene.soft_labels(asset, labels)
     rigid = np.unique(src_tets[~np.isin(labels, soft)])
     handle = np.unique(src_tets[labels == asset.handle])
     head_nodes = np.unique(src_tets[np.isin(labels, soft)])
@@ -415,7 +415,7 @@ def run(out: Path, asset, args, task: dict) -> dict:
             **task["measure"](sim),
         }
 
-    rows, elapsed, video_error = cable_scene.episode(
+    rows, elapsed, video_error = hetero_scene.episode(
         sim,
         entity,
         camera,
@@ -460,7 +460,7 @@ def main() -> None:
     )
     tool_scene.add_arguments(parser)
     args = parser.parse_args()
-    asset = cable_scene.with_levers(dataclasses.replace(HOLDER, grip_frac=args.grip_frac), args)
+    asset = hetero_scene.with_levers(dataclasses.replace(HOLDER, grip_frac=args.grip_frac), args)
     cubes, crumb_names = [], []
 
     def extras(scene, args):

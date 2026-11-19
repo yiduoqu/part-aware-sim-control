@@ -23,7 +23,7 @@ import json
 from pathlib import Path
 
 import arm_gripper
-import cable_scene
+import hetero_scene
 import numpy as np
 import tool_scene
 from loop_geometry import smooth
@@ -103,7 +103,7 @@ def kinematics(grasp: dict, theta: float, rim_centre: np.ndarray, floor_z: float
     ``theta`` to upright; the hand stays at the grip point ``C + R_y(phi) g`` (``g`` the grip's offset
     in the plunger frame). ``touch`` is ``C.z`` over the slab with the upright cup's rim on it.
     """
-    surface = np.asarray(cable_scene.sim_surface(), dtype=np.float64)
+    surface = np.asarray(hetero_scene.sim_surface(), dtype=np.float64)
     point = np.asarray(grasp["point_m"])
     ry = lambda a: Rotation.from_rotvec((0.0, a, 0.0))  # noqa: E731
     offset = ry(-theta).apply(point - rim_centre)
@@ -137,9 +137,9 @@ def run(out: Path, asset, args) -> dict:
     asset = dataclasses.replace(
         asset, quat=tuple(arm_gripper.axis_angle_quat((0.0, 1.0, 0.0), theta)), grip_frac=GRIP_FRAC
     )
-    surface = np.asarray(cable_scene.sim_surface(), dtype=np.float64)
+    surface = np.asarray(hetero_scene.sim_surface(), dtype=np.float64)
     floor_z = FLOOR
-    vertices, tets, labels = cable_scene.load(asset)
+    vertices, tets, labels = hetero_scene.load(asset)
     base = tool_scene.rest_pose(
         vertices, asset.quat, at=(DRAIN_AT[0] + PIVOT_X + CUP_RADIUS * np.cos(theta), DRAIN_AT[1])
     )
@@ -155,7 +155,7 @@ def run(out: Path, asset, args) -> dict:
     )
     entity = obj.entity
     src_tets = entity.source_tets
-    soft = cable_scene.soft_labels(asset, labels)
+    soft = hetero_scene.soft_labels(asset, labels)
     handle = np.unique(src_tets[labels == asset.handle])
     cup = np.unique(src_tets[np.isin(labels, soft)])
     rim_nodes = np.unique(src_tets[labels == 2])
@@ -227,7 +227,7 @@ def run(out: Path, asset, args) -> dict:
             row["slip_deg"] = float(np.degrees((state["ref"][1].inv() * in_hand[1]).magnitude()))
         return row
 
-    rows, elapsed, video_error = cable_scene.episode(
+    rows, elapsed, video_error = hetero_scene.episode(
         sim,
         entity,
         camera,
@@ -284,7 +284,7 @@ def main() -> None:
     tool_scene.add_arguments(parser)
     parser.set_defaults(force_limit=100.0)  # q5: at 50 N the shaft slid 32 mm up through the pads
     args = parser.parse_args()
-    asset = cable_scene.with_levers(tool_scene.TOOLS["toilet_plunger"], args)
+    asset = hetero_scene.with_levers(tool_scene.TOOLS["toilet_plunger"], args)
     run(args.out, asset, args)
 
 

@@ -18,7 +18,7 @@ import json
 from pathlib import Path
 
 import arm_gripper
-import cable_scene
+import hetero_scene
 import numpy as np
 from clawhauser_scene import REFERENCE, arrangement, build_sim
 from loop_geometry import smooth
@@ -38,7 +38,7 @@ SWEEP = {"start": 5.0, "period": 2.4, "cycles": 2, "amplitude": 0.08, "lower": (
 DRAG_Z = 0.030
 """The duster's grip centre over the bench while it sweeps [m]: its lowest panel tips are 40 mm below it."""
 LIFT_BAG = 0.15
-TURN_Z = cable_scene.TURN_Z
+TURN_Z = hetero_scene.TURN_Z
 GRASP = arm_gripper.GRASP_QUAT
 TILTS = (0.0, 25.0, 50.0, 75.0, -25.0)
 """Hand pitches tried in turn [deg]: the bag's lifted handle is out of reach of a hand pointing straight down."""
@@ -46,7 +46,7 @@ TILTS = (0.0, 25.0, 50.0, 75.0, -25.0)
 
 @dataclasses.dataclass(frozen=True)
 class Task:
-    asset: cable_scene.CableAsset
+    asset: hetero_scene.HeteroAsset
     at: tuple[float, float]
     """Where the grasp point lies in the bench frame [m]."""
     grasp: tuple[float, float, float]
@@ -61,10 +61,10 @@ class Task:
 
 TASKS = {
     "duster": Task(
-        cable_scene.CableAsset("cloth_duster_fem", TURN_Z, 5.0e5, 200.0, None), (0.0, -0.12), (-0.09, 0.0, 0.006), 0.006, 11.5, 30.0, 1
+        hetero_scene.HeteroAsset("cloth_duster_fem", TURN_Z, 5.0e5, 200.0, None), (0.0, -0.12), (-0.09, 0.0, 0.006), 0.006, 11.5, 30.0, 1
     ),
     "bag": Task(
-        cable_scene.CableAsset("cloth_bag_fem", (0.0, 0.0, 0.0, 1.0), 1.0e5, 100.0, None), (0.0, -0.12), (0.0, 0.0, 0.390), 0.012, 7.5, 50.0, 1
+        hetero_scene.HeteroAsset("cloth_bag_fem", (0.0, 0.0, 0.0, 1.0), 1.0e5, 100.0, None), (0.0, -0.12), (0.0, 0.0, 0.390), 0.012, 7.5, 50.0, 1
     ),
 }  # fmt: skip
 
@@ -101,7 +101,7 @@ def motion(task: str, center: np.ndarray, reach: float, surface: np.ndarray):
 
 
 def build_scene(task: Task, *, solver: str, iterations: int, mu: float, grip_mu: float, self_contact: bool, asset):
-    vertices, tets, labels = cable_scene.load(asset)
+    vertices, tets, labels = hetero_scene.load(asset)
     settings = dataclasses.replace(REFERENCE, substeps=SUBSTEPS, particle_radius=0.0015)
     physics = arrangement(
         settings,
@@ -118,10 +118,10 @@ def build_scene(task: Task, *, solver: str, iterations: int, mu: float, grip_mu:
     scene = rss.Scene(cell=arm_gripper.CELL, physics=physics, name="cloth_hybrid")
     turned = arm_gripper._rotate(np.asarray(asset.quat), vertices)
     grasp = arm_gripper._rotate(np.asarray(asset.quat), np.asarray(task.grasp)[None])[0]
-    pose = (task.at[0] - grasp[0], task.at[1] - grasp[1], -turned[:, 2].min() + cable_scene.PLACE_GAP)
-    obj = scene.add(cable_scene.spec(asset, vertices, tets, labels, name="cloth", pose=pose, settings=settings, mu=mu))
+    pose = (task.at[0] - grasp[0], task.at[1] - grasp[1], -turned[:, 2].min() + hetero_scene.PLACE_GAP)
+    obj = scene.add(hetero_scene.spec(asset, vertices, tets, labels, name="cloth", pose=pose, settings=settings, mu=mu))
     arm_gripper.add_arm(scene, base_offset=arm_gripper.MOUNT, force_limit=task.force_limit)
-    surface = np.asarray(cable_scene.sim_surface(), dtype=np.float64)
+    surface = np.asarray(hetero_scene.sim_surface(), dtype=np.float64)
     camera = scene.add(
         rss.CameraSpec(
             name="overview",
@@ -135,7 +135,7 @@ def build_scene(task: Task, *, solver: str, iterations: int, mu: float, grip_mu:
     sim = build_sim(scene, rigid_loop=False)
     solver_ = arm_gripper.vbd_solver(sim.pipeline.program.solver)
     geometry = {"pose": list(pose), "arm": arm_gripper.check_arm(sim, limit=task.force_limit)}
-    geometry["friction"] = cable_scene.set_friction(sim, solver_, settings, mu=mu, grip_mu=grip_mu)
+    geometry["friction"] = hetero_scene.set_friction(sim, solver_, settings, mu=mu, grip_mu=grip_mu)
     print(json.dumps({"geometry": geometry}), flush=True)
     return sim, obj, camera, geometry, labels
 
@@ -143,12 +143,12 @@ def build_scene(task: Task, *, solver: str, iterations: int, mu: float, grip_mu:
 def run(out: Path, name: str, *, steps: int, render_every: int, config: dict, **physics) -> dict:
     out.mkdir(parents=True, exist_ok=True)
     task = TASKS[name]
-    asset = cable_scene.with_levers(task.asset, argparse.Namespace(**physics.pop("levers")))
+    asset = hetero_scene.with_levers(task.asset, argparse.Namespace(**physics.pop("levers")))
     sim, obj, camera, geometry, labels = build_scene(task, asset=asset, **physics)
     entity = obj.entity
     tets = entity.source_tets
-    soft = cable_scene.soft_labels(asset, labels)
-    surface = np.asarray(cable_scene.sim_surface(), dtype=np.float64)
+    soft = hetero_scene.soft_labels(asset, labels)
+    surface = np.asarray(hetero_scene.sim_surface(), dtype=np.float64)
     q0 = sim.pipeline.state_0.particle_q.numpy()[entity.particles] - surface
     part = next(rp for rp in entity.rigid_parts if rp.part == str(task.rigid))
     # The nodes the pads close on and that are tracked: the rigid part's within ``band`` of the grasp point along its length.
@@ -206,7 +206,7 @@ def run(out: Path, name: str, *, steps: int, render_every: int, config: dict, **
             row["base_z_m"] = float(local[base, 2].mean())
         return row
 
-    rows, elapsed, video_error = cable_scene.episode(
+    rows, elapsed, video_error = hetero_scene.episode(
         sim, entity, camera, out, soft=soft, steps=steps, render_every=render_every, control_hz=CONTROL_HZ,
         follow=follow, task_row=task_row,
     )  # fmt: skip
@@ -263,19 +263,19 @@ def main() -> None:
     parser.add_argument("--render-every", type=int, default=0)
     parser.add_argument("--solver", choices=("vbd", "chebyshev"), default="chebyshev")
     parser.add_argument("--iterations", type=int, default=90)
-    parser.add_argument("--mu", type=float, default=cable_scene.OBJECT_MU)
+    parser.add_argument("--mu", type=float, default=hetero_scene.OBJECT_MU)
     parser.add_argument("--grip-mu", type=float, default=2.0)
     parser.add_argument("--no-self-contact", dest="self_contact", action="store_false")
-    cable_scene.add_lever_arguments(parser)
+    hetero_scene.add_lever_arguments(parser)
     args = parser.parse_args()
     task = TASKS[args.task]
-    asset = cable_scene.with_levers(task.asset, args)
+    asset = hetero_scene.with_levers(task.asset, args)
     run(
         args.out or OUTPUT / args.task,
         args.task,
         steps=args.steps or round(task.duration * CONTROL_HZ),
         render_every=args.render_every,
-        config=cable_scene.config(args, asset, dataclasses.replace(REFERENCE, substeps=SUBSTEPS)),
+        config=hetero_scene.config(args, asset, dataclasses.replace(REFERENCE, substeps=SUBSTEPS)),
         solver=args.solver,
         iterations=args.iterations,
         mu=args.mu,

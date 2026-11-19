@@ -17,7 +17,7 @@ import json
 from pathlib import Path
 
 import arm_gripper
-import cable_scene
+import hetero_scene
 import numpy as np
 import tool_scene
 from loop_geometry import smooth
@@ -157,9 +157,9 @@ def turn_xz(p: np.ndarray, angle: float) -> np.ndarray:
 @functools.cache
 def head_profile() -> np.ndarray:
     """The spatula head's nodes in the x-z plane at rest, relative to its tip node (the one ``hand_motion`` aims) [m]."""
-    vertices, tets, labels = cable_scene.load(HOLDER)
+    vertices, tets, labels = hetero_scene.load(HOLDER)
     rest = arm_gripper._rotate(np.asarray(HOLDER.quat), vertices)
-    head = rest[np.unique(tets[np.isin(labels, cable_scene.soft_labels(HOLDER, labels))])]
+    head = rest[np.unique(tets[np.isin(labels, hetero_scene.soft_labels(HOLDER, labels))])]
     return (head - head[np.argmax(head[:, 0])])[:, [0, 2]]
 
 
@@ -168,12 +168,12 @@ def rim_clearance(asset) -> float:
 
     The tool is placed rigidly as ``hand_motion`` places it (a pressed head only bends up, so this is conservative).
     """
-    vertices, tets, labels = cable_scene.load(asset)
+    vertices, tets, labels = hetero_scene.load(asset)
     rest = arm_gripper._rotate(np.asarray(asset.quat), vertices)
     grasp = tool_scene.grasp_handle(asset, vertices, tets, labels)
     at = np.subtract(SPATULA_AT, grasp["point_m"][:2])
     rest = rest + np.array(tool_scene.rest_pose(vertices, asset.quat, at=at))
-    head = np.unique(tets[np.isin(labels, cable_scene.soft_labels(asset, labels))])
+    head = np.unique(tets[np.isin(labels, hetero_scene.soft_labels(asset, labels))])
     tip = head[np.argmax(rest[head, 0])]
     across = np.asarray(grasp["across"])
     footprint = cKDTree(rest[:, :2])
@@ -211,7 +211,7 @@ def main() -> None:
     )
     tool_scene.add_arguments(parser)
     args = parser.parse_args()
-    asset = cable_scene.with_levers(dataclasses.replace(HOLDER, grip_frac=args.grip_frac), args)
+    asset = hetero_scene.with_levers(dataclasses.replace(HOLDER, grip_frac=args.grip_frac), args)
     clearance = rim_clearance(asset)
     print(json.dumps({"rim_clearance_min_m": clearance}), flush=True)
     if clearance < MIN_CLEAR:
@@ -238,7 +238,7 @@ def main() -> None:
         return specs
 
     def measure(sim) -> dict:
-        surface = np.asarray(cable_scene.sim_surface(), dtype=np.float64)
+        surface = np.asarray(hetero_scene.sim_surface(), dtype=np.float64)
         q = sim.pipeline.state_0.particle_q.numpy()[pancake[0].entity.particles] - surface
         rest = vertices - vertices.mean(axis=0)
         normal_z = float(kabsch(rest, q - q.mean(axis=0)).apply((0.0, 0.0, 1.0))[2])

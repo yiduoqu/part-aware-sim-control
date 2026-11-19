@@ -17,7 +17,7 @@ import json
 from pathlib import Path
 
 import arm_gripper
-import cable_scene
+import hetero_scene
 import numpy as np
 import tool_scene
 from loop_geometry import smooth
@@ -77,8 +77,8 @@ def motion(grasp: dict, press: float, surface: np.ndarray, soft: np.ndarray, lev
 
 def run(out: Path, asset, args) -> dict:
     out.mkdir(parents=True, exist_ok=True)
-    surface = np.asarray(cable_scene.sim_surface(), dtype=np.float64)
-    vertices, tets, labels = cable_scene.load(asset)
+    surface = np.asarray(hetero_scene.sim_surface(), dtype=np.float64)
+    vertices, tets, labels = hetero_scene.load(asset)
     grip = tool_scene.grasp_handle(asset, vertices, tets, labels)
     # The grip lands at x = 0, y = -0.10: clear of the arm's riser.
     pose = tool_scene.rest_pose(vertices, asset.quat, at=(-grip["point_m"][0], -0.10 - grip["point_m"][1]))
@@ -92,7 +92,7 @@ def run(out: Path, asset, args) -> dict:
     grasp = tool_scene.grasp_handle(asset, vertices, tets, labels, pose=pose)
     entity = obj.entity
     src_tets = entity.source_tets
-    soft = cable_scene.soft_labels(asset, labels)
+    soft = hetero_scene.soft_labels(asset, labels)
     rigid = np.unique(src_tets[~np.isin(labels, soft)])
     handle = np.unique(src_tets[labels == asset.handle])
     pad = np.unique(src_tets[labels == asset.pad]) if asset.pad >= 0 else handle
@@ -153,7 +153,7 @@ def run(out: Path, asset, args) -> dict:
             row["slip_deg"] = float(np.degrees((state["ref"][1].inv() * in_hand[1]).magnitude()))
         return row
 
-    rows, elapsed, video_error = cable_scene.episode(
+    rows, elapsed, video_error = hetero_scene.episode(
         sim,
         entity,
         camera,
@@ -217,7 +217,7 @@ def main() -> None:
     parser.add_argument("--press-mm", type=float, default=7.0, help="how far the tool is lowered past first touch [mm]")
     tool_scene.add_arguments(parser)
     args = parser.parse_args()
-    asset = cable_scene.with_levers(tool_scene.TOOLS[args.asset], args)
+    asset = hetero_scene.with_levers(tool_scene.TOOLS[args.asset], args)
     run(args.out, asset, args)
 
 

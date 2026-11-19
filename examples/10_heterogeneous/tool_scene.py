@@ -17,7 +17,7 @@ import json
 from pathlib import Path
 
 import arm_gripper
-import cable_scene
+import hetero_scene
 import numpy as np
 from clawhauser_scene import REFERENCE, arrangement, build_sim
 from scenery import STEEL, revolved_obj
@@ -34,7 +34,7 @@ SETTINGS = dataclasses.replace(REFERENCE, substeps=SUBSTEPS, particle_radius=0.0
 
 
 @dataclasses.dataclass(frozen=True)
-class ToolAsset(cable_scene.CableAsset):
+class ToolAsset(hetero_scene.HeteroAsset):
     """A tool: ``cable_young`` / ``cable_damping`` are the levers of every soft label, ``soft_young`` per label."""
 
     handle: int = 0
@@ -73,7 +73,7 @@ TOOLS = {
 
 
 def spec(asset: ToolAsset, vertices, tets, labels, *, name: str, pose, settings, mu: float):
-    return cable_scene.spec(
+    return hetero_scene.spec(
         asset, vertices, tets, labels, name=name, pose=pose, settings=settings, mu=mu, overrides=asset.overrides()
     )
 
@@ -423,11 +423,11 @@ def shelf(*, at, size, height: float, thickness: float = 0.015) -> list:
 def add_arguments(parser) -> None:
     parser.add_argument("--solver", choices=("vbd", "chebyshev"), default="chebyshev")
     parser.add_argument("--iterations", type=int, default=90)
-    parser.add_argument("--mu", type=float, default=cable_scene.OBJECT_MU)
+    parser.add_argument("--mu", type=float, default=hetero_scene.OBJECT_MU)
     parser.add_argument("--grip-mu", type=float, default=2.0, help="pad-handle friction (what a handle's mu is)")
     parser.add_argument("--force-limit", type=float, default=50.0, help="grip force [N]")
     parser.add_argument("--no-self-contact", dest="self_contact", action="store_false")
-    cable_scene.add_lever_arguments(parser)
+    hetero_scene.add_lever_arguments(parser)
 
 
 def build_scene(
@@ -439,7 +439,7 @@ def build_scene(
     camera: tuple,
     solver: str = "chebyshev",
     iterations: int = 90,
-    mu: float = cable_scene.OBJECT_MU,
+    mu: float = hetero_scene.OBJECT_MU,
     grip_mu: float = 2.0,
     force_limit: float = 50.0,
     self_contact: bool = True,
@@ -448,7 +448,7 @@ def build_scene(
 
     ``camera`` is ``(eye, look_at)`` in the bench frame. Returns ``(sim, obj, camera, vertices, tets, labels, settings)``.
     """
-    vertices, tets, labels = cable_scene.load(asset)
+    vertices, tets, labels = hetero_scene.load(asset)
     settings = SETTINGS
     physics = arrangement(
         settings,
@@ -459,14 +459,14 @@ def build_scene(
         self_contact=self_contact,
         feedback_smoothing=0.15,
         feedback_clamp=1.5,
-        rest_exclusion=cable_scene.REST_EXCLUSION,
+        rest_exclusion=hetero_scene.REST_EXCLUSION,
     )
     scene = rss.Scene(cell=arm_gripper.CELL, physics=physics, name=name)
     obj = scene.add(spec(asset, vertices, tets, labels, name="tool", pose=pose, settings=settings, mu=mu))
     for extra in extras(scene) if callable(extras) else extras:
         scene.add(extra)
     arm_gripper.add_arm(scene, base_offset=arm_gripper.MOUNT, force_limit=force_limit)
-    surface = np.asarray(cable_scene.sim_surface(), dtype=np.float64)
+    surface = np.asarray(hetero_scene.sim_surface(), dtype=np.float64)
     cam = scene.add(
         rss.CameraSpec(
             name="overview",
@@ -480,18 +480,18 @@ def build_scene(
     sim = build_sim(scene, rigid_loop=False)
     solver_ = arm_gripper.vbd_solver(sim.pipeline.program.solver)
     arm_gripper.check_arm(sim, limit=force_limit)
-    cable_scene.set_friction(sim, solver_, settings, mu=mu, grip_mu=grip_mu)
+    hetero_scene.set_friction(sim, solver_, settings, mu=mu, grip_mu=grip_mu)
     return sim, obj, cam, vertices, tets, labels, settings
 
 
 def rest_pose(vertices, quat=(0.0, 0.0, 0.0, 1.0), at=(0.0, 0.0)) -> tuple:
-    """The tool's pose [m] that lies its lowest point :data:`cable_scene.PLACE_GAP` over the bench at ``at``."""
+    """The tool's pose [m] that lies its lowest point :data:`hetero_scene.PLACE_GAP` over the bench at ``at``."""
     turned = arm_gripper._rotate(np.asarray(quat), vertices)
-    return (at[0], at[1], float(-turned[:, 2].min() + cable_scene.PLACE_GAP))
+    return (at[0], at[1], float(-turned[:, 2].min() + hetero_scene.PLACE_GAP))
 
 
 def config(args, asset: ToolAsset, settings) -> dict:
-    return json.loads(json.dumps(cable_scene.config(args, asset, settings), default=str))
+    return json.loads(json.dumps(hetero_scene.config(args, asset, settings), default=str))
 
 
 OUTPUT = Path(__file__).resolve().parents[2] / "outputs"

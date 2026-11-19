@@ -18,7 +18,7 @@ import json
 from pathlib import Path
 
 import arm_gripper
-import cable_scene
+import hetero_scene
 import numpy as np
 import tool_scene
 import tool_sponge_wipe as wipe
@@ -39,8 +39,8 @@ def main() -> None:
     parser.add_argument("--grooves", type=int, default=1, help="pass over the first N grooves")
     parser.set_defaults(force_limit=120.0, grip_mu=2.5, grip_frac=0.25, tilt_deg=30.0, press_mm=10.0, crumbs=24)
     args = parser.parse_args()
-    asset = cable_scene.with_levers(dataclasses.replace(DUSTER, grip_frac=args.grip_frac), args)
-    print(json.dumps({"grasp": tool_scene.grasp_handle(asset, *cable_scene.load(asset))}), flush=True)
+    asset = hetero_scene.with_levers(dataclasses.replace(DUSTER, grip_frac=args.grip_frac), args)
+    print(json.dumps({"grasp": tool_scene.grasp_handle(asset, *hetero_scene.load(asset))}), flush=True)
 
     seen = []
 

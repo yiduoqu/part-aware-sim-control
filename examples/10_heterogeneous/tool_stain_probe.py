@@ -10,7 +10,7 @@ import argparse
 import json
 from pathlib import Path
 
-import cable_scene
+import hetero_scene
 import numpy as np
 import tool_scene
 from PIL import Image
@@ -24,7 +24,7 @@ def main() -> None:
     args = parser.parse_args()
     args.out.mkdir(parents=True, exist_ok=True)
     asset = tool_scene.TOOLS["whiteboard_eraser"]
-    vertices, _, _ = cable_scene.load(asset)
+    vertices, _, _ = hetero_scene.load(asset)
     stain = tool_scene.StainMap(
         centre=(0.10, 0.0), size=(0.20, 0.12), grid=(10, 6), z=0.008, radius=0.003, contact_ke=1e4
     )
@@ -45,7 +45,7 @@ def main() -> None:
     stain.make_live(sim)
     for _ in range(args.steps):
         sim.run(1).sync()
-    surface = np.asarray(cable_scene.sim_surface())
+    surface = np.asarray(hetero_scene.sim_surface())
     for label, erase in (("before", []), ("after", list(range(0, len(stain.points), 3)))):
         stain.hide(sim, erase)
         Image.fromarray(np.asarray(sim.render(camera)["rgb"])[..., :3].astype(np.uint8)).save(args.out / f"{label}.png")

@@ -22,6 +22,7 @@ from pathlib import Path
 import arm_gripper
 import cable_scene
 import cable_tray_multi as tray
+import hetero_scene
 import numpy as np
 import tool_scene
 from clawhauser_scene import REFERENCE, Trajectory, arrangement, build_sim
@@ -31,7 +32,7 @@ import robosimstudio as rss
 
 CONTROL_HZ = tool_scene.CONTROL_HZ
 SUBSTEPS = tool_scene.SUBSTEPS
-BAG = cable_scene.CableAsset("cloth_bag_fem", cable_scene.TURN_Z, 1.0e5, 1000.0, None)
+BAG = hetero_scene.HeteroAsset("cloth_bag_fem", hetero_scene.TURN_Z, 1.0e5, 1000.0, None)
 """Soft cloth (E 1e5, damping 1000 Pa*s): the bag may sag, the frame keeps the mouth open. Turned a quarter about z, so the handle's arch lies along x and the bag is narrow in x."""
 BAG_AT = (0.22, -0.12)
 """The bag's centre [m, bench frame]: where the hand-down arm reaches the handle apex."""
@@ -105,9 +106,9 @@ def item_specs(args, settings, scene):
         key, (gx, gy) = ITEMS[name]
         if name == "hub":
             asset = cable_scene.ASSETS[key]
-            vertices, tets, labels = cable_scene.load(asset)
+            vertices, tets, labels = hetero_scene.load(asset)
             geometry = tray.layout(vertices, tets, labels, asset.quat, (gx, gy))
-            spec = cable_scene.spec(
+            spec = hetero_scene.spec(
                 asset, vertices, tets, labels, name=name, pose=geometry["pose"], settings=settings, mu=args.mu
             )
             items[name] = {"asset": asset, "geometry": geometry, "rigid": 0}
@@ -115,7 +116,7 @@ def item_specs(args, settings, scene):
             base = tool_scene.TOOLS[key]
             yaw = arm_gripper.axis_angle_quat((0.0, 0.0, 1.0), np.pi / 2)
             asset = dataclasses.replace(base, quat=tuple(float(c) for c in arm_gripper.quat_multiply(yaw, base.quat)))
-            vertices, tets, labels = cable_scene.load(asset)
+            vertices, tets, labels = hetero_scene.load(asset)
             pre = name in PRE and not args.pick_all
             # Items packed in advance shrink only as far as they must to lie diagonally in the bag (0.48 m at full size):
             # a small sponge is a few grams and its foam inverts.
@@ -136,7 +137,7 @@ def item_specs(args, settings, scene):
                 x = args.bag_at[0] + (PRE[name][0] - BAG_AT[0]) * k - turned[:, 0].mean()
                 y = args.bag_at[1] - 0.17 * k - turned[:, 1].min()
                 pose = (x, y, 0.006 * k + 0.005 - turned[:, 2].min())
-            spec = cable_scene.spec(
+            spec = hetero_scene.spec(
                 asset, vertices, tets, labels, name=name, pose=pose, settings=settings, mu=args.mu,
                 overrides=asset.overrides(), scale=scale,
             )  # fmt: skip
@@ -163,12 +164,12 @@ def build(args):
     bag = dataclasses.replace(
         BAG, cable_young=args.bag_young or BAG.cable_young, cable_damping=args.bag_damping or BAG.cable_damping
     )
-    vertices, tets, labels = cable_scene.load(bag)
+    vertices, tets, labels = hetero_scene.load(bag)
     vertices = vertices * args.bag_scale
     overrides = ((1, "density_kg_m3", args.frame_density),) if args.frame_density else ()
-    pose = (args.bag_at[0], args.bag_at[1], cable_scene.PLACE_GAP)
+    pose = (args.bag_at[0], args.bag_at[1], hetero_scene.PLACE_GAP)
     bag_obj = scene.add(
-        cable_scene.spec(
+        hetero_scene.spec(
             bag,
             vertices,
             tets,
@@ -185,7 +186,7 @@ def build(args):
     )
     items = item_specs(args, settings, scene)
     arm_gripper.add_arm(scene, base_offset=arm_gripper.MOUNT, force_limit=args.force_limit)
-    surface = np.asarray(cable_scene.sim_surface(), dtype=np.float64)
+    surface = np.asarray(hetero_scene.sim_surface(), dtype=np.float64)
     camera = scene.add(
         rss.CameraSpec(
             name="overview",
@@ -199,14 +200,14 @@ def build(args):
     sim = build_sim(scene, rigid_loop=False)
     solver = arm_gripper.vbd_solver(sim.pipeline.program.solver)
     geometry = {"arm": arm_gripper.check_arm(sim, limit=args.force_limit)}
-    geometry["friction"] = cable_scene.set_friction(sim, solver, settings, mu=args.mu, grip_mu=args.grip_mu)
+    geometry["friction"] = hetero_scene.set_friction(sim, solver, settings, mu=args.mu, grip_mu=args.grip_mu)
     return sim, bag_obj, vertices, labels, items, camera, geometry
 
 
 def run(out: Path, args) -> dict:
     out.mkdir(parents=True, exist_ok=True)
     sim, bag_obj, vertices, labels, items, camera, geometry = build(args)
-    surface = np.asarray(cable_scene.sim_surface(), dtype=np.float64)
+    surface = np.asarray(hetero_scene.sim_surface(), dtype=np.float64)
     bag = bag_obj.entity
     btets = bag.source_tets
     frame_nodes = np.unique(btets[labels == 1])
@@ -215,7 +216,7 @@ def run(out: Path, args) -> dict:
     rim_nodes = frame_nodes[vertices[frame_nodes, 2] < RIM_Z * k]
     apex_nodes = frame_nodes[(vertices[frame_nodes, 2] > APEX_Z * k) & (np.abs(vertices[frame_nodes, 1]) < 0.012 * k)]
     half = vertices[rim_nodes, :2].max(axis=0)[::-1]
-    cloth = cable_scene.soft_labels(BAG, labels)
+    cloth = hetero_scene.soft_labels(BAG, labels)
     picked = [n for n, i in items.items() if not i.get("pre")]
     arm = arm_gripper.ArmControl(sim)
     dt = 1.0 / CONTROL_HZ
@@ -232,7 +233,7 @@ def run(out: Path, args) -> dict:
         if name == "hub":
             item["soft_nodes"] = np.unique(t[lab == 1])
         else:
-            item["soft_nodes"] = np.unique(t[np.isin(lab, cable_scene.soft_labels(item["asset"], item["labels"]))])
+            item["soft_nodes"] = np.unique(t[np.isin(lab, hetero_scene.soft_labels(item["asset"], item["labels"]))])
         item["trajectory"] = Trajectory(sim, entity)
 
     def measure(q: np.ndarray, settled: bool = False) -> dict:
@@ -455,7 +456,7 @@ def run(out: Path, args) -> dict:
         return blown["hit"]
 
     soft = cloth
-    rows, elapsed, video_error = cable_scene.episode(
+    rows, elapsed, video_error = hetero_scene.episode(
         sim, bag, camera, out, soft=soft, steps=steps, render_every=args.render_every, control_hz=CONTROL_HZ,
         follow=follow, task_row=task_row, stop=stop,
     )  # fmt: skip
@@ -516,7 +517,7 @@ def run(out: Path, args) -> dict:
         "geometry": geometry,
         "config": json.loads(
             json.dumps(
-                cable_scene.config(args, BAG, dataclasses.replace(REFERENCE, substeps=args.substeps)), default=str
+                hetero_scene.config(args, BAG, dataclasses.replace(REFERENCE, substeps=args.substeps)), default=str
             )
         ),
         "score": float(score),

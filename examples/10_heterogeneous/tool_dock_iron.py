@@ -25,6 +25,7 @@ from pathlib import Path
 import arm_gripper
 import cable_plug_place as plug_route
 import cable_scene
+import hetero_scene
 import numpy as np
 import tool_scene
 from clawhauser_scene import REFERENCE, arrangement, build_sim
@@ -73,7 +74,7 @@ def layout(vertices, tets, labels, male: dict, female: dict, plug_radius: float,
         (
             PLUG_AT[0] - shoulder[0] - laid[0],
             PLUG_AT[1] - shoulder[1] - laid[1],
-            -vertices[:, 2].min() + cable_scene.PLACE_GAP,
+            -vertices[:, 2].min() + hetero_scene.PLACE_GAP,
         )
     )
     settled_z = plug_radius + shoulder[2] - housing[:, 2].min()
@@ -125,8 +126,8 @@ def build_scene(
     self_contact,
     with_socket: bool = True,
 ):
-    vertices, tets, labels = cable_scene.load(asset)
-    mesh, connectors = cable_scene.fixture(SOCKETS[socket])
+    vertices, tets, labels = hetero_scene.load(asset)
+    mesh, connectors = hetero_scene.fixture(SOCKETS[socket])
     iron = json.loads((asset.path / "connectors.json").read_text())
     geometry = layout(vertices, tets, labels, iron["male_ends"][0], connectors["female_ports"][0], plug_radius, bends)
     geometry["socket"] = SOCKETS[socket]
@@ -140,7 +141,7 @@ def build_scene(
         self_contact=self_contact,
         feedback_smoothing=0.15,
         feedback_clamp=1.5,
-        rest_exclusion=cable_scene.REST_EXCLUSION,
+        rest_exclusion=hetero_scene.REST_EXCLUSION,
     )
     scene = rss.Scene(cell=arm_gripper.CELL, physics=physics, name="tool_dock_iron")
     # The block on a slab of its footprint (a static triangle mesh keeps the concave cavity).
@@ -168,7 +169,7 @@ def build_scene(
         tool_scene.spec(asset, vertices, tets, labels, name="iron", pose=geometry["pose"], settings=settings, mu=mu)
     )
     arm_gripper.add_arm(scene, base_offset=arm_gripper.MOUNT, force_limit=force_limit)
-    surface = np.asarray(cable_scene.sim_surface(), dtype=np.float64)
+    surface = np.asarray(hetero_scene.sim_surface(), dtype=np.float64)
     mouth = np.asarray(geometry["socket_mouth_m"])
     camera = scene.add(
         rss.CameraSpec(
@@ -183,9 +184,9 @@ def build_scene(
     sim = build_sim(scene, rigid_loop=False)
     solver_ = arm_gripper.vbd_solver(sim.pipeline.program.solver)
     geometry["arm"] = arm_gripper.check_arm(sim, limit=force_limit)
-    geometry["friction"] = cable_scene.set_friction(sim, solver_, settings, mu=mu, grip_mu=grip_mu)
+    geometry["friction"] = hetero_scene.set_friction(sim, solver_, settings, mu=mu, grip_mu=grip_mu)
     geometry["socket_mesh_shapes"] = plug_route.socket_shapes(sim) if with_socket else []
-    geometry["plug_thin_particles"] = cable_scene.set_part_radius(sim, obj.entity, PLUG, plug_radius)
+    geometry["plug_thin_particles"] = hetero_scene.set_part_radius(sim, obj.entity, PLUG, plug_radius)
     print(json.dumps({"geometry": geometry}), flush=True)
     return sim, obj, camera, geometry, labels
 
@@ -195,8 +196,8 @@ def run(out: Path, asset, *, steps: int, render_every: int, config: dict, idle_a
     sim, obj, camera, geometry, labels = build_scene(asset, **physics)
     entity = obj.entity
     tets = entity.source_tets
-    soft = cable_scene.soft_labels(asset, labels)
-    surface = np.asarray(cable_scene.sim_surface(), dtype=np.float64)
+    soft = hetero_scene.soft_labels(asset, labels)
+    surface = np.asarray(hetero_scene.sim_surface(), dtype=np.float64)
     plug = np.unique(tets[np.isin(labels, PLUG)])
     iron = np.unique(tets[np.isin(labels, IRON)])
     lay = geometry["lay"]
@@ -285,7 +286,7 @@ def run(out: Path, asset, *, steps: int, render_every: int, config: dict, idle_a
             "iron_displacement_m": float(np.linalg.norm(centre[:2] - iron_rest[:2])),
         }
 
-    rows, elapsed, video_error = cable_scene.episode(
+    rows, elapsed, video_error = hetero_scene.episode(
         sim,
         entity,
         camera,
@@ -363,7 +364,7 @@ def main() -> None:
     )
     tool_scene.add_arguments(parser)
     args = parser.parse_args()
-    asset = cable_scene.with_levers(tool_scene.TOOLS["corded_soldering_iron"], args)
+    asset = hetero_scene.with_levers(tool_scene.TOOLS["corded_soldering_iron"], args)
     asset = dataclasses.replace(asset, plug_end_mass=args.end_mass)
     run(
         args.out,

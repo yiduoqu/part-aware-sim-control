@@ -17,7 +17,7 @@ from itertools import pairwise
 from pathlib import Path
 
 import arm_gripper
-import cable_scene
+import hetero_scene
 import numpy as np
 import tool_scene
 from loop_geometry import smooth
@@ -99,8 +99,8 @@ def route(centre0, grasp, offset, press):
 
 def run(out: Path, asset, args) -> dict:
     out.mkdir(parents=True, exist_ok=True)
-    surface = np.asarray(cable_scene.sim_surface(), dtype=np.float64)
-    vertices, _, labels = cable_scene.load(asset)
+    surface = np.asarray(hetero_scene.sim_surface(), dtype=np.float64)
+    vertices, _, labels = hetero_scene.load(asset)
     pose = tool_scene.rest_pose(vertices, asset.quat, at=START)
     pose = (pose[0], pose[1], pose[2] + BOARD_TOP)
     centres = CENTRE + marks()
@@ -134,7 +134,7 @@ def run(out: Path, asset, args) -> dict:
     )
     entity = obj.entity
     src_tets = entity.source_tets
-    soft = cable_scene.soft_labels(asset, labels)
+    soft = hetero_scene.soft_labels(asset, labels)
     soft_nodes = np.unique(src_tets[np.isin(labels, soft)])
     arm = arm_gripper.ArmControl(sim)
     capacity = max(args.steps, round(DURATION * tool_scene.CONTROL_HZ))
@@ -182,7 +182,7 @@ def run(out: Path, asset, args) -> dict:
             stain.update(pressed, (frame + 1) / tool_scene.CONTROL_HZ)
         return {"erased_fraction": stain.fraction_erased()}
 
-    rows, elapsed, video_error = cable_scene.episode(
+    rows, elapsed, video_error = hetero_scene.episode(
         sim,
         entity,
         camera,
@@ -228,7 +228,7 @@ def main() -> None:
     parser.add_argument("--reach-mm", type=float, default=2.0, help="how far from a pressed node a mark is rubbed [mm], about half the felt nodes' spacing")
     tool_scene.add_arguments(parser)
     args = parser.parse_args()
-    run(args.out, cable_scene.with_levers(tool_scene.TOOLS["whiteboard_eraser"], args), args)
+    run(args.out, hetero_scene.with_levers(tool_scene.TOOLS["whiteboard_eraser"], args), args)
 
 
 if __name__ == "__main__":
