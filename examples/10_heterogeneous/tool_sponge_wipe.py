@@ -1,17 +1,18 @@
 # SPDX-License-Identifier: Apache-2.0
-"""Sponge-wand wipe: the AIRBOT drags the sponge's narrow tip along the grooves of a ridged plate into the sink gap.
+"""Sponge-wand wipe: the AIRBOT drags the sponge, rolled onto its edge, along the grooves of a ridged plate.
 
-The wand lies on the bench beside a plate of ridges (13 mm wide, 10 mm tall) and 24 mm grooves that run along x
-to a 25 mm gap over a steel sink. The hand pinches the handle (as :mod:`tool_asset_check` does), lifts and levels
-it, tilts the tip down ``--tilt-deg`` and, for each groove in turn, lowers the tip ``--press-mm`` past the ridge
-tops and drags it along the groove over the crumbs and the gap. Score: the fraction of crumbs out of the grooves
-(on a ridge, in the sink or off the plate). ``result.json`` also reports crumb displacement, handle slip in the
-pads and how low the sponge reached against the ridge tops.
+The wand lies on the bench beside a plate of ridges (13 mm wide, 10 mm tall) and 24 mm grooves that run along x,
+open at both ends. The hand pinches the handle (as :mod:`tool_asset_check` does), lifts and levels it, rolls it
+``--roll-deg`` about its long axis so the pad's edge angles down into a groove, tilts the tip down ``--tilt-deg``
+and, for each groove in turn, aligns the edge with it, lowers it ``--press-mm`` past the ridge tops and drags it in
+a straight line along the groove and out past the plate's end. Score: the fraction of crumbs out of the grooves
+(out of an end, on a ridge or off the plate) before the last raise. ``result.json`` also reports crumb displacement, handle slip in the pads and how low the
+sponge reached against the groove floor.
 
 :func:`run` is shared with :mod:`tool_gap_channel`: a :class:`Sweep` says where the tool goes and how the
 crumbs are scored.
 
-Why heterogeneous: the soft sponge conforms to the ridges and presses into the grooves, keeping contact along the whole edge,,
+Why heterogeneous: the soft sponge conforms to the ridges and presses into the grooves, keeping contact along the whole edge,
 while the rigid handle transmits the push and the rigid backing spreads the load.
 
 Run on a CUDA node with RoboSimStudio on PYTHONPATH.
@@ -36,19 +37,19 @@ import robosimstudio as rss
 
 CONTROL_HZ = tool_scene.CONTROL_HZ
 Y = -0.20
-"""The counter's centreline [m, bench frame]: the grip lands at x = 0, clear of the arm's riser."""
+"""The plate's centreline [m, bench frame]: the grip lands at x = 0, clear of the arm's riser."""
 THICK = 0.03
 X0, X1 = 0.12, 0.40
-"""The counter's extent along x."""
+"""The scene's extent along x."""
 HOVER_Z = 0.07
-"""The sponge travels this far over the counter's top [m]."""
+"""The sponge travels this far over the ridge tops [m]."""
 WINDOWS = {
     "lift": (2.0, 3.2),
     "tilt": (3.2, 3.9),
     "travel": (3.4, 4.4),
     "descend": (4.6, 5.4),
     "press": (5.4, 5.9),
-    "recenter": (5.3, 5.5),
+    "recenter": (5.2, 5.4),
     "sweep": (6.0, 12.5),
     "raise": (12.8, 13.6),
 }
@@ -124,53 +125,37 @@ def floor_z(x, tilt: float = 0.0):
     return THICK + drop * np.cos(tilt) - np.tan(tilt) * (np.asarray(x) - PLATE_X1 - drop * np.sin(tilt))
 
 
-def in_groove(p: np.ndarray, *, x_max: float, half_y: float, tilt: float = 0.0) -> np.ndarray:
-    """Crumbs (bench frame, (n, 3)) still down in a groove of the plate."""
+def in_groove(
+    p: np.ndarray, *, x_max: float, half_y: float, tilt: float = 0.0, y: float = Y, x_min: float = X0
+) -> np.ndarray:
+    """Crumbs (bench frame, (n, 3)) still down in a groove of the plate centred on ``y``."""
     down = p[:, 2] < top_z(p[:, 0], tilt) - 0.002
-    return (p[:, 0] > X0) & (p[:, 0] < x_max) & (np.abs(p[:, 1] - Y) < half_y) & down
+    return (p[:, 0] > x_min) & (p[:, 0] < x_max) & (np.abs(p[:, 1] - y) < half_y) & down
 
 
-def counter_specs(*, gap: float, gap_x: float, tilt: float = 0.0) -> list:
-    """A ridged plate (grooves along x) up to a ``gap`` wide slot at ``gap_x`` over a steel sink, then a stone counter."""
-    far = gap_x + 0.5 * gap
-    steel = {"color": (0.78, 0.79, 0.82), "finish": tool_scene.SINK_STEEL}
-    half = 0.5 * SPAN
-    specs = plate(across="y", at=(0.5 * (X0 + PLATE_X1), Y), length=PLATE_X1 - X0, n=GROOVES, tilt=tilt)
+def plate_specs(*, y: float, tilt: float = 0.0, x0: float = X0) -> list:
+    """The ridged plate on the bench, grooves along x and open at both ends; legs hold up a tilted plate's raised end."""
+    specs = plate(across="y", at=(0.5 * (x0 + PLATE_X1), y), length=PLATE_X1 - x0, n=GROOVES, tilt=tilt)
     for k, x in enumerate((0.15, 0.24) if tilt else ()):
-        # Legs under the tilted plate's raised end.
         under = THICK - THICK * np.cos(tilt) - np.tan(tilt) * (x - PLATE_X1 + THICK * np.sin(tilt))
         specs.append(
             rss.slab(
                 name=f"leg{k}",
-                half=(0.01, half - 0.01, 0.5 * (under + 0.004)),
-                at=(x, Y, 0.5 * (under + 0.004)),
+                half=(0.01, 0.5 * SPAN - 0.01, 0.5 * (under + 0.004)),
+                at=(x, y, 0.5 * (under + 0.004)),
                 color=tool_scene.RIDGE_COLOR,
             )
-        )
-    specs.append(
-        rss.slab(
-            name="counter_far",
-            half=(0.5 * (X1 - far), half, 0.5 * THICK),
-            at=(0.5 * (far + X1), Y, 0.5 * THICK),
-            color=tool_scene.COUNTER_COLOR,
-        )
-    )
-    specs.append(rss.slab(name="sink_floor", half=(0.5 * gap, half, 0.003), at=(gap_x, Y, 0.003), **steel))
-    for side, x in (("near", PLATE_X1 - 0.004), ("far", far + 0.004)):
-        specs.append(
-            rss.slab(name=f"rim_{side}", half=(0.004, half, 0.0006), at=(x, Y, THICK + 0.0006), collide=False, **steel)
         )
     return specs
 
 
 def wipe(args) -> Sweep:
-    gap = 0.025
-    gap_x = PLATE_X1 + 0.5 * gap
-    ys = tuple(Y + (k - 0.5 * (GROOVES - 1)) * (RIDGE_W + GROOVE_W) for k in range(GROOVES))
+    y = args.plate_y
+    ys = tuple(y + (k - 0.5 * (GROOVES - 1)) * (RIDGE_W + GROOVE_W) for k in range(GROOVES))
     tilt = np.radians(args.plate_tilt_deg)
 
     def extras(scene, names):
-        # Crumbs start in every groove, clear of the gap.
+        # Crumbs start in every groove, clear of its ends.
         for k, yg in enumerate(ys):
             names.extend(
                 tool_scene.crumbs(
@@ -185,22 +170,24 @@ def wipe(args) -> Sweep:
                     spheres=not tilt,
                 )
             )
-        return counter_specs(gap=gap, gap_x=gap_x, tilt=tilt)
+        return plate_specs(y=y, tilt=tilt, x0=args.plate_start)
 
-    # Crumbs count as cleared once they are out of the grooves: on a ridge, in the sink or off the plate.
+    # Crumbs count as cleared once they are out of the grooves: past an end, on a ridge or off the plate.
     sweep = Sweep(
         "wipe",
         extras,
         start_front=X0 + 0.035,
-        end_front=gap_x + 0.005,
+        end_front=PLATE_X1 + 0.025,
         contact_z=THICK,
         hover_z=float(top_z(X0 + 0.035, tilt)) + (0.04 if tilt else HOVER_Z),
-        clear=lambda p: ~in_groove(p, x_max=PLATE_X1, half_y=0.5 * SPAN, tilt=tilt),
-        camera=((0.52, Y - 0.06, 0.12), (0.22, Y, 0.04)),
+        clear=lambda p: ~in_groove(p, x_max=PLATE_X1, half_y=0.5 * SPAN, tilt=tilt, y=y, x_min=args.plate_start),
+        camera=((0.52, y - 0.06, 0.12), (0.22, y, 0.04)),
         ys=ys,
-        y=Y,
+        y=y,
         surface=lambda x: np.maximum(THICK, top_z(x, tilt)),
         recenter=True,
+        # The lying tool stays clear of the plate's near end.
+        lay_front=min(0.065, args.plate_start - 0.015),
         scored=tuple(f"crumb{k}_" for k in range(args.grooves)),
     )
     sweep.ys = ys[: args.grooves]
@@ -248,7 +235,7 @@ def run(out: Path, asset, args, sweep: Sweep) -> dict:
     ys = sweep.ys or (sweep.y,)
     capacity = max(args.steps, round((DURATION + PASS * (len(ys) - 1)) * CONTROL_HZ))
     bodies = [int(sim.handles.objects[n].body) for n in names if not sweep.scored or n.startswith(sweep.scored)]
-    tilt = np.radians(args.tilt_deg)
+    tilt, roll = np.radians(args.tilt_deg), np.radians(args.roll_deg)
 
     surf = sweep.surface or (lambda x: sweep.contact_z)
     corr, tip_err = [0.0] * len(ys), [None] * len(ys)
@@ -259,7 +246,8 @@ def run(out: Path, asset, args, sweep: Sweep) -> dict:
         point[2] = max(point[2], surface[2] + check.PAD_HALF + 0.005)
         across = np.asarray(grasp["across"])
         world = soft_now + surface
-        rise = check.level_about(world, point, across)
+        # The levelled sponge's long axis: the hand rolls the tool about it to stand the pad on its edge.
+        along = np.cross(across, (0.0, 0.0, 1.0))
 
         def rotated(angle: float) -> np.ndarray:
             return Rotation.from_rotvec(across * angle).apply(world - point)
@@ -268,16 +256,28 @@ def run(out: Path, asset, args, sweep: Sweep) -> dict:
         sign = 1.0
         if np.polyfit(*rotated(level + 0.1)[:, [0, 2]].T, 1)[0] > np.polyfit(*rotated(level - 0.1)[:, [0, 2]].T, 1)[0]:
             sign = -1.0
-        final = rotated(level + sign * tilt)
-        front, y_off = float(final[:, 0].max()), float(final[:, 1].mean())
-        xs, xe = surface[0] + sweep.start_front - front, surface[0] + sweep.end_front - front
-        y0 = surface[1] + ys[0] - y_off
 
         def s(key: str, t: float, i: int = 0) -> float:
             late = PASS * i if key in ("travel", "descend", "press", "recenter", "sweep", "raise") else 0.0
             return smooth(t, WINDOWS[key][0] + late, WINDOWS[key][1] + late)
 
-        angle_at = lambda t: level * s("lift", t) + sign * tilt * s("tilt", t)  # noqa: E731
+        def turn(t: float) -> Rotation:
+            lift, tip = level * s("lift", t), s("tilt", t)
+            return (
+                Rotation.from_rotvec(across * sign * tilt * tip)
+                * Rotation.from_rotvec(along * roll * tip)
+                * Rotation.from_rotvec(across * lift)
+            )
+
+        def rise(t: float) -> float:
+            """How far the pivot rises for the sponge's lowest point to stay at its resting height [m]."""
+            return float(world[:, 2].min() - (turn(t).apply(world - point)[:, 2] + point[2]).min())
+
+        final = turn(DURATION).apply(world - point)
+        front, y_off = float(final[:, 0].max()), float(final[:, 1].mean())
+        xs, xe = surface[0] + sweep.start_front - front, surface[0] + sweep.end_front - front
+        y0 = surface[1] + ys[0] - y_off
+
         high = sweep.hover_z
         open_half = min(0.04, grasp["half_width_m"] + 0.014)
         half_close = grasp["half_width_m"] - check.SQUEEZE
@@ -298,14 +298,14 @@ def run(out: Path, asset, args, sweep: Sweep) -> dict:
                 z = z * (1.0 - s("press", t, i)) + (top - args.press_mm * 1e-3) * s("press", t, i)
                 z = z * (1.0 - s("raise", t, i)) + high * s("raise", t, i)
             hover = check.HOVER * (1.0 - smooth(t, *check.PHASES["descend"]))
-            return np.array((x, y, point[2] + hover + z + rise(angle_at(t))))
+            return np.array((x, y, point[2] + hover + z + rise(t)))
 
         def half_gap_at(t: float) -> float:
             return open_half + (half_close - open_half) * smooth(t, *check.PHASES["close"])
 
-        t0, quat_at = start / CONTROL_HZ, tool_scene.tilt_quat(grasp, angle_at)
+        t0, base = start / CONTROL_HZ, Rotation.from_quat(grasp["quat"])
         route = arm.plan(
-            quat=lambda t: quat_at(t + t0),
+            quat=lambda t: (turn(t + t0) * base).as_quat(),
             capacity=capacity - start,
             dt=1.0 / CONTROL_HZ,
             tcp_at=lambda t: tcp_at(t + t0),
@@ -317,6 +317,7 @@ def run(out: Path, asset, args, sweep: Sweep) -> dict:
                     {
                         "plan_error_m": route.worst_position_error_m,
                         "tilt_deg": float(np.degrees(tilt)),
+                        "roll_deg": args.roll_deg,
                         "press_mm": args.press_mm,
                     }
                 ),
@@ -414,7 +415,10 @@ def run(out: Path, asset, args, sweep: Sweep) -> dict:
     final = crumbs_now(sim.pipeline.state_0.body_q.numpy())
     moved = np.linalg.norm(final[:, :2] - start["crumbs"][:, :2], axis=1)
     cleared = sweep.clear(final)
-    score = float(cleared.mean()) if len(final) else 0.0
+    # Only crumbs out of the groove before the last raise count: a tool dropped afterwards scores nothing.
+    raise_at = (WINDOWS["raise"][0] + PASS * (len(ys) - 1)) * CONTROL_HZ
+    before = [r["cleared"] for r in rows if r["frame"] <= raise_at]
+    score = before[-1] / len(final) if before and len(final) else 0.0
     sweeping = [
         r
         for i in range(len(ys))
@@ -467,8 +471,9 @@ def run(out: Path, asset, args, sweep: Sweep) -> dict:
         "slip_max_deg": max((r["slip_deg"] for r in slips), default=None),
         "grasp": grasp,
         "crumbs": len(final),
-        "cleared": int(cleared.sum()),
+        "cleared": before[-1] if before else 0,
         "cleared_fraction": score,
+        "cleared_final": int(cleared.sum()),
         "crumbs_moved_10mm_fraction": float((moved > 0.01).mean()),
         "crumb_displacement_mean_mm": float(1e3 * moved.mean()),
         "crumb_dx_mean_mm": float(1e3 * (final[:, 0] - start["crumbs"][:, 0]).mean()),
@@ -509,6 +514,7 @@ def add_arguments(parser) -> None:
         "--press-mm", type=float, default=5.0, help="how far the tool is lowered past the ridge tops [mm]"
     )
     parser.add_argument("--tilt-deg", type=float, default=24.0, help="leading edge down, from a flat sponge [deg]")
+    parser.add_argument("--roll-deg", type=float, default=0.0, help="the hand rolls the tool about its long axis [deg]")
     parser.add_argument("--crumbs", type=int, default=12)
     parser.add_argument(
         "--settle", type=float, default=0.0, help="the tool rests this long before the grasp is planned [s]"
@@ -518,7 +524,9 @@ def add_arguments(parser) -> None:
         "--grip-frac", type=float, default=0.15, help="where the pads close along the handle, from its far end"
     )
     parser.add_argument("--scan-tilts", type=float, nargs="*", default=(10, 15, 20, 25, 30, 35))
-    parser.add_argument("--plate-tilt-deg", type=float, default=0.0, help="the plate slopes down toward the gap [deg]")
+    parser.add_argument("--plate-tilt-deg", type=float, default=0.0, help="the plate slopes down toward +x [deg]")
+    parser.add_argument("--plate-start", type=float, default=X0, help="where the plate's grooves begin [m, x]")
+    parser.add_argument("--plate-y", type=float, default=Y, help="the plate's centreline [m, bench frame]")
     parser.add_argument("--plate-mu", type=float, default=0.3, help="sponge-vs-plate mixed friction (None: object mu)")
     parser.add_argument("--plan-only", action="store_true", help="print the arm path error and stop")
     parser.add_argument("--seed", type=int, default=0)
@@ -533,7 +541,16 @@ def main() -> None:
         "--grooves", type=int, default=GROOVES, help="wipe only the first N grooves, score their crumbs"
     )
     add_arguments(parser)
-    parser.set_defaults(force_limit=120.0, grip_mu=2.5)
+    parser.set_defaults(
+        force_limit=120.0,
+        grip_mu=2.5,
+        roll_deg=30.0,
+        tilt_deg=10.0,
+        press_mm=9.0,
+        plate_y=0.04,
+        plate_start=0.06,
+        grip_frac=0.5,
+    )
     args = parser.parse_args()
     asset = soft_sponge(tool_scene.TOOLS[args.asset], args)
     run(args.out, asset, args, wipe(args))
