@@ -39,7 +39,7 @@ generated copy has a suffix: `usb_hub_gen` sits next to the original `usb_hub`, 
 `hinged_soap_case` and `soap_bar` are the exceptions to that origin: [`generate_hinged_soap_case.py`](generate_hinged_soap_case.py)
 and [`generate_soap_bar.py`](generate_soap_bar.py) here build them with numpy alone, from a grid of hexahedra cut
 into tetrahedra. They are a first guess at the soap-opening setup, made without the reference photos;
-[`soap_case_open.py`](../soap_case_open.py) is the scene that runs them.
+[`soap_case_arm_pick.py`](../soap_case_arm_pick.py) is the scene that runs them.
 
 <!-- generated-assets:start -->
 | Object | Kind | Tetrahedra | Extent (mm) | Scenes |

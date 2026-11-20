@@ -1669,7 +1669,7 @@
         ]
       ],
       "used_by": [
-        "soap_case_open.py"
+        "soap_case_arm_pick.py"
       ],
       "behavior_validated_at_source": false,
       "limitations": "Source estimates; no latch or lip, no simulation run. Needs lid-to-tray contact and a per-scene hinge stiffness.",
@@ -2412,7 +2412,7 @@
         ]
       ],
       "used_by": [
-        "soap_case_open.py"
+        "soap_case_arm_pick.py"
       ],
       "behavior_validated_at_source": false,
       "limitations": "Source estimates; run as one rigid body.",

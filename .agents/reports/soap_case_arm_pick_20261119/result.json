@@ -1,0 +1,311 @@
+{
+  "complete": true,
+  "finite": true,
+  "rest_lid_angle_deg": -0.3096983204821413,
+  "rest_front_rim_gap_m": 0.0003944457262411438,
+  "peak_lid_angle_deg": 179.9995959848918,
+  "lid_angle_before_pick_deg": 179.99940421417318,
+  "final_lid_angle_deg": 179.99852692867904,
+  "max_tray_tilt_deg": 0.011446680621982907,
+  "max_tray_slide_m": 6.86100985599836e-06,
+  "max_tray_lift_m": -0.0005000829696655273,
+  "max_soap_rise_m": 0.04408508539199829,
+  "final_soap_at_m": [
+    0.01994224786758425,
+    -0.060345783829689026
+  ],
+  "final_soap_miss_m": 0.00035057348113195477,
+  "final_soap_bottom_m": -6.918907165527448e-07,
+  "final_soap_tilt_deg": 0.00016564308924518458,
+  "max_grip_slip_m": 2.0622670355741057e-05,
+  "peak_squeeze_n": 19.270434744933706,
+  "final_aperture_m": 0.06400122493505478,
+  "peak_web_stretch": 1.826720063330748,
+  "max_inverted_web_tets": 0,
+  "final_inverted_web_tets": 0,
+  "max_rigid_node_stretch_m": 0.0002116197840013819,
+  "checks": {
+    "ran": true,
+    "shut_at_rest": true,
+    "lid_open_for_the_pick": true,
+    "tray_stays_put": true,
+    "soap_lifted_out": true,
+    "soap_set_down": true,
+    "hand_open": true,
+    "web_intact": true
+  },
+  "success": true,
+  "stopped": null,
+  "mesh_quality": {
+    "minimum_J_by_part": [
+      0.9756620526313782,
+      0.9583852887153625,
+      0.5135630369186401,
+      0.9366937279701233
+    ],
+    "inverted_tet_substeps_by_part": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "nonfinite_tet_substeps_by_part": [
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "actions": [
+    {
+      "phase": "reach",
+      "to_m": [
+        -0.047185034382109414,
+        -0.06010933070032429,
+        0.029310224519663475
+      ],
+      "seconds": 1.2,
+      "opening_m": 0.0
+    },
+    {
+      "phase": "flip",
+      "push_angle_deg": 95.0,
+      "seconds": 3.0
+    },
+    {
+      "phase": "clear",
+      "to_m": [
+        -0.10058579444885252,
+        -0.060846105217933655,
+        0.10000044725345392
+      ],
+      "seconds": 2.4,
+      "opening_m": 0.064
+    },
+    {
+      "phase": "descend",
+      "to_m": [
+        -0.10058579444885252,
+        -0.060846105217933655,
+        0.040000447253453975
+      ],
+      "seconds": 1.4,
+      "opening_m": 0.064
+    },
+    {
+      "phase": "close",
+      "to_m": [
+        -0.10058579444885252,
+        -0.060846105217933655,
+        0.040000447253453975
+      ],
+      "seconds": 1.0,
+      "opening_m": 0.0546
+    },
+    {
+      "phase": "lift",
+      "to_m": [
+        -0.10058579444885252,
+        -0.060846105217933655,
+        0.08500044725345401
+      ],
+      "seconds": 1.4,
+      "opening_m": 0.0546
+    },
+    {
+      "phase": "carry",
+      "to_m": [
+        0.020018745660781878,
+        -0.05967525154352188,
+        0.08500044725345401
+      ],
+      "seconds": 2.2,
+      "opening_m": 0.0546
+    },
+    {
+      "phase": "lower",
+      "to_m": [
+        0.020018745660781878,
+        -0.05967525154352188,
+        0.037996177653539354
+      ],
+      "seconds": 1.6,
+      "opening_m": 0.0546
+    },
+    {
+      "phase": "open",
+      "to_m": [
+        0.020018745660781878,
+        -0.05967525154352188,
+        0.037996177653539354
+      ],
+      "seconds": 0.8,
+      "opening_m": 0.064
+    },
+    {
+      "phase": "retreat",
+      "to_m": [
+        0.020018745660781878,
+        -0.05967525154352188,
+        0.0979961776535394
+      ],
+      "seconds": 1.0,
+      "opening_m": 0.064
+    }
+  ],
+  "phases": [
+    {
+      "phase": "settle",
+      "seconds": 0.6,
+      "ends_at_s": 0.6
+    },
+    {
+      "phase": "reach",
+      "seconds": 1.2,
+      "ends_at_s": 1.8
+    },
+    {
+      "phase": "flip",
+      "seconds": 3.0,
+      "ends_at_s": 4.8
+    },
+    {
+      "phase": "clear",
+      "seconds": 2.4,
+      "ends_at_s": 7.2
+    },
+    {
+      "phase": "descend",
+      "seconds": 1.4,
+      "ends_at_s": 8.6
+    },
+    {
+      "phase": "close",
+      "seconds": 1.0,
+      "ends_at_s": 9.6
+    },
+    {
+      "phase": "lift",
+      "seconds": 1.4,
+      "ends_at_s": 11.0
+    },
+    {
+      "phase": "carry",
+      "seconds": 2.2,
+      "ends_at_s": 13.2
+    },
+    {
+      "phase": "lower",
+      "seconds": 1.6,
+      "ends_at_s": 14.8
+    },
+    {
+      "phase": "open",
+      "seconds": 0.8,
+      "ends_at_s": 15.6
+    },
+    {
+      "phase": "retreat",
+      "seconds": 1.0,
+      "ends_at_s": 16.6
+    },
+    {
+      "phase": "rest",
+      "seconds": 0.6,
+      "ends_at_s": 17.2
+    }
+  ],
+  "worst_ik_error_m": 7.349943687648092e-06,
+  "config": {
+    "push_angle_deg": 95.0,
+    "tilt_deg": 29.999999999999996,
+    "hinge_young_pa": 1500000.0,
+    "grip_mu": 2.83,
+    "force_limit_n": 20.0,
+    "grip_squeeze_m": 0.0002,
+    "case_at_m": [
+      -0.1,
+      -0.06
+    ],
+    "place_at_m": [
+      0.02,
+      -0.06
+    ],
+    "solver": "SolverVBD",
+    "iterations": 160,
+    "substeps": 20,
+    "control_hz": 60,
+    "newton_version": "1.8.0.dev0"
+  },
+  "geometry": {
+    "rim_gap_m": 0.0010000000000000009,
+    "web_free_length_m": 0.007000000000000001,
+    "web_thickness_m": 0.0010000000000000009,
+    "web_width_m": 0.048,
+    "tab_depth_m": 0.008,
+    "tab_thickness_m": 0.0019999999999999983,
+    "tab_to_hinge_m": 0.0695,
+    "friction": {
+      "soft_contact_ke": 10000.0,
+      "soft_contact_kd": 10.0,
+      "global_soft_contact_mu": 0.5,
+      "shape_mu": 0.5,
+      "pad_shape_mu": 16.0178,
+      "pad_toy_mu": 2.83
+    },
+    "rigid_bodies": {
+      "hinged_soap_case/part0": {
+        "body": 9,
+        "nodes": 4893,
+        "seam_nodes": 51,
+        "part_mass_kg": 0.019353367747344474
+      },
+      "hinged_soap_case/part1+3": {
+        "body": 10,
+        "nodes": 5673,
+        "seam_nodes": 51,
+        "part_mass_kg": 0.019154986733343433
+      },
+      "soap_bar/part0": {
+        "body": 11,
+        "nodes": 2835,
+        "seam_nodes": 0,
+        "part_mass_kg": 0.1276249400518043
+      }
+    },
+    "arm": {
+      "gripper": "airbot_play_loop",
+      "finger_effort_limit_n": [
+        20.0,
+        20.0
+      ],
+      "close_travel_m": 0.016,
+      "pad_faces_open_m": 0.08,
+      "pad_faces_closed_m": 0.0,
+      "contact_matching": "sticky",
+      "coupler": "SolverOneWay",
+      "press_budget_n": 60.0
+    },
+    "effective_young_pa_by_part": {
+      "base_tray": 1500000.0,
+      "lid": 1500000.0,
+      "living_hinge": 1500000.0,
+      "lid_tab": 1500000.0
+    },
+    "case_pose_m": [
+      -0.1,
+      -0.06,
+      0.001
+    ],
+    "soap_half_width_m": 0.0275,
+    "soap_weight_n": 1.2520006619082005,
+    "pushing_corner_in_tool_m": [
+      0.0,
+      -0.004000117672291026,
+      0.0200001564704817
+    ]
+  },
+  "video_error": null,
+  "simulated_s": 17.2,
+  "elapsed_s": 1021.9657674000009
+}

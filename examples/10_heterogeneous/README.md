@@ -359,3 +359,82 @@ the fewest iterations that still carry it.
 ```bash
 python examples/10_heterogeneous/usb_hub_box.py --out OUT --render-every 2
 ```
+
+## Hinged soap case
+
+`assets/hinged_soap_case/` is a tray and a lid joined along one long side by a 7 mm web, with a
+thumb tab on the other; `assets/soap_bar/` is the bar that lies in it. Both are procedural first
+guesses at the soap-opening setup, made without the reference photos
+(`assets/generate_hinged_soap_case.py`, `assets/generate_soap_bar.py`). One scene runs them:
+the tray, the lid with its tab, and the bar are three rigid bodies (`rigid_part_body.py`) and
+the web is FEM, the only thing joining tray and lid. There is no latch: the lid is shut because
+its rim rests on the tray's, and the bar is in because the tray is under it, both by the solver's
+soft-on-soft contact at a 0.4 mm radius (0.6 mm rest-shape exclusion, under the rims' 1 mm).
+
+```bash
+python examples/10_heterogeneous/soap_case_arm_pick.py --out OUT --render-every 2
+```
+
+It was run twice on the current bundles, 2026-11-19, RTX 5080, Newton 1.8.0.dev0, plain VBD at
+20 substeps x 160 sweeps: once rendered, which the table below reads from, and once not. Both
+passed every check the scene makes; they differ in how far the bar crept and how hard the pads
+squeezed it (limit 5).
+
+### The arm: flip the lid, take the bar out, set it down
+
+`soap_case_arm_pick.py`: the case lies with its hinge along the bench's y and its tab towards +x,
+where the arm's stamp scene picks its stamp up. The shut hand, leaned 30 degrees off vertical with
+its fingers towards the case, slides one finger down its own length until that finger's outer face
+is under the tab's front edge, then follows the tab round the hinge to 95 degrees. Up to the
+finger's 60 degree pitch the tab's edge rides on the face; past it the fingertip's corner is under
+the tab. Nothing holds the lid, and once its weight is past the hinge it falls open. The hand
+stands up, opens to 64 mm, comes down over the bar with its pads' lower ends 3 mm over the tray's
+rim, closes on the two long sides that stand 11 mm out of the tray, lifts the bar 45 mm, carries
+it to 120 mm along x from where the case stands, lowers it to the bench and lets go. The bar is
+held by pad friction alone (the Clawhauser scenes' 2.83), under the hand's 20 N a finger.
+17.2 s simulated in 1,022 s; the arm's worst path error was 0.007 mm.
+
+| What | Measured |
+|---|---|
+| Shut at rest | lid -0.3 degrees to the tray, front rims 0.39 mm apart |
+| Finger on the tab | 3.4 N on a pad at most through the push, after one frame at 8.0 N as it slid in under the tab; the tray moved 0.003 mm |
+| Lid | past 90 degrees 2.33 s into the push, 170 degrees 0.4 s later, then lying at 180.0 degrees |
+| Tray, whole run | tilted 0.011 degrees and slid 0.007 mm at most |
+| Bar when taken | 1.5 mm along the hinge from where it was put; the hand goes to where it is |
+| In the pads | 18.8 to 19.3 N of squeeze, 0.02 mm of slip, 0.10 degrees of tilt; lifted 44.1 mm |
+| Set down | 0.35 mm from the target, flat on the bench, the hand open and clear |
+| Web | no element inverted in any substep; largest stretch 1.83, smallest volume ratio 0.51 |
+
+### Observed limits
+
+1. **The web's stiffness is the scene's, not the bundle's.** It runs at 1.5 MPa
+   (`--hinge-young`), which as a beam turns the lid back with 0.86 mN m per radian against the
+   lid's 6.7 mN m of weight about the hinge, so the weight wins from about 82 degrees. The
+   bundle's estimate is 40 MPa, 23 mN m per radian: by the same sum that closes the lid again
+   from any angle. Nothing was run at 40 MPa.
+2. **The web is stretched, not only bent.** Its largest principal stretch is 1.7 as the lid passes
+   90 degrees, 1.8 at most, and 1.5 with the lid lying open. A real web folds; this one, 1 mm thick on two
+   elements, creases at its ends. Read where the lid comes to rest as what this mesh does, not
+   as what a living hinge does.
+3. **The case's proportions decide whether opening it moves it.** The scene was first run on
+   a 13 mm tray under a 19 mm lid. That lid is taller than the hinge is high, so it cannot lie
+   open without lifting its hinge: as it landed it pulled the tray 9.6 mm towards itself and
+   left it tilted 1.2 to 1.7 degrees, and a pad then came down on the lid's rim on its way to the
+   bar. The pick still went through, 10.4 mm off its target because the carry was a fixed
+   distance. The bundle is now 16 mm under 15 mm, the carry goes to where the bar is sent, and
+   the hand opens only as wide as the tray.
+4. **The finger is told where the tab and the web are.** Its path is planned from the tab's and
+   the web's node positions once the case has settled, and it assumes the web bends at one
+   curvature. Nothing is perceived, and nothing follows the lid once it has left the finger.
+5. **The bar creeps before anything touches it, and not the same way twice.** In the rendered
+   run it moved at 0.17 mm/s from the first frame, 1.5 mm by the time it was taken, and the pads
+   then held it at 18.8 to 19.3 N. In the second run, the same command without rendering, it
+   moved 0.12 mm and the pads held it at 10.3 to 11.9 N, with 0.03 mm of slip and 0.34 degrees
+   of tilt. The settings and the build report of the two are identical; why they part was not
+   looked into. Soft-on-soft contact has no sticky matching; the bench's contact with the tray
+   does, and the tray did not move in either.
+6. **Only the pads collide.** The fingers and the hand are drawn where the arm puts them, and
+   what the case and the bar touch are the fingers' collision boxes.
+7. **A rendered run may not exit.** Twice a run with `--render-every` wrote its results and both
+   videos and then kept running, once for two hours at full CPU with 2.5 GB of the GPU held.
+   The runs without rendering exited.
