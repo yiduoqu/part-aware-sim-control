@@ -28,6 +28,7 @@ from pathlib import Path
 
 import arm_gripper
 import cable_scene
+import hetero_scene
 import numpy as np
 from clawhauser_scene import REFERENCE, arrangement, build_sim
 from loop_geometry import smooth
@@ -57,7 +58,7 @@ CONTROL_HZ = REFERENCE.control_hz
 SUBSTEPS = 40
 """Substeps per frame, as usb_hub_box: the thin cord's tension carries further per sweep."""
 DURATION = 15.7
-STRIP_MU = cable_scene.OBJECT_MU
+STRIP_MU = hetero_scene.OBJECT_MU
 CORD_DAMPING = 1.5e5
 """The cord's damping [Pa*s]: the laid cord straightens as the housing comes round the post; at
 6e4 and mu 0.5 that flung the 0.3 kg strip off the bench, at 1.5e5 it comes round smoothly (q7)."""
@@ -137,7 +138,7 @@ def layout(vertices: np.ndarray, tets: np.ndarray, labels: np.ndarray) -> dict:
     needed = ROOT_TO_POST + WRAP * bend + root_x - float(vertices[np.unique(tets[labels == HOUSING]), 0].mean())
     mount = np.asarray(arm_gripper.MOUNT[:2])
     return {
-        "pose": (float(shift[0]), float(shift[1]), float(-vertices[:, 2].min()) + cable_scene.PLACE_GAP),
+        "pose": (float(shift[0]), float(shift[1]), float(-vertices[:, 2].min()) + hetero_scene.PLACE_GAP),
         "lay_root_m": [float(c) for c in meet],
         "lay_bend_radius_m": bend,
         "grip_centre_m": [float(grasp[0]), float(grasp[1]), float(ParallelGripperSpec.pad_half_height + 0.001)],
@@ -155,7 +156,7 @@ def layout(vertices: np.ndarray, tets: np.ndarray, labels: np.ndarray) -> dict:
 
 
 def build_scene(
-    asset: cable_scene.CableAsset,
+    asset: hetero_scene.HeteroAsset,
     *,
     solver: str = "chebyshev",
     iterations: int,
@@ -165,7 +166,7 @@ def build_scene(
     force_limit: float,
     self_contact: bool,
 ):
-    vertices, tets, labels = cable_scene.load(asset)
+    vertices, tets, labels = hetero_scene.load(asset)
     geometry = layout(vertices, tets, labels)
     settings = dataclasses.replace(REFERENCE, substeps=SUBSTEPS)
     physics = arrangement(
@@ -175,7 +176,7 @@ def build_scene(
         solver_name=solver,
         iterations=iterations,
         self_contact=self_contact,
-        rest_exclusion=cable_scene.REST_EXCLUSION,
+        rest_exclusion=hetero_scene.REST_EXCLUSION,
         feedback_smoothing=0.15,
         feedback_clamp=1.5,
     )
@@ -192,7 +193,7 @@ def build_scene(
         )
     )
     obj = scene.add(
-        cable_scene.spec(
+        hetero_scene.spec(
             asset, vertices, tets, labels, name="power_strip", pose=geometry["pose"], settings=settings, mu=mu
         )
     )
@@ -207,11 +208,11 @@ def build_scene(
     sim = build_sim(scene, rigid_loop=False)
     solver = arm_gripper.vbd_solver(sim.pipeline.program.solver)
     geometry["arm"] = arm_gripper.check_arm(sim, limit=force_limit)
-    geometry["friction"] = cable_scene.set_friction(sim, solver, settings, mu=mu, grip_mu=grip_mu)
-    cable_scene.set_shape_mu(sim, solver, "post", post_mu, mu)
+    geometry["friction"] = hetero_scene.set_friction(sim, solver, settings, mu=mu, grip_mu=grip_mu)
+    hetero_scene.set_shape_mu(sim, solver, "post", post_mu, mu)
     geometry["friction"]["post_mu"] = post_mu
     entity = obj.entity
-    surface = np.asarray(cable_scene.sim_surface(), dtype=np.float64)
+    surface = np.asarray(hetero_scene.sim_surface(), dtype=np.float64)
     geometry["laid"] = cable_scene.lay(
         sim,
         entity,
@@ -234,7 +235,7 @@ def arm_route(sim, geometry: dict, capacity: int, dt: float):
     at the post: held askew, the collar swung crosswise, pried the pads open and fell out.
     """
     control = arm_gripper.ArmControl(sim)
-    surface = np.asarray(cable_scene.sim_surface(), dtype=np.float64)
+    surface = np.asarray(hetero_scene.sim_surface(), dtype=np.float64)
     grip = np.asarray(geometry["grip_centre_m"])
     start = arm_gripper.tcp_for_pads(surface + grip)
     drag = np.asarray(geometry["pull_to_m"]) - grip[:2]
@@ -285,7 +286,7 @@ def wrap_deg(local: np.ndarray, cord: np.ndarray, arc: np.ndarray) -> float:
 
 def run(
     out: Path,
-    asset: cable_scene.CableAsset,
+    asset: hetero_scene.HeteroAsset,
     *,
     steps: int,
     render_every: int,
@@ -313,7 +314,7 @@ def run(
     tets, labels = entity.source_tets, entity.tet_part_labels
     housing_body = entity.rigid_parts[0].body
     # The cord's nodes and how far along it each lies from the housing, from the straight rest mesh.
-    vertices, _, _ = cable_scene.load(asset)
+    vertices, _, _ = hetero_scene.load(asset)
     cord = np.setdiff1d(np.unique(tets[labels == CABLE]), np.unique(tets[labels != CABLE]))
     arc = vertices[:, 0] - geometry["root_asset_x_m"]
     capacity = max(steps, round(DURATION * CONTROL_HZ))
@@ -323,7 +324,7 @@ def run(
     if route.worst_position_error_m > 0.025:
         raise RuntimeError(f"the arm misses the path by {route.worst_position_error_m:.3f} m")
     arm.start(route)
-    surface = np.asarray(cable_scene.sim_surface(), dtype=np.float64)
+    surface = np.asarray(hetero_scene.sim_surface(), dtype=np.float64)
     post, pull = np.asarray(POST_AT), np.array((0.0, -1.0))  # the pull runs from the post toward -y
     target = post + TARGET_PAST * pull
 
@@ -340,12 +341,12 @@ def run(
             "cord_wrap_deg": wrap_deg(local, cord, arc),
         }
 
-    rows, elapsed, video_error = cable_scene.episode(
+    rows, elapsed, video_error = hetero_scene.episode(
         sim,
         entity,
         camera,
         out,
-        soft=cable_scene.soft_labels(asset, labels),
+        soft=hetero_scene.soft_labels(asset, labels),
         steps=steps,
         render_every=render_every,
         control_hz=CONTROL_HZ,
@@ -408,10 +409,10 @@ def main() -> None:
     parser.add_argument("--post-mu", type=float, default=POST_MU)
     parser.add_argument("--force-limit", type=float, default=50.0)
     parser.add_argument("--no-self-contact", dest="self_contact", action="store_false")
-    cable_scene.add_lever_arguments(parser)
+    hetero_scene.add_lever_arguments(parser)
     args = parser.parse_args()
     strip = dataclasses.replace(cable_scene.ASSETS["power_strip"], quat=STRIP_QUAT, cable_damping=CORD_DAMPING)
-    asset = cable_scene.with_levers(strip, args)
+    asset = hetero_scene.with_levers(strip, args)
     run(
         args.out,
         asset,
@@ -424,7 +425,7 @@ def main() -> None:
         post_mu=args.post_mu,
         force_limit=args.force_limit,
         self_contact=args.self_contact,
-        config=cable_scene.config(args, asset, dataclasses.replace(REFERENCE, substeps=SUBSTEPS)),
+        config=hetero_scene.config(args, asset, dataclasses.replace(REFERENCE, substeps=SUBSTEPS)),
     )
 
 

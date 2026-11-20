@@ -20,6 +20,7 @@ from pathlib import Path
 
 import arm_gripper
 import cable_scene
+import hetero_scene
 import numpy as np
 import scenery
 import usb_hub_box
@@ -66,7 +67,7 @@ POST_RADIUS = 0.010
 def build_scene(
     asset, *, solver: str, iterations: int, mu: float, grip_mu: float, rod_mu: float, force_limit: float, self_contact
 ):
-    vertices, tets, labels = cable_scene.load(asset)
+    vertices, tets, labels = hetero_scene.load(asset)
     geometry = usb_hub_box.layout(vertices, tets, labels, asset.quat)
     settings = dataclasses.replace(REFERENCE, substeps=SUBSTEPS)
     physics = arrangement(
@@ -78,7 +79,7 @@ def build_scene(
         self_contact=self_contact,
         feedback_smoothing=0.15,
         feedback_clamp=1.5,
-        rest_exclusion=cable_scene.REST_EXCLUSION,
+        rest_exclusion=hetero_scene.REST_EXCLUSION,
     )
     scene = rss.Scene(cell=arm_gripper.CELL, physics=physics, name="cable_hang_stick")
     # Stand as in clawhauser_on_rod: hidden collision base under a round foot, post, elbow, then the rod
@@ -104,7 +105,7 @@ def build_scene(
         )
     )
     obj = scene.add(
-        cable_scene.spec(
+        hetero_scene.spec(
             asset, vertices, tets, labels, name="cable_object", pose=geometry["pose"], settings=settings, mu=mu
         )
     )
@@ -117,8 +118,8 @@ def build_scene(
     sim = build_sim(scene, rigid_loop=False)
     solver_ = arm_gripper.vbd_solver(sim.pipeline.program.solver)
     geometry["arm"] = arm_gripper.check_arm(sim, limit=force_limit)
-    geometry["friction"] = cable_scene.set_friction(sim, solver_, settings, mu=mu, grip_mu=grip_mu)
-    cable_scene.set_shape_mu(sim, solver_, "rod", rod_mu, mu)
+    geometry["friction"] = hetero_scene.set_friction(sim, solver_, settings, mu=mu, grip_mu=grip_mu)
+    hetero_scene.set_shape_mu(sim, solver_, "rod", rod_mu, mu)
     geometry["friction"]["rod_mu"] = rod_mu
     geometry["rod"] = {"x_m": ROD_X, "z_m": ROD_Z, "radius_m": ROD_RADIUS, "y_m": list(ROD_Y)}
     print(json.dumps({"geometry": geometry}), flush=True)
@@ -128,7 +129,7 @@ def build_scene(
 def arm_route(sim, geometry: dict, capacity: int, dt: float):
     """Close on the housing, lift, carry across the rod, lower past it, open, withdraw."""
     control = arm_gripper.ArmControl(sim)
-    surface = np.asarray(cable_scene.sim_surface(), dtype=np.float64)
+    surface = np.asarray(hetero_scene.sim_surface(), dtype=np.float64)
     grip = np.asarray(geometry["grip_centre_m"])
     centre = arm_gripper.tcp_for_pads(surface + grip)
     reach = float(geometry["reach_m"])
@@ -165,7 +166,7 @@ def run(out: Path, asset, *, steps: int, render_every: int, config: dict, **phys
     sim, obj, camera, geometry, labels = build_scene(asset, **physics)
     entity = obj.entity
     tets = entity.source_tets
-    soft = cable_scene.soft_labels(asset, labels)
+    soft = hetero_scene.soft_labels(asset, labels)
     cable = np.unique(tets[np.isin(labels, soft)])
     housing = np.unique(tets[labels == HOUSING])
     arm, route = arm_route(sim, geometry, steps, 1.0 / CONTROL_HZ)
@@ -184,7 +185,7 @@ def run(out: Path, asset, *, steps: int, render_every: int, config: dict, **phys
             "cable_on_rod": int(np.count_nonzero(on_rod(local[cable]))),
         }
 
-    rows, elapsed, video_error = cable_scene.episode(
+    rows, elapsed, video_error = hetero_scene.episode(
         sim,
         entity,
         camera,
@@ -241,22 +242,22 @@ def main() -> None:
     parser.add_argument("--render-every", type=int, default=0)
     parser.add_argument("--solver", choices=("vbd", "chebyshev"), default="chebyshev")
     parser.add_argument("--iterations", type=int, default=80)
-    parser.add_argument("--mu", type=float, default=cable_scene.OBJECT_MU)
+    parser.add_argument("--mu", type=float, default=hetero_scene.OBJECT_MU)
     parser.add_argument("--grip-mu", type=float, default=2.0)
     parser.add_argument("--rod-mu", type=float, default=ROD_MU, help="cable-rod friction")
     parser.add_argument(
         "--force-limit", type=float, default=50.0, help="at 30 N the hub can slip as the cable drags over the rod"
     )
     parser.add_argument("--no-self-contact", dest="self_contact", action="store_false")
-    cable_scene.add_lever_arguments(parser)
+    hetero_scene.add_lever_arguments(parser)
     args = parser.parse_args()
-    asset = cable_scene.with_levers(cable_scene.ASSETS[args.asset], args)
+    asset = hetero_scene.with_levers(cable_scene.ASSETS[args.asset], args)
     run(
         args.out,
         asset,
         steps=args.steps,
         render_every=args.render_every,
-        config=cable_scene.config(args, asset, dataclasses.replace(REFERENCE, substeps=SUBSTEPS)),
+        config=hetero_scene.config(args, asset, dataclasses.replace(REFERENCE, substeps=SUBSTEPS)),
         solver=args.solver,
         iterations=args.iterations,
         mu=args.mu,

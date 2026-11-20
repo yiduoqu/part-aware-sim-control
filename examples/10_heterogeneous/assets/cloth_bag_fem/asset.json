@@ -1,0 +1,25 @@
+{
+  "name": "cloth_bag_fem",
+  "description": "Open fabric shopping basket with rigid aluminium rim/handle, separate base board and deformable sewn sides. Cloth as a 3 mm solid shell of tets.",
+  "units": "m",
+  "up_axis": "Z",
+  "construction": "cloth_to_tets.py: thickened mid-surface and rigid meshes, union, TetGen",
+  "rigid_groups": [
+    [
+      1
+    ],
+    [
+      2
+    ]
+  ],
+  "source_assets": [
+    "handled_fabric_bag"
+  ],
+  "behavior_validated": false,
+  "metadata": {
+    "thickness_m": 0.003,
+    "cloth_young_pa": 100000.0,
+    "cloth_faces": 2928,
+    "tets": 111476
+  }
+}

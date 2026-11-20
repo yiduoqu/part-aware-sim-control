@@ -1020,6 +1020,100 @@
       }
     },
     {
+      "id": "cloth_bag_fem",
+      "path": "cloth_bag_fem",
+      "kind": "labelled-tet-v1",
+      "source": "generated_tool_assets (procedural geometry, Manifold union + TetGen, centroid part labels)",
+      "import_status": "generated",
+      "description": "Open fabric shopping basket with rigid aluminium rim/handle, separate base board and deformable sewn sides. Cloth as a 3 mm solid shell of tets.",
+      "vertices": 31042,
+      "tetrahedra": 111476,
+      "bounds_m": [
+        [
+          -0.239999994636,
+          -0.141997396946,
+          0.0
+        ],
+        [
+          0.239999994636,
+          0.141997396946,
+          0.398000001907
+        ]
+      ],
+      "extent_m": [
+        0.479999989272,
+        0.283994793892,
+        0.398000001907
+      ],
+      "source_mass_kg": 1.1689088337342666,
+      "source_stiffness_ratio": 700000.0,
+      "parts": [
+        {
+          "id": 0,
+          "name": "sewn polyester basket",
+          "tetrahedra": 10462,
+          "youngs_modulus_pa": 100000.0,
+          "poisson_ratio": 0.3,
+          "density_kg_m3": 116.66666666666666
+        },
+        {
+          "id": 1,
+          "name": "top frame and carry handle",
+          "tetrahedra": 39570,
+          "youngs_modulus_pa": 70000000000.0,
+          "poisson_ratio": 0.33,
+          "density_kg_m3": 2700.0
+        },
+        {
+          "id": 2,
+          "name": "base board",
+          "tetrahedra": 61444,
+          "youngs_modulus_pa": 1500000000.0,
+          "poisson_ratio": 0.4,
+          "density_kg_m3": 950.0
+        }
+      ],
+      "checks": {
+        "labelled_tet_loader_passed": true,
+        "no_duplicate_tetrahedra": true,
+        "source_hashes_match": true
+      },
+      "rigid_groups": [
+        [
+          1
+        ],
+        [
+          2
+        ]
+      ],
+      "used_by": [
+        "cloth_hybrid_check.py",
+        "tool_pack_bag.py"
+      ],
+      "behavior_validated_at_source": false,
+      "limitations": "Source estimates; tune per scene.",
+      "readme": "SOURCE.md",
+      "preview": "previews/cloth_bag_fem.png",
+      "files": {
+        "asset.json": {
+          "sha256": "c9be504ae92e1a02f3f6a01a8b917e85bad3893b25f6fb7e7be51fa273690579",
+          "size_bytes": 593
+        },
+        "final_mesh.mesh": {
+          "sha256": "d2253e7474cfc5801d8c0523b51f589b8396778d58ca50b705c709a76380f6c9",
+          "size_bytes": 4231208
+        },
+        "heterogeneous_params.npz": {
+          "sha256": "6e6c7fe9e43781d0e8839fee4f39109ef8382350bfbfc7bc83fb4490a46eb117",
+          "size_bytes": 99013
+        },
+        "inferred_params.json": {
+          "sha256": "289cf6df41c5b18b973d58ecc487b71473a69f6e4e5b3b35bd72b6d079cd8d21",
+          "size_bytes": 1262
+        }
+      }
+    },
+    {
       "id": "cloth_cleaning_wand",
       "path": "cloth_cleaning_wand",
       "kind": "rigid-cloth-asset-v2",
@@ -1051,7 +1145,9 @@
           1
         ]
       ],
-      "used_by": [],
+      "used_by": [
+        "cloth_to_tets.py"
+      ],
       "behavior_validated_at_source": false,
       "limitations": "Source estimates; tune per scene.",
       "readme": "SOURCE.md",
@@ -1116,6 +1212,89 @@
         "validation.json": {
           "sha256": "febcbd270f4fcaec34fe73202a6dc676f67241cdb81efc6e10d0f203108510e9",
           "size_bytes": 1039
+        }
+      }
+    },
+    {
+      "id": "cloth_duster_fem",
+      "path": "cloth_duster_fem",
+      "kind": "labelled-tet-v1",
+      "source": "generated_tool_assets (procedural geometry, Manifold union + TetGen, centroid part labels)",
+      "import_status": "generated",
+      "description": "Star-shaped cloth duster: eight medium sheets attached along a slim central connector, with free outer edges and tips. Cloth as a 2.5 mm solid shell of tets.",
+      "vertices": 8926,
+      "tetrahedra": 28667,
+      "bounds_m": [
+        [
+          -0.165000006557,
+          -0.033995244258,
+          -0.033995244258
+        ],
+        [
+          0.125,
+          0.033995244258,
+          0.033995244258
+        ]
+      ],
+      "extent_m": [
+        0.290000006557,
+        0.067990488516,
+        0.067990488516
+      ],
+      "source_mass_kg": 0.09142161333334739,
+      "source_stiffness_ratio": 4400.0,
+      "parts": [
+        {
+          "id": 0,
+          "name": "eight microfiber cloth panels",
+          "tetrahedra": 17819,
+          "youngs_modulus_pa": 500000.0,
+          "poisson_ratio": 0.3,
+          "density_kg_m3": 112.00000000000001
+        },
+        {
+          "id": 1,
+          "name": "grip neck and slim central connector",
+          "tetrahedra": 10848,
+          "youngs_modulus_pa": 2200000000.0,
+          "poisson_ratio": 0.37,
+          "density_kg_m3": 1100.0
+        }
+      ],
+      "checks": {
+        "labelled_tet_loader_passed": true,
+        "no_duplicate_tetrahedra": true,
+        "source_hashes_match": true
+      },
+      "rigid_groups": [
+        [
+          1
+        ]
+      ],
+      "used_by": [
+        "cloth_hybrid_check.py",
+        "tool_duster.py"
+      ],
+      "behavior_validated_at_source": false,
+      "limitations": "Source estimates; tune per scene.",
+      "readme": "SOURCE.md",
+      "preview": "previews/cloth_duster_fem.png",
+      "files": {
+        "asset.json": {
+          "sha256": "79490dc7b8323b73b5f5e2df841039b6f41cc097ddefe719d466c1bde55a1a68",
+          "size_bytes": 589
+        },
+        "final_mesh.mesh": {
+          "sha256": "c7e3628965cb48036e4b5263ccfafbb96c57f06fb2f2800e3267bddb50d37056",
+          "size_bytes": 1026280
+        },
+        "heterogeneous_params.npz": {
+          "sha256": "278fb9230a246f975bb609ed0a0b03d4d49224df1ec1fa1e557b876a54e3a35f",
+          "size_bytes": 10837
+        },
+        "inferred_params.json": {
+          "sha256": "12d8ca0d183319df6b36023a17c307386d02129e719bc011e3f3f56e9cf6a91a",
+          "size_bytes": 923
         }
       }
     },
@@ -1332,7 +1511,10 @@
           4
         ]
       ],
-      "used_by": [],
+      "used_by": [
+        "tool_dock_iron.py",
+        "tool_scene.py"
+      ],
       "behavior_validated_at_source": false,
       "limitations": "Source estimates; tune per scene.",
       "readme": "SOURCE.md",
@@ -1445,7 +1627,10 @@
           1
         ]
       ],
-      "used_by": [],
+      "used_by": [
+        "tool_gap_channel.py",
+        "tool_scene.py"
+      ],
       "behavior_validated_at_source": false,
       "limitations": "Source estimates; tune per scene.",
       "readme": "SOURCE.md",
@@ -1516,7 +1701,9 @@
           2
         ]
       ],
-      "used_by": [],
+      "used_by": [
+        "cloth_to_tets.py"
+      ],
       "behavior_validated_at_source": false,
       "limitations": "Source estimates; tune per scene.",
       "readme": "SOURCE.md",
@@ -2106,7 +2293,8 @@
         ]
       ],
       "used_by": [
-        "spatula_pan_press.py"
+        "spatula_pan_press.py",
+        "tool_spatula_cook.py"
       ],
       "behavior_validated_at_source": false,
       "limitations": "Source estimates; tune per scene.",
@@ -2326,7 +2514,10 @@
       "used_by": [
         "spatula_pan_arm_scrape.py",
         "spatula_pan_press.py",
-        "spatula_s0.py"
+        "spatula_s0.py",
+        "tool_pack_bag.py",
+        "tool_scene.py",
+        "tool_spatula_cook.py"
       ],
       "behavior_validated_at_source": false,
       "limitations": "Source estimates; tune per scene.",
@@ -2989,7 +3180,9 @@
           0
         ]
       ],
-      "used_by": [],
+      "used_by": [
+        "tool_dock_iron.py"
+      ],
       "behavior_validated_at_source": false,
       "limitations": "Source estimates; tune per scene.",
       "readme": "SOURCE.md",
@@ -3065,7 +3258,9 @@
           0
         ]
       ],
-      "used_by": [],
+      "used_by": [
+        "tool_dock_iron.py"
+      ],
       "behavior_validated_at_source": false,
       "limitations": "Source estimates; tune per scene.",
       "readme": "SOURCE.md",
@@ -3618,7 +3813,12 @@
           1
         ]
       ],
-      "used_by": [],
+      "used_by": [
+        "tool_asset_check.py",
+        "tool_pack_bag.py",
+        "tool_scene.py",
+        "tool_sponge_wipe.py"
+      ],
       "behavior_validated_at_source": false,
       "limitations": "Source estimates; tune per scene.",
       "readme": "SOURCE.md",
@@ -3718,7 +3918,9 @@
           0
         ]
       ],
-      "used_by": [],
+      "used_by": [
+        "tool_scene.py"
+      ],
       "behavior_validated_at_source": false,
       "limitations": "Source estimates; tune per scene.",
       "readme": "SOURCE.md",
@@ -3837,6 +4039,7 @@
         "cable_sort_plug.py",
         "cable_tray_multi.py",
         "cable_untangle_sort.py",
+        "tool_pack_bag.py",
         "usb_hub_box.py"
       ],
       "behavior_validated_at_source": false,
@@ -3943,7 +4146,11 @@
           1
         ]
       ],
-      "used_by": [],
+      "used_by": [
+        "tool_scene.py",
+        "tool_stain_probe.py",
+        "tool_whiteboard_erase.py"
+      ],
       "behavior_validated_at_source": false,
       "limitations": "Source estimates; tune per scene.",
       "readme": "SOURCE.md",
