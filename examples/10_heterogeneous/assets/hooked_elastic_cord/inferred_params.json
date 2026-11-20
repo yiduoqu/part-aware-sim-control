@@ -1,0 +1,53 @@
+{
+  "schema_version": "generated-heterogeneous-materials-v1",
+  "inferred_object_name": "hooked_elastic_cord",
+  "num_parts": 3,
+  "predictions": [
+    {
+      "part_index": 0,
+      "part_name": "hook_a",
+      "major_material_name": "ABS",
+      "part_color_rgb": [
+        200,
+        205,
+        210
+      ],
+      "youngs_modulus_pa": 2200000000.0,
+      "poisson_ratio": 0.37,
+      "density_kg_m3": 1100.0,
+      "friction_coefficient": 0.35,
+      "volume_fill_mode": "solid_fill"
+    },
+    {
+      "part_index": 1,
+      "part_name": "elastic_cord",
+      "major_material_name": "silicone rubber",
+      "part_color_rgb": [
+        35,
+        40,
+        46
+      ],
+      "youngs_modulus_pa": 1000000.0,
+      "poisson_ratio": 0.49,
+      "density_kg_m3": 1100.0,
+      "friction_coefficient": 0.9,
+      "volume_fill_mode": "solid_fill"
+    },
+    {
+      "part_index": 2,
+      "part_name": "hook_b",
+      "major_material_name": "ABS",
+      "part_color_rgb": [
+        200,
+        205,
+        210
+      ],
+      "youngs_modulus_pa": 2200000000.0,
+      "poisson_ratio": 0.37,
+      "density_kg_m3": 1100.0,
+      "friction_coefficient": 0.35,
+      "volume_fill_mode": "solid_fill"
+    }
+  ],
+  "notes": "Engineering starting estimates, not measured or simulation-calibrated. Rigid grouping is in asset.json."
+}

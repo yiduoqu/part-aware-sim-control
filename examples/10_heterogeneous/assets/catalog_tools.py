@@ -101,7 +101,7 @@ def generated_entry(folder: Path) -> dict:
         "id": folder.name,
         "path": folder.name,
         "kind": kind,
-        "source": GENERATOR,
+        "source": meta.get("generator", GENERATOR),
         "import_status": "generated",
         "description": meta.get("description", ""),
     }

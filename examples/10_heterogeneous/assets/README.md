@@ -36,6 +36,11 @@ is checked by the scenes that use them. Where a name was already taken, the
 generated copy has a suffix: `usb_hub_gen` sits next to the original `usb_hub`, and
 `toilet_plunger_generated` next to the HAG4R `toilet_plunger`. Their catalog entries carry `"import_status": "generated"`.
 
+`hinged_soap_case` and `soap_bar` are the exceptions to that origin: [`generate_hinged_soap_case.py`](generate_hinged_soap_case.py)
+and [`generate_soap_bar.py`](generate_soap_bar.py) here build them with numpy alone, from a grid of hexahedra cut
+into tetrahedra. They are a first guess at the soap-opening setup, made without the reference photos;
+[`soap_case_arm_pick.py`](../soap_case_arm_pick.py) is the scene that runs them.
+
 <!-- generated-assets:start -->
 | Object | Kind | Tetrahedra | Extent (mm) | Scenes |
 | --- | --- | ---: | --- | --- |
@@ -49,9 +54,14 @@ generated copy has a suffix: `usb_hub_gen` sits next to the original `usb_hub`, 
 | [corded_soldering_iron](corded_soldering_iron/SOURCE.md) | tet + rigid groups | 19,117 | 508 x 100 x 26 | `tool_dock_iron`, `tool_scene` |
 | [gap_sponge_wand](gap_sponge_wand/SOURCE.md) | tet + rigid groups | 14,813 | 235 x 18 x 69 | `tool_gap_channel`, `tool_scene` |
 | [handled_fabric_bag](handled_fabric_bag/SOURCE.md) | cloth + rigid | - | 480 x 284 x 398 | - |
+| [hinged_soap_case](hinged_soap_case/SOURCE.md) | tet + rigid groups | 41,856 | 100 x 74 x 32 | - |
+| [hooked_elastic_cord](hooked_elastic_cord/SOURCE.md) | tet + rigid groups | 20,049 | 368 x 23 x 8 | - |
 | [power_strip](power_strip/SOURCE.md) | tet + rigid groups | 35,632 | 772 x 48 x 28 | `cable_retrieve`, `cable_scene` |
+| [retractable_stamp_spring](retractable_stamp_spring/SOURCE.md) | tet + rigid groups | 43,392 | 32 x 32 x 70 | - |
 | [rigid_pan](rigid_pan/SOURCE.md) | rigid mesh | - | 413 x 240 x 57 | `tool_spatula_cook` |
+| [rubber_stamp](rubber_stamp/SOURCE.md) | tet + rigid groups | 39,275 | 64 x 32 x 66 | - |
 | [silicone_spatula](silicone_spatula/SOURCE.md) | tet + rigid groups | 29,121 | 295 x 65 x 14 | `tool_pack_bag`, `tool_scene`, `tool_spatula_cook` |
+| [soap_bar](soap_bar/SOURCE.md) | tet + rigid groups | 13,440 | 90 x 55 x 25 | - |
 | [socket_mains](socket_mains/SOURCE.md) | rigid socket | - | 21 x 28 x 24 | - |
 | [socket_mains_loose](socket_mains_loose/SOURCE.md) | rigid socket | - | 21 x 33 x 25 | - |
 | [socket_mains_snug](socket_mains_snug/SOURCE.md) | rigid socket | - | 21 x 28 x 24 | - |

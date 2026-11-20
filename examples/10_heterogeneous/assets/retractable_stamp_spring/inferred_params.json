@@ -1,0 +1,97 @@
+{
+  "schema_version": "generated-heterogeneous-materials-v1",
+  "inferred_object_name": "retractable_stamp",
+  "num_parts": 6,
+  "predictions": [
+    {
+      "part_name": "top_cap",
+      "major_material_name": "ABS (red)",
+      "part_color_rgb": [
+        222,
+        33,
+        43
+      ],
+      "youngs_modulus_pa": 2200000000.0,
+      "poisson_ratio": 0.37,
+      "density_kg_m3": 1100.0,
+      "friction_coefficient": 0.35,
+      "part_index": 0,
+      "volume_fill_mode": "solid_fill"
+    },
+    {
+      "part_name": "plunger",
+      "major_material_name": "ABS (grey)",
+      "part_color_rgb": [
+        198,
+        197,
+        195
+      ],
+      "youngs_modulus_pa": 2200000000.0,
+      "poisson_ratio": 0.37,
+      "density_kg_m3": 1100.0,
+      "friction_coefficient": 0.35,
+      "part_index": 1,
+      "volume_fill_mode": "solid_fill"
+    },
+    {
+      "part_name": "outer_sleeve",
+      "major_material_name": "ABS (grey)",
+      "part_color_rgb": [
+        203,
+        202,
+        200
+      ],
+      "youngs_modulus_pa": 2200000000.0,
+      "poisson_ratio": 0.37,
+      "density_kg_m3": 1100.0,
+      "friction_coefficient": 0.35,
+      "part_index": 2,
+      "volume_fill_mode": "solid_fill"
+    },
+    {
+      "part_name": "return_spring",
+      "major_material_name": "spring steel",
+      "part_color_rgb": [
+        138,
+        153,
+        166
+      ],
+      "youngs_modulus_pa": 200000000000.0,
+      "poisson_ratio": 0.3,
+      "density_kg_m3": 7850.0,
+      "friction_coefficient": 0.2,
+      "part_index": 3,
+      "volume_fill_mode": "solid_fill"
+    },
+    {
+      "part_name": "foam_cushion",
+      "major_material_name": "closed-cell foam",
+      "part_color_rgb": [
+        59,
+        57,
+        59
+      ],
+      "youngs_modulus_pa": 300000.0,
+      "poisson_ratio": 0.25,
+      "density_kg_m3": 120.0,
+      "friction_coefficient": 0.7,
+      "part_index": 4,
+      "volume_fill_mode": "solid_fill"
+    },
+    {
+      "part_name": "rubber_die",
+      "major_material_name": "natural rubber",
+      "part_color_rgb": [
+        128,
+        38,
+        47
+      ],
+      "youngs_modulus_pa": 1500000.0,
+      "poisson_ratio": 0.47,
+      "density_kg_m3": 1100.0,
+      "friction_coefficient": 0.9,
+      "part_index": 5,
+      "volume_fill_mode": "solid_fill"
+    }
+  ]
+}

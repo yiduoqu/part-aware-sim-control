@@ -1,0 +1,20 @@
+{
+  "name": "soap_bar",
+  "description": "90 x 55 x 25 mm bar of soap with rounded plan corners, to go in hinged_soap_case.",
+  "units": "m",
+  "up_axis": "Z",
+  "generator": "generate_soap_bar.py (procedural grid of hexahedra cut into tetrahedra, cell part labels)",
+  "construction": "Tensor-product hexahedral grid, six tetrahedra per cell, plan corners rounded by moving vertices",
+  "rigid_groups": [
+    [
+      0
+    ]
+  ],
+  "source_assets": [],
+  "behavior_validated": false,
+  "metadata": {
+    "origin": "Centre of the lower face at z=0",
+    "goes_with": "hinged_soap_case",
+    "tuning_status": "Source estimates; run as one rigid body."
+  }
+}

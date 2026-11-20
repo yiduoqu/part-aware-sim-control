@@ -1,0 +1,67 @@
+{
+  "schema_version": "generated-heterogeneous-materials-v1",
+  "inferred_object_name": "rubber_stamp",
+  "num_parts": 4,
+  "predictions": [
+    {
+      "part_name": "wooden_handle",
+      "major_material_name": "beech wood",
+      "part_color_rgb": [
+        60,
+        41,
+        38
+      ],
+      "youngs_modulus_pa": 10000000000.0,
+      "poisson_ratio": 0.3,
+      "density_kg_m3": 650.0,
+      "friction_coefficient": 0.4,
+      "part_index": 0,
+      "volume_fill_mode": "solid_fill"
+    },
+    {
+      "part_name": "wooden_mount",
+      "major_material_name": "beech wood",
+      "part_color_rgb": [
+        185,
+        177,
+        163
+      ],
+      "youngs_modulus_pa": 10000000000.0,
+      "poisson_ratio": 0.3,
+      "density_kg_m3": 650.0,
+      "friction_coefficient": 0.4,
+      "part_index": 1,
+      "volume_fill_mode": "solid_fill"
+    },
+    {
+      "part_name": "foam_cushion",
+      "major_material_name": "closed-cell foam",
+      "part_color_rgb": [
+        47,
+        46,
+        42
+      ],
+      "youngs_modulus_pa": 300000.0,
+      "poisson_ratio": 0.25,
+      "density_kg_m3": 120.0,
+      "friction_coefficient": 0.7,
+      "part_index": 2,
+      "volume_fill_mode": "solid_fill"
+    },
+    {
+      "part_name": "rubber_die",
+      "major_material_name": "natural rubber",
+      "part_color_rgb": [
+        145,
+        52,
+        47
+      ],
+      "youngs_modulus_pa": 1500000.0,
+      "poisson_ratio": 0.47,
+      "density_kg_m3": 1100.0,
+      "friction_coefficient": 0.9,
+      "part_index": 3,
+      "volume_fill_mode": "solid_fill"
+    }
+  ]
+}
