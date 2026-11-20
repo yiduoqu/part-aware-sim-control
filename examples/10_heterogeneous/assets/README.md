@@ -41,14 +41,17 @@ generated copy has a suffix: `usb_hub_gen` sits next to the original `usb_hub`, 
 | --- | --- | ---: | --- | --- |
 | [buckled_strap](buckled_strap/SOURCE.md) | cloth + rigid | - | 282 x 47 x 122 | - |
 | [charger](charger/SOURCE.md) | tet + rigid groups | 18,156 | 324 x 45 x 27 | `cable_hang_stick`, `cable_scene`, `cable_sort_plug`, `cable_tray_multi`, `cable_untangle_sort` |
+| [cloth_bag_fem](cloth_bag_fem/SOURCE.md) | tet + rigid groups | 111,476 | 480 x 284 x 398 | - |
+| [cloth_bag_fem_coarse](cloth_bag_fem_coarse/SOURCE.md) | tet + rigid groups | 71,787 | 480 x 284 x 398 | `tool_pack_bag` |
 | [cloth_cleaning_wand](cloth_cleaning_wand/SOURCE.md) | cloth + rigid | - | 290 x 68 x 68 | - |
+| [cloth_duster_fem](cloth_duster_fem/SOURCE.md) | tet + rigid groups | 28,667 | 290 x 68 x 68 | `tool_duster` |
 | [coiled_usb_cable](coiled_usb_cable/SOURCE.md) | tet + rigid groups | 71,030 | 242 x 34 x 48 | `cable_scene`, `cable_untangle_sort` |
-| [corded_soldering_iron](corded_soldering_iron/SOURCE.md) | tet + rigid groups | 19,117 | 508 x 100 x 26 | - |
-| [gap_sponge_wand](gap_sponge_wand/SOURCE.md) | tet + rigid groups | 14,813 | 235 x 18 x 69 | - |
+| [corded_soldering_iron](corded_soldering_iron/SOURCE.md) | tet + rigid groups | 19,117 | 508 x 100 x 26 | `tool_dock_iron`, `tool_scene` |
+| [gap_sponge_wand](gap_sponge_wand/SOURCE.md) | tet + rigid groups | 14,813 | 235 x 18 x 69 | `tool_gap_channel`, `tool_scene` |
 | [handled_fabric_bag](handled_fabric_bag/SOURCE.md) | cloth + rigid | - | 480 x 284 x 398 | - |
 | [power_strip](power_strip/SOURCE.md) | tet + rigid groups | 35,632 | 772 x 48 x 28 | `cable_retrieve`, `cable_scene` |
-| [rigid_pan](rigid_pan/SOURCE.md) | rigid mesh | - | 413 x 240 x 57 | - |
-| [silicone_spatula](silicone_spatula/SOURCE.md) | tet + rigid groups | 29,121 | 295 x 65 x 14 | - |
+| [rigid_pan](rigid_pan/SOURCE.md) | rigid mesh | - | 413 x 240 x 57 | `tool_spatula_cook` |
+| [silicone_spatula](silicone_spatula/SOURCE.md) | tet + rigid groups | 29,121 | 295 x 65 x 14 | `tool_pack_bag`, `tool_scene`, `tool_spatula_cook` |
 | [socket_mains](socket_mains/SOURCE.md) | rigid socket | - | 21 x 28 x 24 | - |
 | [socket_mains_loose](socket_mains_loose/SOURCE.md) | rigid socket | - | 21 x 33 x 25 | - |
 | [socket_mains_snug](socket_mains_snug/SOURCE.md) | rigid socket | - | 21 x 28 x 24 | - |
@@ -56,18 +59,18 @@ generated copy has a suffix: `usb_hub_gen` sits next to the original `usb_hub`, 
 | [socket_mini_b_loose](socket_mini_b_loose/SOURCE.md) | rigid socket | - | 12 x 28 x 24 | - |
 | [socket_mini_b_snug](socket_mini_b_snug/SOURCE.md) | rigid socket | - | 12 x 28 x 24 | - |
 | [socket_station](socket_station/SOURCE.md) | rigid socket | - | 16 x 28 x 24 | - |
-| [socket_station_loose](socket_station_loose/SOURCE.md) | rigid socket | - | 16 x 31 x 31 | - |
-| [socket_station_snug](socket_station_snug/SOURCE.md) | rigid socket | - | 16 x 28 x 25 | - |
+| [socket_station_loose](socket_station_loose/SOURCE.md) | rigid socket | - | 16 x 31 x 31 | `tool_dock_iron` |
+| [socket_station_snug](socket_station_snug/SOURCE.md) | rigid socket | - | 16 x 28 x 25 | `tool_dock_iron` |
 | [socket_usb_a](socket_usb_a/SOURCE.md) | rigid socket | - | 17 x 28 x 24 | - |
 | [socket_usb_a_loose](socket_usb_a_loose/SOURCE.md) | rigid socket | - | 17 x 31 x 24 | `cable_plug_place` |
 | [socket_usb_a_snug](socket_usb_a_snug/SOURCE.md) | rigid socket | - | 17 x 28 x 24 | `cable_plug_place` |
 | [socket_usb_c](socket_usb_c/SOURCE.md) | rigid socket | - | 13 x 28 x 24 | - |
 | [socket_usb_c_loose](socket_usb_c_loose/SOURCE.md) | rigid socket | - | 13 x 28 x 24 | - |
 | [socket_usb_c_snug](socket_usb_c_snug/SOURCE.md) | rigid socket | - | 13 x 28 x 24 | - |
-| [sponge_wand](sponge_wand/SOURCE.md) | tet + rigid groups | 16,874 | 255 x 50 x 91 | - |
-| [toilet_plunger_generated](toilet_plunger_generated/SOURCE.md) | tet + rigid groups | 20,735 | 110 x 110 x 377 | - |
-| [usb_hub_gen](usb_hub_gen/SOURCE.md) | tet + rigid groups | 19,025 | 496 x 35 x 15 | `cable_hang_stick`, `cable_plug_place`, `cable_scene`, `cable_sort_plug`, `cable_tray_multi`, `cable_untangle_sort` |
-| [whiteboard_eraser](whiteboard_eraser/SOURCE.md) | tet + rigid groups | 36,910 | 110 x 48 x 32 | - |
+| [sponge_wand](sponge_wand/SOURCE.md) | tet + rigid groups | 16,874 | 255 x 50 x 91 | `tool_asset_check`, `tool_pack_bag`, `tool_scene`, `tool_sponge_wipe` |
+| [toilet_plunger_generated](toilet_plunger_generated/SOURCE.md) | tet + rigid groups | 20,735 | 110 x 110 x 377 | `tool_scene` |
+| [usb_hub_gen](usb_hub_gen/SOURCE.md) | tet + rigid groups | 19,025 | 496 x 35 x 15 | `cable_hang_stick`, `cable_plug_place`, `cable_scene`, `cable_sort_plug`, `cable_tray_multi`, `cable_untangle_sort`, `tool_pack_bag` |
+| [whiteboard_eraser](whiteboard_eraser/SOURCE.md) | tet + rigid groups | 36,910 | 110 x 48 x 32 | `tool_scene`, `tool_stain_probe`, `tool_whiteboard_erase` |
 | [y_splitter_cable](y_splitter_cable/SOURCE.md) | tet + rigid groups | 20,969 | 344 x 132 x 9 | `cable_scene`, `cable_untangle_sort` |
 <!-- generated-assets:end -->
 

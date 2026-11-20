@@ -1,0 +1,37 @@
+{
+  "schema_version": "generated-heterogeneous-materials-v1",
+  "inferred_object_name": "cloth_cleaning_wand",
+  "num_parts": 2,
+  "predictions": [
+    {
+      "part_name": "eight microfiber cloth panels",
+      "major_material_name": "microfiber polyester",
+      "part_color_rgb": [
+        211,
+        70,
+        73
+      ],
+      "youngs_modulus_pa": 500000.0,
+      "poisson_ratio": 0.3,
+      "density_kg_m3": 112.00000000000001,
+      "friction_coefficient": 0.5,
+      "part_index": 0,
+      "volume_fill_mode": "solid_fill"
+    },
+    {
+      "part_name": "grip neck and slim central connector",
+      "major_material_name": "ABS",
+      "part_color_rgb": [
+        54,
+        62,
+        69
+      ],
+      "youngs_modulus_pa": 2200000000.0,
+      "poisson_ratio": 0.37,
+      "density_kg_m3": 1100.0,
+      "friction_coefficient": 0.5,
+      "part_index": 1,
+      "volume_fill_mode": "solid_fill"
+    }
+  ]
+}

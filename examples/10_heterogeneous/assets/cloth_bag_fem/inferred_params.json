@@ -1,0 +1,52 @@
+{
+  "schema_version": "generated-heterogeneous-materials-v1",
+  "inferred_object_name": "handled_fabric_bag",
+  "num_parts": 3,
+  "predictions": [
+    {
+      "part_name": "sewn polyester basket",
+      "major_material_name": "polyester",
+      "part_color_rgb": [
+        53,
+        130,
+        137
+      ],
+      "youngs_modulus_pa": 100000.0,
+      "poisson_ratio": 0.3,
+      "density_kg_m3": 116.66666666666666,
+      "friction_coefficient": 0.5,
+      "part_index": 0,
+      "volume_fill_mode": "solid_fill"
+    },
+    {
+      "part_name": "top frame and carry handle",
+      "major_material_name": "aluminium",
+      "part_color_rgb": [
+        177,
+        187,
+        194
+      ],
+      "youngs_modulus_pa": 70000000000.0,
+      "poisson_ratio": 0.33,
+      "density_kg_m3": 2700.0,
+      "friction_coefficient": 0.5,
+      "part_index": 1,
+      "volume_fill_mode": "solid_fill"
+    },
+    {
+      "part_name": "base board",
+      "major_material_name": "polypropylene",
+      "part_color_rgb": [
+        49,
+        58,
+        67
+      ],
+      "youngs_modulus_pa": 1500000000.0,
+      "poisson_ratio": 0.4,
+      "density_kg_m3": 950.0,
+      "friction_coefficient": 0.5,
+      "part_index": 2,
+      "volume_fill_mode": "solid_fill"
+    }
+  ]
+}

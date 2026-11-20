@@ -22,6 +22,7 @@ from pathlib import Path
 
 import arm_gripper
 import cable_scene
+import hetero_scene
 import numpy as np
 import rigid_part_body
 import usb_hub_box as hub
@@ -102,7 +103,7 @@ def build_scene(
         self_contact=self_contact,
         feedback_smoothing=0.15,
         feedback_clamp=1.5,
-        rest_exclusion=cable_scene.REST_EXCLUSION,
+        rest_exclusion=hetero_scene.REST_EXCLUSION,
     )
     scene = rss.Scene(cell=CELL, physics=physics, name="cable_tray_multi")
     bx, by = BOX_AT
@@ -130,12 +131,12 @@ def build_scene(
         scene.add(rss.slab(name=name, half=half, at=at, color=(0.55, 0.60, 0.65), **extra))
     objects, handles, assets = {}, {}, {}
     for name, key, yaw, grasp_at in OBJECTS:
-        asset = cable_scene.with_levers(cable_scene.ASSETS[key], levers)
+        asset = hetero_scene.with_levers(cable_scene.ASSETS[key], levers)
         quat = arm_gripper.quat_multiply(arm_gripper.axis_angle_quat((0.0, 0.0, 1.0), yaw), asset.quat)
         asset = dataclasses.replace(asset, quat=tuple(float(c) for c in quat))
-        vertices, tets, labels = cable_scene.load(asset)
+        vertices, tets, labels = hetero_scene.load(asset)
         objects[name] = layout(vertices, tets, labels, asset.quat, grasp_at)
-        spec = cable_scene.spec(
+        spec = hetero_scene.spec(
             asset, vertices, tets, labels, name=name, pose=objects[name]["pose"], settings=settings, mu=mu
         )
         handles[name], assets[name] = scene.add(spec), asset
@@ -153,7 +154,7 @@ def build_scene(
         "box_centre_m": list(BOX_AT),
         "box_inner_m": list(BOX_INNER),
         "arm": arm_gripper.check_arm(sim, limit=force_limit),
-        "friction": cable_scene.set_friction(sim, solver, settings, mu=mu, grip_mu=grip_mu),
+        "friction": hetero_scene.set_friction(sim, solver, settings, mu=mu, grip_mu=grip_mu),
     }
     for name, handle in handles.items():
         objects[name]["rigid_parts"] = {
@@ -168,7 +169,7 @@ def arm_route(control, geometry: dict, plans: list, start: int, capacity: int, d
 
     ``plans`` holds each object's carry (x, y) and lowering [m]; the route covers frames ``start`` on.
     """
-    surface = np.asarray(cable_scene.sim_surface(), dtype=np.float64)
+    surface = np.asarray(hetero_scene.sim_surface(), dtype=np.float64)
     grips = [np.asarray(geometry["objects"][name]["grip_centre_m"]) for name, *_ in OBJECTS]
     centres = [arm_gripper.tcp_for_pads(surface + g) for g in grips]
     reaches = [float(geometry["objects"][name]["reach_m"]) for name, *_ in OBJECTS]
@@ -249,7 +250,7 @@ def run(
     names = [name for name, *_ in OBJECTS]
     dt = 1.0 / CONTROL_HZ
     total = max(steps, round(DURATION * CONTROL_HZ))
-    surface = np.asarray(cable_scene.sim_surface(), dtype=np.float64)
+    surface = np.asarray(hetero_scene.sim_surface(), dtype=np.float64)
     # Planned before anything is measured: straight carries to the box's centre, onto its floor.
     plans = [
         (np.subtract(BOX_AT, geometry["objects"][n]["grip_centre_m"][:2]), lowering(geometry, n, 0.0)) for n in names
@@ -266,7 +267,7 @@ def run(
     parts = {}
     for name, entity in entities.items():
         tets, labels = entity.source_tets, entity.tet_part_labels
-        soft = np.isin(labels, cable_scene.soft_labels(assets[name], labels))
+        soft = np.isin(labels, hetero_scene.soft_labels(assets[name], labels))
         q0 = sim.pipeline.state_0.particle_q.numpy()[entity.particles]
         parts[name] = {
             "cable": np.unique(tets[labels == CABLE]),
@@ -416,11 +417,11 @@ def main() -> None:
     parser.add_argument("--render-every", type=int, default=0)
     parser.add_argument("--solver", choices=("vbd", "chebyshev"), default="chebyshev")
     parser.add_argument("--iterations", type=int, default=80)
-    parser.add_argument("--mu", type=float, default=cable_scene.OBJECT_MU)
+    parser.add_argument("--mu", type=float, default=hetero_scene.OBJECT_MU)
     parser.add_argument("--grip-mu", type=float, default=2.0)
     parser.add_argument("--force-limit", type=float, default=30.0)
     parser.add_argument("--no-self-contact", dest="self_contact", action="store_false")
-    cable_scene.add_lever_arguments(parser)
+    hetero_scene.add_lever_arguments(parser)
     args = parser.parse_args()
     settings = dataclasses.replace(REFERENCE, substeps=SUBSTEPS)
     run(
@@ -435,9 +436,9 @@ def main() -> None:
         self_contact=args.self_contact,
         levers=args,
         config={
-            **cable_scene.config(args, cable_scene.ASSETS["charger"], settings),
+            **hetero_scene.config(args, cable_scene.ASSETS["charger"], settings),
             "asset_levers": {
-                key: dataclasses.asdict(cable_scene.with_levers(cable_scene.ASSETS[key], args))
+                key: dataclasses.asdict(hetero_scene.with_levers(cable_scene.ASSETS[key], args))
                 for _, key, *_ in OBJECTS
             },
             "objects": [[n, key, yaw, list(at)] for n, key, yaw, at in OBJECTS],

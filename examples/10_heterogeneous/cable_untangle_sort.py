@@ -31,6 +31,7 @@ from typing import NamedTuple
 
 import arm_gripper
 import cable_scene
+import hetero_scene
 import numpy as np
 import rigid_part_body
 import usb_hub_box as hub
@@ -171,7 +172,7 @@ def layout(vertices, tets, labels, base_quat, item: Item) -> dict:
     origin = new_root - turn @ root[:2]
     grip = turn @ centre + origin
     return {
-        "pose": (float(origin[0]), float(origin[1]), float(-turned[:, 2].min() + cable_scene.PLACE_GAP + item.raised)),
+        "pose": (float(origin[0]), float(origin[1]), float(-turned[:, 2].min() + hetero_scene.PLACE_GAP + item.raised)),
         "grip_centre_m": [float(grip[0]), float(grip[1]), float(hub.ParallelGripperSpec.pad_half_height + 0.001)],
         "reach_m": float(0.5 * (band[:, 0].max() - band[:, 0].min())),
         "hang_m": float(abs(far - grasp_y)),
@@ -254,7 +255,7 @@ def lay_pile(sim, entities: dict, objects: dict) -> dict:
 
     The grasp end stays where :func:`layout` put it; ``objects`` holds each one's ``cable_root_m`` and ``yaw_rad``.
     """
-    surface = np.asarray(cable_scene.sim_surface(), dtype=np.float64)
+    surface = np.asarray(hetero_scene.sim_surface(), dtype=np.float64)
     laid = {}
     for name, entity in entities.items():
         item, yaw = OBJECTS[name], OBJECTS[name].yaw
@@ -287,7 +288,7 @@ def build_scene(
         self_contact=self_contact,
         feedback_smoothing=0.15,
         feedback_clamp=1.5,
-        rest_exclusion=cable_scene.REST_EXCLUSION,
+        rest_exclusion=hetero_scene.REST_EXCLUSION,
     )
     scene = rss.Scene(cell=CELL, physics=physics, name="cable_untangle_sort")
     wall_z = (BOX_RIM + BOX_FLOOR) / 2.0
@@ -315,8 +316,8 @@ def build_scene(
             scene.add(rss.slab(name=f"{owner}_bin_{name}", half=half, at=at, color=(0.55, 0.60, 0.65), **extra))
     objects, placed, handles, assets = {}, {}, {}, {}
     for name, item in OBJECTS.items():
-        asset = cable_scene.with_levers(cable_scene.ASSETS[item.asset], levers)
-        vertices, tets, labels = cable_scene.load(asset)
+        asset = hetero_scene.with_levers(cable_scene.ASSETS[item.asset], levers)
+        vertices, tets, labels = hetero_scene.load(asset)
         objects[name] = layout(vertices, tets, labels, asset.quat, item)
         quat = arm_gripper.quat_multiply(arm_gripper.axis_angle_quat((0.0, 0.0, 1.0), item.yaw), asset.quat)
         asset = dataclasses.replace(asset, quat=tuple(float(c) for c in quat))
@@ -325,7 +326,7 @@ def build_scene(
             np.unique(tets[np.isin(labels, item.grasp)]),
             np.unique(tets[labels == item.cable]),
         )
-        spec = cable_scene.spec(
+        spec = hetero_scene.spec(
             asset, vertices, tets, labels, name=name, pose=objects[name]["pose"], settings=settings, mu=mu
         )
         handles[name], assets[name] = scene.add(spec), asset
@@ -344,7 +345,7 @@ def build_scene(
         "laid": lay_pile(sim, {n: h.entity for n, h in handles.items()}, objects),
         "bins": {n: {"centre_m": list(at), "inner_m": list(inner)} for n, (at, inner) in used_bins().items()},
         "arm": arm_gripper.check_arm(sim, limit=force_limit),
-        "friction": cable_scene.set_friction(sim, solver, settings, mu=mu, grip_mu=grip_mu),
+        "friction": hetero_scene.set_friction(sim, solver, settings, mu=mu, grip_mu=grip_mu),
     }
     for name, handle in handles.items():
         objects[name]["rigid_parts"] = {
@@ -361,7 +362,7 @@ def arm_route(control, geometry: dict, order: tuple, plans: list, start: int, ca
     ``plans`` holds each pick's carry (x, y) and lowering [m]; the route covers frames ``start`` on.
     ``ease`` = (pick, centre shift, yaw shift, time) eases that pick's re-aimed over-point in from the old one.
     """
-    surface = np.asarray(cable_scene.sim_surface(), dtype=np.float64)
+    surface = np.asarray(hetero_scene.sim_surface(), dtype=np.float64)
     objects = [geometry["objects"][name] for name in order]
     centres = [arm_gripper.tcp_for_pads(surface + np.asarray(g["grip_centre_m"])) for g in objects]
     reaches = [float(g["reach_m"]) for g in objects]
@@ -459,7 +460,7 @@ def run(
     pairs = list(itertools.combinations(names, 2))
     dt = 1.0 / CONTROL_HZ
     total = max(steps, round(duration() * CONTROL_HZ))
-    surface = np.asarray(cable_scene.sim_surface(), dtype=np.float64)
+    surface = np.asarray(hetero_scene.sim_surface(), dtype=np.float64)
     # Planned before anything is measured: straight carries to each bin's centre.
     plans = [
         (np.subtract(BINS[OBJECTS[n].bin][0], geometry["objects"][n]["grip_centre_m"][:2]), lowering(geometry, n))
@@ -484,7 +485,7 @@ def run(
     parts, housing_before = {}, {}
     for name, entity in entities.items():
         tets, labels, item = entity.source_tets, entity.tet_part_labels, OBJECTS[name]
-        soft = np.isin(labels, cable_scene.soft_labels(assets[name], labels))
+        soft = np.isin(labels, hetero_scene.soft_labels(assets[name], labels))
         q0 = sim.pipeline.state_0.particle_q.numpy()[entity.particles]
         held = np.isin(labels, item.grasp)
         parts[name] = {
@@ -698,11 +699,11 @@ def main() -> None:
     parser.add_argument("--order", help="picking order (default: bottom of the pile first, see OBJECTS)")
     parser.add_argument("--solver", choices=("vbd", "chebyshev"), default="chebyshev")
     parser.add_argument("--iterations", type=int, default=80)
-    parser.add_argument("--mu", type=float, default=cable_scene.OBJECT_MU)
+    parser.add_argument("--mu", type=float, default=hetero_scene.OBJECT_MU)
     parser.add_argument("--grip-mu", type=float, default=2.0)
     parser.add_argument("--force-limit", type=float, default=30.0)
     parser.add_argument("--no-self-contact", dest="self_contact", action="store_false")
-    cable_scene.add_lever_arguments(parser)
+    hetero_scene.add_lever_arguments(parser)
     args = parser.parse_args()
     chosen = args.objects.split(",")
     if not set(chosen) <= set(OBJECTS):
@@ -726,9 +727,9 @@ def main() -> None:
         self_contact=args.self_contact,
         levers=args,
         config={
-            **cable_scene.config(args, cable_scene.ASSETS["usb_hub_gen"], settings),
+            **hetero_scene.config(args, cable_scene.ASSETS["usb_hub_gen"], settings),
             "asset_levers": {
-                name: dataclasses.asdict(cable_scene.with_levers(cable_scene.ASSETS[o.asset], args))
+                name: dataclasses.asdict(hetero_scene.with_levers(cable_scene.ASSETS[o.asset], args))
                 for name, o in OBJECTS.items()
             },
             "objects": {name: [*o[:4], list(o.through), *o[5:]] for name, o in OBJECTS.items()},

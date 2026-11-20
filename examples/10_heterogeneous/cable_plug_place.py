@@ -34,6 +34,7 @@ from pathlib import Path
 
 import arm_gripper
 import cable_scene
+import hetero_scene
 import newton
 import numpy as np
 import usb_hub_box
@@ -50,7 +51,7 @@ PLUG = (COLLAR, TIP)
 SOCKETS = {"snug": "socket_usb_a_snug", "loose": "socket_usb_a_loose"}
 """``--socket``: 1 mm of clearance per side, or the loose 4 mm made for a 3 mm contact skin."""
 PLUG_RADIUS = 0.0003
-"""The plug's own contact radius [m] (``--plug-radius``; :func:`cable_scene.set_part_radius`): a thin
+"""The plug's own contact radius [m] (``--plug-radius``; :func:`hetero_scene.set_part_radius`): a thin
 skin so it fits the snug socket, while the cable and housing keep the scene's 3 mm."""
 OUTPUT = Path(__file__).resolve().parents[2] / "outputs" / "cable_plug_place"
 CONTROL_HZ = REFERENCE.control_hz
@@ -153,7 +154,7 @@ def layout(vertices, tets, labels, quat, female: dict, male: dict, plug_radius: 
         (
             PLUG_AT[0] - shoulder[0] - laid[0],
             PLUG_AT[1] - shoulder[1] - laid[1],
-            -turned[:, 2].min() + cable_scene.PLACE_GAP,
+            -turned[:, 2].min() + hetero_scene.PLACE_GAP,
         )
     )
     # Settled: the collar's bottom a plug radius over the bench.
@@ -181,13 +182,13 @@ def socket_pose(female: dict, male: dict, overhang: float, plug_radius: float, p
     t_socket = np.asarray(female["T_asset_from_mating_frame"])
     seat_x = float(female["seated_shoulder_x_in_socket_m"])
     mouth = np.array((plug_at[0], plug_at[1] + PRE_INSERT - seat_x, PEDESTAL + t_socket[2, 3]))
-    socket_axes = Rotation.from_quat(cable_scene.TURN_Z).as_matrix() @ t_socket[:3, :3]
+    socket_axes = Rotation.from_quat(hetero_scene.TURN_Z).as_matrix() @ t_socket[:3, :3]
     seat = mouth + seat_x * socket_axes[:, 0]
     contact_seat_x = -(plug_radius + overhang)
     clearance = float(female["clearance_per_side_m"])
     return {
         "tip_length_m": float(male["tip_length_m"]),
-        "socket_xform": [float(mouth[0]), float(mouth[1]), PEDESTAL, *cable_scene.TURN_Z],
+        "socket_xform": [float(mouth[0]), float(mouth[1]), PEDESTAL, *hetero_scene.TURN_Z],
         "socket_mouth_m": mouth.tolist(),
         "socket_axes": socket_axes.tolist(),
         "seat_m": seat.tolist(),
@@ -212,8 +213,8 @@ def build_scene(
     force_limit: float,
     self_contact,
 ):
-    vertices, tets, labels = cable_scene.load(asset)
-    mesh, connectors = cable_scene.fixture(SOCKETS[socket])
+    vertices, tets, labels = hetero_scene.load(asset)
+    mesh, connectors = hetero_scene.fixture(SOCKETS[socket])
     hub = json.loads((asset.path / "connectors.json").read_text())
     female = connectors["female_ports"][0]
     geometry = layout(vertices, tets, labels, asset.quat, female, hub["male_ends"][0], plug_radius)
@@ -228,7 +229,7 @@ def build_scene(
         self_contact=self_contact,
         feedback_smoothing=0.15,
         feedback_clamp=1.5,
-        rest_exclusion=cable_scene.REST_EXCLUSION,
+        rest_exclusion=hetero_scene.REST_EXCLUSION,
     )
     scene = rss.Scene(cell=arm_gripper.CELL, physics=physics, name="cable_plug_place")
     # The block on a slab of its footprint, as a static triangle mesh: the authored triangles keep the
@@ -253,11 +254,13 @@ def build_scene(
         )
     )
     obj = scene.add(
-        cable_scene.spec(asset, vertices, tets, labels, name="usb_hub", pose=geometry["pose"], settings=settings, mu=mu)
+        hetero_scene.spec(
+            asset, vertices, tets, labels, name="usb_hub", pose=geometry["pose"], settings=settings, mu=mu
+        )
     )
     arm_gripper.add_arm(scene, base_offset=arm_gripper.MOUNT, force_limit=force_limit)
     # From above at an angle, the whole hub (housing, bent cable, plug) and the socket in frame.
-    surface = np.asarray(cable_scene.sim_surface(), dtype=np.float64)
+    surface = np.asarray(hetero_scene.sim_surface(), dtype=np.float64)
     mouth = np.asarray(geometry["socket_mouth_m"])
     camera = scene.add(
         rss.CameraSpec(
@@ -272,9 +275,9 @@ def build_scene(
     sim = build_sim(scene, rigid_loop=False)
     solver_ = arm_gripper.vbd_solver(sim.pipeline.program.solver)
     geometry["arm"] = arm_gripper.check_arm(sim, limit=force_limit)
-    geometry["friction"] = cable_scene.set_friction(sim, solver_, settings, mu=mu, grip_mu=grip_mu)
+    geometry["friction"] = hetero_scene.set_friction(sim, solver_, settings, mu=mu, grip_mu=grip_mu)
     geometry["socket_mesh_shapes"] = socket_shapes(sim)
-    geometry["plug_thin_particles"] = cable_scene.set_part_radius(sim, obj.entity, PLUG, plug_radius)
+    geometry["plug_thin_particles"] = hetero_scene.set_part_radius(sim, obj.entity, PLUG, plug_radius)
     print(json.dumps({"geometry": geometry}), flush=True)
     return sim, obj, camera, geometry, labels
 
@@ -302,7 +305,7 @@ def motion(geometry: dict, correction=None, trims=(), phases=PHASES):
     ``trims`` are further ``(shift [m], measured at [s])`` across the axis (:func:`lateral`).
     ``phases`` are the windows of :data:`PHASES`.
     """
-    surface = np.asarray(cable_scene.sim_surface(), dtype=np.float64)
+    surface = np.asarray(hetero_scene.sim_surface(), dtype=np.float64)
     centre = arm_gripper.tcp_for_pads(surface + np.asarray(geometry["grip_centre_m"]))
     reach = float(geometry["reach_m"])
     pre = np.asarray(geometry["seat_m"]) - PRE_INSERT * INSERT_AXIS
@@ -417,8 +420,8 @@ def run(out: Path, asset, *, steps: int, render_every: int, config: dict, **phys
     sim, obj, camera, geometry, labels = build_scene(asset, **physics)
     entity = obj.entity
     tets = entity.source_tets
-    soft = cable_scene.soft_labels(asset, labels)
-    surface = np.asarray(cable_scene.sim_surface(), dtype=np.float64)
+    soft = hetero_scene.soft_labels(asset, labels)
+    surface = np.asarray(hetero_scene.sim_surface(), dtype=np.float64)
     plug = np.unique(tets[np.isin(labels, PLUG)])
     housing = np.unique(tets[labels == HOUSING])
     lay = geometry["lay"]
@@ -515,7 +518,7 @@ def run(out: Path, asset, *, steps: int, render_every: int, config: dict, **phys
             "housing_displacement_m": float(np.linalg.norm(centre[:2] - housing_rest[:2])),
         }
 
-    rows, elapsed, video_error = cable_scene.episode(
+    rows, elapsed, video_error = hetero_scene.episode(
         sim,
         entity,
         camera,
@@ -583,21 +586,21 @@ def main() -> None:
     parser.add_argument("--render-every", type=int, default=0)
     parser.add_argument("--solver", choices=("vbd", "chebyshev"), default="chebyshev")
     parser.add_argument("--iterations", type=int, default=80)
-    parser.add_argument("--mu", type=float, default=cable_scene.OBJECT_MU)
+    parser.add_argument("--mu", type=float, default=hetero_scene.OBJECT_MU)
     parser.add_argument("--grip-mu", type=float, default=2.0)
     parser.add_argument("--force-limit", type=float, default=30.0)
     parser.add_argument("--no-self-contact", dest="self_contact", action="store_false")
     parser.add_argument("--socket", choices=tuple(SOCKETS), default="snug")
     parser.add_argument("--plug-radius", type=float, default=PLUG_RADIUS, help="the plug's contact radius [m]")
-    cable_scene.add_lever_arguments(parser)
+    hetero_scene.add_lever_arguments(parser)
     args = parser.parse_args()
-    asset = cable_scene.with_levers(cable_scene.ASSETS[args.asset], args)
+    asset = hetero_scene.with_levers(cable_scene.ASSETS[args.asset], args)
     run(
         args.out,
         asset,
         steps=args.steps,
         render_every=args.render_every,
-        config=cable_scene.config(args, asset, dataclasses.replace(REFERENCE, substeps=SUBSTEPS)),
+        config=hetero_scene.config(args, asset, dataclasses.replace(REFERENCE, substeps=SUBSTEPS)),
         solver=args.solver,
         iterations=args.iterations,
         mu=args.mu,
