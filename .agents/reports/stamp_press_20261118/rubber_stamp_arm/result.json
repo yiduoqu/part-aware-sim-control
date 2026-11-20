@@ -1,0 +1,314 @@
+{
+  "complete": true,
+  "finite": true,
+  "lifted_m": 0.04974799815502912,
+  "carried_to_m": [
+    0.02015038592633972,
+    -0.059711455689301675
+  ],
+  "miss_m": 0.000325382461232049,
+  "standing_squeeze_m": 0.000341688779207581,
+  "hold_relief_on_paper": 1.0,
+  "peak_squeeze_m": 0.0015771966020613178,
+  "peak_foam_squeeze_m": 0.0012782077030569407,
+  "peak_die_squeeze_m": 0.00029898889900437705,
+  "peak_foam_strain": 0.4260692343523138,
+  "peak_bulge_m": 0.00017733871936798096,
+  "peak_pad_squeeze_n": 20.243185407434957,
+  "grip_slip_m": 0.000175058537133288,
+  "max_tilt_held_deg": 0.26632897612309536,
+  "final_tilt_deg": 0.18469161164964468,
+  "final_squeeze_m": 0.00034389598065782696,
+  "final_aperture_m": 0.08000144362449646,
+  "max_inverted_soft_tets": 0,
+  "max_rigid_node_stretch_m": 0.00021088870784317148,
+  "checks": {
+    "ran": true,
+    "lifted": true,
+    "over_the_paper": true,
+    "prints_under_the_press": true,
+    "soft_layers_give": true,
+    "let_go_and_stands": true,
+    "soft_mesh_intact": true,
+    "imprint_complete": true
+  },
+  "effective_stiffness_ratio": 100.0,
+  "imprint": {
+    "relief_inked": 1.0,
+    "inked_area_m2": 0.00078958,
+    "relief_area_m2": 0.000785714285714624
+  },
+  "success": true,
+  "stopped": null,
+  "mesh_quality": {
+    "minimum_J_by_part": [
+      0.9702449440956116,
+      0.9968125820159912,
+      0.4183104932308197,
+      0.9532679915428162
+    ],
+    "inverted_tet_substeps_by_part": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "nonfinite_tet_substeps_by_part": [
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "actions": [
+    {
+      "phase": "reach",
+      "delta_m": [
+        0.0,
+        0.0,
+        -0.06
+      ],
+      "seconds": 1.4,
+      "opening_m": 0.08
+    },
+    {
+      "phase": "close",
+      "delta_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "seconds": 1.0,
+      "opening_m": 0.0316
+    },
+    {
+      "phase": "lift",
+      "delta_m": [
+        0.0,
+        0.0,
+        0.05
+      ],
+      "seconds": 1.5,
+      "opening_m": 0.0316
+    },
+    {
+      "phase": "hang",
+      "delta_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "seconds": 0.6,
+      "opening_m": 0.0316
+    },
+    {
+      "phase": "carry",
+      "delta_m": [
+        0.12000000000000001,
+        0.0,
+        0.0
+      ],
+      "seconds": 2.0,
+      "opening_m": 0.0316
+    },
+    {
+      "phase": "lower",
+      "delta_m": [
+        0.0,
+        0.0,
+        -0.049
+      ],
+      "seconds": 2.0,
+      "opening_m": 0.0316
+    },
+    {
+      "phase": "press",
+      "delta_m": [
+        0.0,
+        0.0,
+        -0.0015
+      ],
+      "seconds": 1.0,
+      "opening_m": 0.0316
+    },
+    {
+      "phase": "hold",
+      "delta_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "seconds": 1.0,
+      "opening_m": 0.0316
+    },
+    {
+      "phase": "unload",
+      "delta_m": [
+        0.0,
+        0.0,
+        0.0015
+      ],
+      "seconds": 0.8,
+      "opening_m": 0.0316
+    },
+    {
+      "phase": "open",
+      "delta_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "seconds": 0.8,
+      "opening_m": 0.08
+    },
+    {
+      "phase": "retreat",
+      "delta_m": [
+        0.0,
+        0.0,
+        0.06
+      ],
+      "seconds": 1.0,
+      "opening_m": 0.08
+    }
+  ],
+  "phases": [
+    {
+      "phase": "settle",
+      "seconds": 0.6,
+      "ends_at_s": 0.6
+    },
+    {
+      "phase": "reach",
+      "seconds": 1.4,
+      "ends_at_s": 2.0
+    },
+    {
+      "phase": "close",
+      "seconds": 1.0,
+      "ends_at_s": 3.0
+    },
+    {
+      "phase": "lift",
+      "seconds": 1.5,
+      "ends_at_s": 4.5
+    },
+    {
+      "phase": "hang",
+      "seconds": 0.6,
+      "ends_at_s": 5.1
+    },
+    {
+      "phase": "carry",
+      "seconds": 2.0,
+      "ends_at_s": 7.1
+    },
+    {
+      "phase": "lower",
+      "seconds": 2.0,
+      "ends_at_s": 9.1
+    },
+    {
+      "phase": "press",
+      "seconds": 1.0,
+      "ends_at_s": 10.1
+    },
+    {
+      "phase": "hold",
+      "seconds": 1.0,
+      "ends_at_s": 11.1
+    },
+    {
+      "phase": "unload",
+      "seconds": 0.8,
+      "ends_at_s": 11.9
+    },
+    {
+      "phase": "open",
+      "seconds": 0.8,
+      "ends_at_s": 12.7
+    },
+    {
+      "phase": "retreat",
+      "seconds": 1.0,
+      "ends_at_s": 13.7
+    },
+    {
+      "phase": "rest",
+      "seconds": 0.6,
+      "ends_at_s": 14.3
+    }
+  ],
+  "worst_ik_error_m": 2.9413021870837286e-07,
+  "config": {
+    "overpress_m": 0.0015,
+    "grip_mu": 2.83,
+    "force_limit_n": 20.0,
+    "grip_squeeze_m": 0.0002,
+    "solver": "SolverVBD",
+    "iterations": 160,
+    "substeps": 20,
+    "control_hz": 60,
+    "newton_version": "1.8.0.dev0"
+  },
+  "geometry": {
+    "height_m": 0.066,
+    "tip_nodes": 537,
+    "tip_faces": 792,
+    "relief_area_m2": 0.000785714285714624,
+    "foam_thickness_m": 0.0029999999999999983,
+    "die_thickness_m": 0.005999999999999999,
+    "rigid_body_parts": {
+      "part0+1": {
+        "body": 9,
+        "nodes": 2799,
+        "seam_nodes": 817,
+        "body_mass_kg": 0.028184509555609485,
+        "part_mass_kg": 0.03114072753055934
+      }
+    },
+    "attach_stiffness_n_m": 10000.0,
+    "carried_nodes": 0,
+    "friction": {
+      "soft_contact_ke": 10000.0,
+      "soft_contact_kd": 10.0,
+      "global_soft_contact_mu": 0.6,
+      "shape_mu": 0.6,
+      "pad_shape_mu": 13.348166666666668,
+      "pad_toy_mu": 2.83
+    },
+    "arm": {
+      "gripper": "airbot_play_loop",
+      "finger_effort_limit_n": [
+        20.0,
+        20.0
+      ],
+      "close_travel_m": 0.016,
+      "pad_faces_open_m": 0.08,
+      "pad_faces_closed_m": 0.0,
+      "contact_matching": "sticky",
+      "coupler": "SolverOneWay",
+      "press_budget_n": 60.0
+    },
+    "asset": "rubber_stamp",
+    "source_stiffness_ratio": 33333.333333333336,
+    "effective_young_pa_by_part": {
+      "wooden_handle": 10000000.0,
+      "wooden_mount": 10000000.0,
+      "foam_cushion": 100000.0,
+      "rubber_die": 1500000.0
+    },
+    "effective_stiffness_ratio": 100.0,
+    "weight_n": 0.10829286030717486,
+    "paper_top_m": 0.001,
+    "stamp_pose_m": [
+      -0.1,
+      -0.06,
+      0.001
+    ],
+    "overpress_m": 0.0015
+  },
+  "video_error": null,
+  "simulated_s": 14.3,
+  "elapsed_s": 1006.8354814000195
+}

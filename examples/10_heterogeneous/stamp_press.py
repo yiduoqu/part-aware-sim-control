@@ -7,9 +7,11 @@ It stands on its open sleeve rim on a paper pad. Its cap and plunger are one rig
 sleeve another (:mod:`rigid_part_body`); the foam cushion and the rubber die are FEM.
 
 The helix is in the mesh but this solver cannot run it (``HELIX_YOUNG_PA``), so the spring is
-two things here. What a spring does -- hold the cap up, give under a push, bring it back, keep
-it in line -- is :class:`SpringGuide`, forces between the two rigid groups. What a spring looks
-like is the meshed helix, drawn between its two seats and carrying nothing (:class:`StampSpec`).
+two things here. What a spring does -- hold the cap up, give under a push, bring it back -- is
+:class:`SpringGuide`, forces between the two rigid groups along the stamp's axis. What a spring
+looks like is the meshed helix, drawn between its two seats and carrying nothing
+(:class:`StampSpec`). What keeps the cap in line is a prismatic joint between the two groups, which
+the solver holds with them (``StampSpec.slide``); ``--no-joint`` leaves that to the forces too.
 
 A kinematic plate comes down on the cap, pushes it down until the die is ``--overpress`` into
 the paper, holds, and lifts off again. Nothing is attached to the plate: the cap goes down
@@ -437,6 +439,11 @@ class StampSpec(rigid_part_body.RigidPartSoftSpec):
     the other it is. So the part shortens evenly between them, as a coil does. None carries nothing."""
     carried_land: float = 0.0
     """Within this of either seat a carried node moves with that seat's group alone [m]."""
+    slide: SpringGuide | None = None
+    """Join the cap group to the sleeve by a prismatic joint the solver holds (AVBD), with this
+    spring's stops on its one freedom. None joins nothing."""
+    slide_spring: bool = False
+    """Whether the joint's drive is the coil too: the spring's rate, preload and damping."""
 
 
 @rss.register_entity("stamp_rigid_parts")
@@ -447,6 +454,9 @@ class EntityStamp(rigid_part_body.EntityRigidParts):
         super().build(builder, episode)
         spec = self.spec
         self.carried = np.zeros(0, dtype=np.int64)
+        self.slide_joint = None
+        if spec.slide is not None:
+            self._join(builder, spec.slide)
         if spec.carried_part is None:
             return
         if len(self.rigid_parts) != 2:
@@ -471,6 +481,92 @@ class EntityStamp(rigid_part_body.EntityRigidParts):
         for node in free:
             builder.particle_mass[start + int(node)] = 0.0
         self.mass[free] = 0.0
+
+
+SLIDE_AXIS = (0.0, 0.0, 1.0)
+
+
+def _join(self, builder, guide: SpringGuide) -> None:
+    """Add the prismatic joint of ``StampSpec.slide`` between the sleeve's body and the cap group's.
+
+    Both anchors are the guide point, on the sleeve's axis ``guide.guide_height`` over its rim, so
+    the joint reads zero as built. Its drive is the coil: ``rate`` towards a target ``preload / rate``
+    over the top stop, which is the upper limit; the lower limit is ``travel`` below.
+    """
+    n = len(self.source_vertices)
+    start = int(builder.particle_count) - n
+    x = np.array([[float(c) for c in p] for p in builder.particle_q[start : start + n]], dtype=np.float64)
+    core = next(rp for rp in self.rigid_parts if str(CAP) in rp.part.split("+"))
+    sleeve = next(rp for rp in self.rigid_parts if rp.part == str(SLEEVE))
+    com_core, com_sleeve = (x[rp.nodes[0]] - rp.body_point[0] for rp in (core, sleeve))
+    point = np.array((com_sleeve[0], com_sleeve[1], x[sleeve.nodes, 2].min() + guide.guide_height))
+    self.slide_anchor = (point - com_sleeve, point - com_core)
+    self.slide_bodies = (int(sleeve.body), int(core.body))
+    self.slide_joint = builder.add_joint_prismatic(
+        parent=int(sleeve.body),
+        child=int(core.body),
+        parent_xform=wp.transform(wp.vec3(*(float(c) for c in self.slide_anchor[0])), wp.quat_identity()),
+        child_xform=wp.transform(wp.vec3(*(float(c) for c in self.slide_anchor[1])), wp.quat_identity()),
+        axis=SLIDE_AXIS,
+        target_pos=guide.preload / guide.rate,
+        target_ke=guide.rate if self.spec.slide_spring else 0.0,
+        target_kd=guide.damping if self.spec.slide_spring else 0.0,
+        limit_lower=-guide.travel,
+        limit_upper=0.0,
+        limit_ke=guide.stop,
+        limit_kd=0.0,
+        actuator_mode=newton.JointTargetMode.POSITION,
+        label=f"{self.spec.name}/slide",
+    )
+
+
+EntityStamp._join = _join
+
+
+class SlideReading:
+    """What :class:`SpringGuideForces` reads, from the two bodies a :class:`StampSpec` ``slide`` joins."""
+
+    def __init__(self, sim, entity: EntityStamp, guide: SpringGuide) -> None:
+        self.sim, self.entity, self.guide = sim, entity, guide
+        # The builder moves a target outside the limits to their middle, and the coil's is over the
+        # top stop: that is its preload. The solver reads the target from the control every substep.
+        if not entity.spec.slide_spring:
+            return
+        model = sim.model
+        at = int(model.joint_target_q_start.numpy()[entity.slide_joint])
+        for owner in (model, sim.pipeline.control):
+            target = owner.joint_target_q.numpy()
+            target[at] = guide.preload / guide.rate
+            owner.joint_target_q.assign(target)
+
+    def read(self) -> tuple[float, float]:
+        """The cap's height over its rest on the sleeve [m] and the spring's and stops' force on it [N]."""
+        guide, entity = self.guide, self.entity
+        body_q = self.sim.pipeline.state_0.body_q.numpy().astype(np.float64)
+        ends = []
+        for body, anchor in zip(entity.slide_bodies, entity.slide_anchor, strict=True):
+            ends.append(body_q[body, :3] + _rotate(body_q[body, 3:], anchor))
+        axis = _rotate(body_q[entity.slide_bodies[0], 3:], np.asarray(SLIDE_AXIS))
+        x = float((ends[1] - ends[0]) @ axis)
+        push = guide.preload - guide.rate * x - guide.stop * max(x, 0.0) + guide.stop * max(-guide.travel - x, 0.0)
+        return x, push
+
+    def across(self) -> float:
+        """How far the cap group's anchor is off the sleeve's axis [m]: what the joint lets through."""
+        entity = self.entity
+        body_q = self.sim.pipeline.state_0.body_q.numpy().astype(np.float64)
+        ends = []
+        for body, anchor in zip(entity.slide_bodies, entity.slide_anchor, strict=True):
+            ends.append(body_q[body, :3] + _rotate(body_q[body, 3:], anchor))
+        axis = _rotate(body_q[entity.slide_bodies[0], 3:], np.asarray(SLIDE_AXIS))
+        apart = ends[1] - ends[0]
+        return float(np.linalg.norm(apart - (apart @ axis) * axis))
+
+
+def _rotate(quat: np.ndarray, vector: np.ndarray) -> np.ndarray:
+    """``vector`` turned by the xyzw quaternion ``quat``."""
+    u, w = quat[:3], quat[3]
+    return vector + 2.0 * np.cross(u, np.cross(u, vector) + w * vector)
 
 
 class CarriedPose:
@@ -631,6 +727,8 @@ def build_scene(
     core_density: float | None = None,
     spring: SpringGuide | None = None,
     draw_return: bool = True,
+    joint: bool = True,
+    joint_spring: bool = False,
 ):
     vertices, tets, labels, groups, names = load_stamp(asset)
     geometry = layout(vertices, tets, labels)
@@ -668,6 +766,8 @@ def build_scene(
         StampSpec(
             carried_part=RETURN if spring is not None and draw_return else None,
             carried_land=HELIX_LAND,
+            slide=spring if joint else None,
+            slide_spring=joint_spring,
             rigid_parts=groups,
             attach_stiffness=attach_stiffness,
             attach_damping=attach_damping,
@@ -717,7 +817,14 @@ def build_scene(
     if len(entity.carried):
         CarriedPose(sim, entity, 1.0 / (settings.control_hz * settings.substeps))
     forces = None
-    if spring is not None:
+    slide = SlideReading(sim, entity, spring) if spring is not None and joint else None
+    if slide is not None and joint_spring:
+        forces = slide
+        report["spring_guide"] = dataclasses.asdict(spring) | {"as": "prismatic joint, its drive the coil"}
+    elif spring is not None:
+        if joint:
+            # The joint is the guide; what is left to the forces is along it.
+            spring = dataclasses.replace(spring, guide=0.0, guide_damping=0.0, align=0.0, align_damping=0.0)
         core = next(rp for rp in entity.rigid_parts if str(CAP) in rp.part.split("+"))
         sleeve = next(rp for rp in entity.rigid_parts if rp.part == str(SLEEVE))
         forces = SpringGuideForces(
@@ -741,7 +848,7 @@ def build_scene(
     report["paper_top_m"] = paper_top
     report["stamp_pose_m"] = [float(v) for v in pose]
     print(json.dumps({"geometry": report}), flush=True)
-    return sim, obj, presser, forces, geometry, report
+    return sim, obj, presser, forces, slide, geometry, report
 
 
 class SpringGuideForces:
@@ -1043,6 +1150,8 @@ def run(
     core_density: float | None = None,
     spring: SpringGuide | None = None,
     body_spring: bool = True,
+    joint: bool = True,
+    joint_spring: bool = False,
     draw_return: bool = True,
 ):
     out.mkdir(parents=True, exist_ok=True)
@@ -1050,7 +1159,7 @@ def run(
         return_young = HELIX_YOUNG_PA
     if spring is None and body_spring:
         spring = SpringGuide()
-    sim, obj, presser, forces, geometry, report = build_scene(
+    sim, obj, presser, forces, slide, geometry, report = build_scene(
         asset=asset,
         solver_name=solver_name,
         iterations=iterations,
@@ -1063,6 +1172,8 @@ def run(
         return_density=return_density,
         core_density=core_density,
         spring=spring if body_spring else None,
+        joint=joint,
+        joint_spring=joint_spring,
         draw_return=draw_return,
     )
     entity = obj.entity
@@ -1157,6 +1268,7 @@ def run(
                 "plate_contacts": int(np.count_nonzero(shapes == presser.entity.shape)),
                 "spring_travel_m": 0.0 if forces is None else -forces.read()[0],
                 "spring_force_n": 0.0 if forces is None else forces.read()[1],
+                "slide_across_m": 0.0 if slide is None else slide.across(),
                 "cap_top_z_m": float(local[geometry["cap_top_nodes"], 2].mean()),
                 "core_z_m": core_z,
                 "sleeve_z_m": sleeve_z,
@@ -1249,6 +1361,8 @@ def run(
         "return_young_pa": return_young,
         "return_density_kg_m3": return_density,
         "body_spring": forces is not None,
+        "joint": joint,
+        "joint_spring": joint_spring,
         "return_element": "drawn between the rigid groups" if len(entity.carried) else "solved",
         "core_density_kg_m3": core_density,
         "newton_version": newton.__version__,
@@ -1287,6 +1401,12 @@ def main() -> None:
     parser.add_argument(
         "--return-density", type=float, default=None, help="the helix's density [kg/m^3]; the source's when unset"
     )
+    parser.add_argument(
+        "--no-joint", dest="joint", action="store_false", help="the guide as explicit forces, not a prismatic joint"
+    )
+    parser.add_argument(
+        "--joint-spring", action="store_true", help="the coil as the joint's drive too: the cap sinks 3.3 mm under it"
+    )
     parser.add_argument("--no-body-spring", dest="body_spring", action="store_false", help="leave the SpringGuide out")
     parser.add_argument("--spring-rate", type=float, default=None, help="the SpringGuide's rate [N/m]")
     parser.add_argument(
@@ -1312,6 +1432,8 @@ def main() -> None:
         return_density=args.return_density,
         spring=spring,
         body_spring=args.body_spring,
+        joint=args.joint or args.joint_spring,
+        joint_spring=args.joint_spring,
         draw_return=args.draw_return,
         core_density=args.core_density,
     )

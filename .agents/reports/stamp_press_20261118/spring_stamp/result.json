@@ -1,0 +1,164 @@
+{
+  "complete": true,
+  "finite": true,
+  "rest_die_gap_m": 0.003059338092803955,
+  "rest_cap_sag_m": -0.0001131371734416492,
+  "max_tilt_deg": 0.022774636592234696,
+  "max_yaw_deg": 0.04013222900410343,
+  "touched_paper": true,
+  "first_touch_time_s": 2.0833333333333335,
+  "press_travel_at_first_touch_m": 0.0030090808868408203,
+  "peak_press_travel_m": 0.00325697660446167,
+  "peak_relief_touching": 1.0,
+  "peak_paper_force_n": 110.08372306823742,
+  "peak_die_force_n": 4.549245834350673,
+  "peak_rim_force_n": 105.53626537323001,
+  "peak_sleeve_lift_m": -5.532741546630891e-06,
+  "final_tip_nodes_touching": 0,
+  "final_die_gap_m": 0.0030597553253173828,
+  "final_press_travel_m": 5.960464477539063e-08,
+  "final_plate_contacts": 506,
+  "rest_spring_force_n": 0.25310763716697693,
+  "peak_spring_force_n": 4.132454872131348,
+  "peak_spring_travel_m": 0.003132455050945282,
+  "final_drift_m_s": 7.152557373046875e-06,
+  "max_core_nodes_in_sleeve": 0,
+  "max_return_nodes_in_sleeve": 0,
+  "max_return_nodes_in_core": 0,
+  "max_rigid_node_stretch_m": 7.19774292317582e-05,
+  "max_inverted_soft_tets": 0,
+  "max_inverted_rigid_tets": 0,
+  "final_inverted_soft_tets": 0,
+  "checks": {
+    "ran": true,
+    "stands": true,
+    "does_not_turn": true,
+    "die_clear_at_rest": true,
+    "die_reaches_paper": true,
+    "springs_back": true,
+    "parts_stay_clear": true,
+    "soft_mesh_intact": true,
+    "imprint_complete": true
+  },
+  "effective_stiffness_ratio": 7.333333333333333,
+  "imprint": {
+    "relief_inked": 1.0,
+    "digit_inked": 1.0,
+    "border_inked": 1.0,
+    "inked_area_m2": 0.00014688250000000002,
+    "relief_area_m2": 0.00014684713448090793
+  },
+  "success": true,
+  "mesh_quality": {
+    "minimum_J_by_part": [
+      0.8782963156700134,
+      0.9899774193763733,
+      0.9847806096076965,
+      0.7959601879119873,
+      0.9231985211372375,
+      0.9889662265777588
+    ],
+    "inverted_tet_substeps_by_part": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "nonfinite_tet_substeps_by_part": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "config": {
+    "overpress_m": 0.0005,
+    "plate_travel_m": 0.003559338092803955,
+    "solver": "SolverVBD",
+    "iterations": 80,
+    "substeps": 20,
+    "control_hz": 60,
+    "self_contact": false,
+    "attach_stiffness_n_m": 10000.0,
+    "attach_damping_n_s_m": 0.0,
+    "asset": "retractable_stamp_spring",
+    "return_young_pa": 300000.0,
+    "return_density_kg_m3": null,
+    "body_spring": true,
+    "joint": true,
+    "joint_spring": false,
+    "return_element": "drawn between the rigid groups",
+    "core_density_kg_m3": null,
+    "newton_version": "1.8.0.dev0"
+  },
+  "geometry": {
+    "height_m": 0.07,
+    "die_recess_m": 0.003,
+    "tip_nodes": 282,
+    "tip_faces": 416,
+    "relief_area_m2": 0.00014684713448090793,
+    "digit_border_split_radius_m": 0.0051847157412214075,
+    "rigid_body_parts": {
+      "part0+1": {
+        "body": 0,
+        "nodes": 2714,
+        "seam_nodes": 415,
+        "body_mass_kg": 0.019206164843134383,
+        "part_mass_kg": 0.02132560931076889
+      },
+      "part2": {
+        "body": 1,
+        "nodes": 3008,
+        "seam_nodes": 34,
+        "body_mass_kg": 0.007653018640871942,
+        "part_mass_kg": 0.008500401421799331
+      }
+    },
+    "attach_stiffness_n_m": 10000.0,
+    "carried_nodes": 2857,
+    "friction": {
+      "soft_contact_ke": 10000.0,
+      "soft_contact_kd": 10.0,
+      "global_soft_contact_mu": 0.6,
+      "shape_mu": 0.6
+    },
+    "spring_guide": {
+      "rate": 1000.0,
+      "preload": 1.0,
+      "travel": 0.0045,
+      "stop": 5000.0,
+      "damping": 2.0,
+      "guide_height": 0.027,
+      "guide": 0.0,
+      "guide_damping": 0.0,
+      "align": 0.0,
+      "align_damping": 0.0,
+      "cap_group_mass_kg": 0.02135339372010625,
+      "sleeve_group_mass_kg": 0.008513056790524942
+    },
+    "asset": "retractable_stamp_spring",
+    "source_stiffness_ratio": 666666.6666666666,
+    "effective_young_pa_by_part": {
+      "top_cap": 2200000.0,
+      "plunger": 2200000.0,
+      "outer_sleeve": 2200000.0,
+      "return_spring": 300000.0,
+      "foam_cushion": 300000.0,
+      "rubber_die": 1500000.0
+    },
+    "effective_stiffness_ratio": 7.333333333333333,
+    "paper_top_m": 0.001,
+    "stamp_pose_m": [
+      0.0,
+      -0.12,
+      0.002
+    ]
+  },
+  "video_error": null,
+  "simulated_s": 5.4,
+  "elapsed_s": 209.14243549993262
+}
